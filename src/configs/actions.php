@@ -14,6 +14,9 @@ function bTest()
   echo "test";
 }
 
+function aTest(){
+  return true;
+}
 function chargerDashboardAdmin()
 {
 
