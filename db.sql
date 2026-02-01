@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : sam. 31 jan. 2026 à 15:14
+-- Généré le : dim. 01 fév. 2026 à 17:27
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -107,7 +107,15 @@ CREATE TABLE IF NOT EXISTS `boutiques` (
   PRIMARY KEY (`id_boutique`),
   UNIQUE KEY `code_boutique` (`code_boutique`),
   KEY `compte_code` (`compte_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `boutiques`
+--
+
+INSERT INTO `boutiques` (`id_boutique`, `code_boutique`, `compte_code`, `libelle_boutique`, `adresse`, `email`, `telephone`, `logo`, `etat_boutique`, `created_at`) VALUES
+(1, 'BTQ_001', 'CMP_001', 'Boutique Centrale', 'Abidjan Cocody', 'contact@boutique.ci', '0101010101', 'logo.png', 1, '2026-01-31 16:28:28'),
+(2, 'BTQ_002', 'CMP_002', 'Boutique du Marché', 'Abidjan Yopougon', 'contact@marche.ci', '0202020202', 'logo_btq2.png', 1, '2026-01-31 16:32:32');
 
 -- --------------------------------------------------------
 
@@ -146,14 +154,27 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `id_categorie` int NOT NULL AUTO_INCREMENT,
   `code_categorie` varchar(50) NOT NULL,
   `boutique_code` varchar(50) NOT NULL,
-  `libelle` varchar(100) DEFAULT NULL,
+  `libelle_categorie` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `description_categorie` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `etat_categorie` int DEFAULT '1',
   `compte_code` varchar(50) NOT NULL,
   PRIMARY KEY (`id_categorie`),
   UNIQUE KEY `code_categorie` (`code_categorie`),
   KEY `compte_code` (`compte_code`),
   KEY `boutique_code` (`boutique_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `categories`
+--
+
+INSERT INTO `categories` (`id_categorie`, `code_categorie`, `boutique_code`, `libelle_categorie`, `description_categorie`, `etat_categorie`, `compte_code`) VALUES
+(1, 'CAT_001', 'BTQ_001', 'Boissons', 'Boissons chic', 1, 'CMP_001'),
+(2, 'CAT_101', 'BTQ_002', 'Fruits et légumes', 'Fruits frais', 1, 'CMP_002'),
+(3, 'CAT_102', 'BTQ_002', 'Céréales', 'cereales doux', 1, 'CMP_002'),
+(4, 'CAT_103', 'BTQ_002', 'Produits locaux', 'produits de tous genre', 1, 'CMP_002'),
+(5, 'CAT-S36OV5JY', 'BTQ_001', 'LUXE', 'Sa', 1, 'CMP_001'),
+(6, 'CAT-9B2SCXPV', 'BTQ_001', 'LUXE;,', 'B,bvbjq', 0, 'CMP_001');
 
 -- --------------------------------------------------------
 
@@ -166,9 +187,9 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `id_client` int NOT NULL AUTO_INCREMENT,
   `code_client` varchar(50) NOT NULL,
   `boutique_code` varchar(50) NOT NULL,
-  `nom` varchar(150) DEFAULT NULL,
-  `telephone` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
+  `nom_client` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `telephone_client` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `email_client` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `etat_client` int DEFAULT '1',
   `compte_code` varchar(50) NOT NULL,
   PRIMARY KEY (`id_client`),
@@ -198,7 +219,15 @@ CREATE TABLE IF NOT EXISTS `comptes` (
   PRIMARY KEY (`id_compte`),
   UNIQUE KEY `code_compte` (`code_compte`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `comptes`
+--
+
+INSERT INTO `comptes` (`id_compte`, `code_compte`, `nom`, `prenom`, `email`, `telephone`, `password`, `token`, `etat_compte`, `created_at_compte`) VALUES
+(1, 'CMP_001', 'KOUAME', 'Jean', 'jean.kouame@email.com', '0700000000', 'hashed_password_here', 'token_example_123', 1, '2026-01-31 16:28:15'),
+(2, 'CMP_002', 'TRAORE', 'Moussa', 'moussa.traore@email.com', '0755555555', 'hashed_password_here_2', 'token_example_456', 1, '2026-01-31 16:32:22');
 
 -- --------------------------------------------------------
 
