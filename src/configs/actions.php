@@ -9,6 +9,9 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\Service;
 
+function aTest(){
+  return true;
+}
 function chargerDashboardAdmin()
 {
 
