@@ -9,6 +9,14 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\Service;
 
+function bTest()
+{
+  echo "test";
+}
+
+function aTest(){
+  return true;
+}
 function chargerDashboardAdmin()
 {
 
@@ -438,59 +446,59 @@ function chargerListeCategories()
 
 function achargerListeCategories()
 {
-    // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
-    $compte   = "CMP_001";
-    $boutique = "BTQ_001";
+  // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
+  $compte   = "CMP_001";
+  $boutique = "BTQ_001";
 
-    $categorieModel = new Catalogue();
-    
-    $categories = $categorieModel->getAllCategorieByCompteBoutique($compte, $boutique,ETAT_ACTIF);
-    if (!empty($categories)) {
-        $i = 0;
-        foreach ($categories as $data) {
-            $i++; ?>
+  $categorieModel = new Catalogue();
 
-            <tr>
-                <th scope="row"><?= $i ?></th>
+  $categories = $categorieModel->getAllCategorieByCompteBoutique($compte, $boutique, ETAT_ACTIF);
+  if (!empty($categories)) {
+    $i = 0;
+    foreach ($categories as $data) {
+      $i++; ?>
 
-                <!-- libellé -->
-                <td class="text-center">
-                    <?= htmlspecialchars($data['libelle_categorie']) ?>
-                </td>
+      <tr>
+        <th scope="row"><?= $i ?></th>
 
-                <!-- description fictive (design conservé) -->
-                <td class="text-center" data-titles="<?= htmlspecialchars($data['description_categorie']) ?>">
-                    ...
-                </td>
+        <!-- libellé -->
+        <td class="text-center">
+          <?= htmlspecialchars($data['libelle_categorie']) ?>
+        </td>
 
-                <td class="table_button">
-                    <button 
-                        id="frmModifierCategorie<?= $i ?>" 
-                        type="button" 
-                        class="btn btn-primary btn-sm mr-2 frmModifierCategorie"
-                        data-categorie="<?= ($data['code_categorie']) ?>">
-                        <i class="fa fa-edit"></i> Modifier
-                    </button>
+        <!-- description fictive (design conservé) -->
+        <td class="text-center" data-titles="<?= htmlspecialchars($data['description_categorie']) ?>">
+          ...
+        </td>
 
-                    <button 
-                        id="categorieDeleteCategorie<?= $i ?>" 
-                        type="button" 
-                        class="btn btn-danger btn-sm categorieDeleteCategorie"
-                        data-categorie="<?= ($data['code_categorie']) ?>">
-                        <i class="fa fa-trash"></i> Supprimer
-                    </button>
-                </td>
-            </tr>
+        <td class="table_button">
+          <button
+            id="frmModifierCategorie<?= $i ?>"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierCategorie"
+            data-categorie="<?= ($data['code_categorie']) ?>">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
 
-        <?php }
-    } else {
-        echo "
+          <button
+            id="categorieDeleteCategorie<?= $i ?>"
+            type="button"
+            class="btn btn-danger btn-sm categorieDeleteCategorie"
+            data-categorie="<?= ($data['code_categorie']) ?>">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+        </td>
+      </tr>
+
+    <?php }
+  } else {
+    echo "
         <tr>
             <td colspan='5' class='text-center text-danger'>
                 Aucune categorie enregistrée
             </td>
         </tr>";
-    }
+  }
 }
 
 
@@ -1342,6 +1350,7 @@ function daysBetweenDates($dateDebut, $dateFin)
   // Retourner le nombre de jours
   return $intervalle->days + 1;
 }
+
 
 function chargerListeClient($start, $end)
 {
