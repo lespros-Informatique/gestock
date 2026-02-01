@@ -362,7 +362,7 @@ class ControllerHotel extends MainController
         return;
     }
 
-     public function listeReservationsArrive()
+    public function listeReservationsArrive()
     {
 
         $_POST = sanitizePostData($_POST);
@@ -376,7 +376,7 @@ class ControllerHotel extends MainController
 
 
             $reservation = (new Factory())->getAllReservationsArrive($start, $end);
-            
+
             if (!empty($reservation)) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -409,7 +409,7 @@ class ControllerHotel extends MainController
 
 
             $reservation = (new Factory())->getAllReservationsActive($start, $end);
-            
+
             if (!empty($reservation)) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -465,70 +465,68 @@ class ControllerHotel extends MainController
 
         if (Auth::user('caisse') != null) {
 
-            if(isset($_POST['client']) && !empty($_POST['client'])){
-
-            
-            $fc = new Factory();
-
-            $data_check = [
-                'chambre_id' => Auth::getData(RESERVATION, 'chambre'),
-                'date_debut' => Auth::getData(PERIODE, 'date_debut'),
-                'date_fin' => Auth::getData(PERIODE, 'date_fin')
-            ];
-
-            $dataVerif = $fc->verificationAbleChambreBeforeReservation($data_check);
-
-            if (empty($dataVerif)) {
+            if (isset($_POST['client']) && !empty($_POST['client'])) {
 
 
-                $client = $_POST['client'];
-                $date = date("Y-m-d H:i:s");
-                $codeResevation = $fc->generatorCode("reservations", "code_reservation");
-                $chambre = Auth::getData(RESERVATION, 'chambre');
-                $montant = Auth::getData(RESERVATION, 'montant');
-                $debut = Auth::getData(PERIODE, 'date_debut');
-                $fin = Auth::getData(PERIODE, 'date_fin');
-                $days = daysBetweenDates($debut, $fin);
-                $totalMontant = $montant * $days;
+                $fc = new Factory();
 
-                
-
-
-                $data_servation = [
-                    'chambre_id' => $chambre,
-                    'client_id' => $client,
-                    'etat_reservation' => 0,
-                    'prix_reservation' => $montant,
-                    'user_id' => Auth::user('id'),
-                    'date_entree' => $debut,
-                    'date_sortie' => $fin,
-                    'code_reservation' => $codeResevation,
-                    'hotel_id' => Auth::user("hotel_id"),
-                    'statut_reservation' => STATUT_RESERVATION[0],
-                    'created_reservation' => $date,
+                $data_check = [
+                    'chambre_id' => Auth::getData(RESERVATION, 'chambre'),
+                    'date_debut' => Auth::getData(PERIODE, 'date_debut'),
+                    'date_fin' => Auth::getData(PERIODE, 'date_fin')
                 ];
 
-                if ($fc->create("reservations", $data_servation)) {
-                    Auth::clean(RESERVATION);
-                    Auth::clean(PERIODE);
+                $dataVerif = $fc->verificationAbleChambreBeforeReservation($data_check);
 
-                    $output = Service::chargerFactureForReservation($codeResevation, $totalMontant);
+                if (empty($dataVerif)) {
 
-                    $msg['code'] = 200;
-                    $msg['type'] = "success";
-                    $msg['data'] = $output;
-                    $msg['message'] = "Reservation effectuée avec succès";
+
+                    $client = $_POST['client'];
+                    $date = date("Y-m-d H:i:s");
+                    $codeResevation = $fc->generatorCode("reservations", "code_reservation");
+                    $chambre = Auth::getData(RESERVATION, 'chambre');
+                    $montant = Auth::getData(RESERVATION, 'montant');
+                    $debut = Auth::getData(PERIODE, 'date_debut');
+                    $fin = Auth::getData(PERIODE, 'date_fin');
+                    $days = daysBetweenDates($debut, $fin);
+                    $totalMontant = $montant * $days;
+
+
+
+
+                    $data_servation = [
+                        'chambre_id' => $chambre,
+                        'client_id' => $client,
+                        'etat_reservation' => 0,
+                        'prix_reservation' => $montant,
+                        'user_id' => Auth::user('id'),
+                        'date_entree' => $debut,
+                        'date_sortie' => $fin,
+                        'code_reservation' => $codeResevation,
+                        'hotel_id' => Auth::user("hotel_id"),
+                        'statut_reservation' => STATUT_RESERVATION[0],
+                        'created_reservation' => $date,
+                    ];
+
+                    if ($fc->create("reservations", $data_servation)) {
+                        Auth::clean(RESERVATION);
+                        Auth::clean(PERIODE);
+
+                        $output = Service::chargerFactureForReservation($codeResevation, $totalMontant);
+
+                        $msg['code'] = 200;
+                        $msg['type'] = "success";
+                        $msg['data'] = $output;
+                        $msg['message'] = "Reservation effectuée avec succès";
+                    } else {
+                        $msg['message'] = "Echec d'enregistrement!";
+                    }
                 } else {
-                    $msg['message'] = "Echec d'enregistrement!";
+                    $msg['message'] = "Désolé, cette chambre n'est plus disponible pour cette periode";
                 }
             } else {
-                $msg['message'] = "Désolé, cette chambre n'est plus disponible pour cette periode";
+                $msg['message'] = "Désolé, aucun client selectionné";
             }
-
-            } else {
-            $msg['message'] = "Désolé, aucun client selectionné";
-        }
-
         } else {
             $msg['message'] = "Veuillez D'abord ouvrir votre caisse!";
         }
@@ -551,7 +549,7 @@ class ControllerHotel extends MainController
 
                 if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
 
-                     $fc = new Factory();
+                    $fc = new Factory();
 
                     $client = $fc->verifyParam('clients', 'telephone_client', $telephone);
 
@@ -561,7 +559,6 @@ class ControllerHotel extends MainController
                         $msg['type'] = "success";
                         $msg['data'] = $output;
                         $msg['message'] = "Ce client existe déjà ";
-
                     } else {
 
 
@@ -600,7 +597,7 @@ class ControllerHotel extends MainController
                                 // Auth::clean(PERIODE);
 
                                 // $output = Service::chargerFactureForReservation($codeResevation, $totalMontant);
-                               
+
 
                                 $msg['code'] = 200;
                                 $msg['type'] = "success";
