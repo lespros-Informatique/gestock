@@ -6,9 +6,11 @@ use App\Core\Auth;
 use App\Core\Gqr;
 use App\Core\MainController;
 use App\Models\Factory;
+use App\Models\Personne;
 use App\Services\PersonneService;
 use App\Services\Service;
 use Roles;
+use TABLES;
 
 class ClientController extends MainController
 {
@@ -57,83 +59,49 @@ class ClientController extends MainController
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
-        if (Auth::user('caisse') != null) {
+        if (!empty($_POST['nom_client']) && !empty($_POST['telephone_client']) && !empty($_POST['sexe'])) {
+            extract($_POST);
+            $telephone = removeSpace($telephone_client);
+            $telephone = str_replace('(+225)', '', $telephone);
 
-            if (!empty($_POST['nom_client']) && !empty($_POST['telephone_client']) && !empty($_POST['genre_client'])) {
-                extract($_POST);
-                $telephone = removeSpace($telephone_client);
-                $telephone = str_replace('(+225)', '', $telephone);
+            if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
 
-                if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
+                $personne = new Personne();
 
-                    $fc = new Factory();
+                $client = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE, 'telephone_client' => $telephone]);
 
-                    $client = $fc->verifyParam('clients', 'telephone_client', $telephone);
+                if (empty($client)) {
+                    $date = date("Y-m-d H:i:s");
+                    $codeCient = $personne->generatorCode(TABLES::CLIENTS, "code_client");
 
-                    if ($client) {
-                        $output = Service::lookForClientExist($client);
+                    $data_client = [
+                        'nom_client' => strtoupper($nom_client),
+                        'telephone_client' => $telephone,
+                        'code_client' => $codeCient,
+                        'boutique_code' => BOUTIQUE_CODE,
+                        'compte_code' => COMPTE_CODE,
+                        'sexe_client' => $sexe,
+                        'client_created_at' => $date
+                    ];
+
+                    if ($personne->create(TABLES::CLIENTS, $data_client)) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
-                        $msg['data'] = $output;
-                        $msg['message'] = "Ce client existe déjà ";
+                        $msg['message'] = "Client enregistré avec succès";
                     } else {
-
-
-                        if (!empty($type_piece) && empty($piece_client)) {
-                            $msg['message'] = "Veuillez renseiller la piece. ";
-                        } else {
-
-                            $date = date("Y-m-d H:i:s");
-                            $codeCient = $fc->generatorCode("clients", "code_client");
-
-                            $data_client = [
-                                'nom_client' => strtoupper($nom_client),
-                                'telephone_client' => $telephone,
-                                'code_client' => $codeCient,
-                                'hotel_id' => Auth::user("hotel_id"),
-                                'genre_client' => $genre_client,
-                                'type_piece' => $type_piece ?? null,
-                                'piece_client' => $piece_client ?? null,
-                                'created_client' => $date
-                            ];
-
-                            if ($fc->create('clients', $data_client)) {
-
-                                $output = Service::lookForClientExist($data_client);
-
-
-                                // $chambre = Auth::getData(RESERVATION, 'chambre');
-                                // $montant = Auth::getData(RESERVATION, 'montant');
-                                // $debut = Auth::getData(PERIODE, 'date_debut');
-                                // $fin = Auth::getData(PERIODE, 'date_fin');
-                                // $days = daysBetweenDates($debut, $fin);
-                                // $totalMontant = $montant * $days;
-
-
-                                // Auth::clean(RESERVATION);
-                                // Auth::clean(PERIODE);
-
-                                // $output = Service::chargerFactureForReservation($codeResevation, $totalMontant);
-
-
-                                $msg['code'] = 200;
-                                $msg['type'] = "success";
-                                $msg['data'] = $output;
-                                $msg['message'] = "Client enregistré avec succès";
-                            } else {
-                                $msg['message'] = "Désolé, erreur d'enregistrement du client";
-                            }
-                        }
+                        $msg['message'] = "Désolé, erreur d'enregistrement du client";
                     }
                 } else {
-                    $msg['message'] = "Numero de telephone invalide.";
+                    $msg['message'] = "Desolé, ce numéro de telephone existe déjà.";
                 }
             } else {
-                $msg['message'] = "Veuillez remplire tous les champs.";
+                $msg['message'] = "Numero de telephone invalide.";
             }
         } else {
-            $msg['message'] = "Veuillez D'abord ouvrir votre caisse!";
+            $msg['message'] = "Veuillez remplire tous les champs.";
         }
+
         echo json_encode($msg);
+        return;
     }
 }

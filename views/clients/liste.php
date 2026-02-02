@@ -25,7 +25,6 @@
                         <th>Nom & prenoms</th>
                         <th>Contact</th>
                         <th>Civilité</th>
-                        <th>Piece</th>
                         <th>Enregistrer</th>
                         <th width="6%">Options</th>
                     </tr>
@@ -43,7 +42,7 @@
 <!-- Modal -->
 <div class="modal fade" id="client-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content ">
+        <div style="position: relative;" class="modal-content ">
             <div class="modal-header">
                 <h5 class="modal-title text-dark" id="clientModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">Client</span> </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -59,7 +58,6 @@
             </div>
             <!-- .modal-footer -->
             <div class="modal-footer">
-
             </div><!-- /.modal-footer -->
         </div>
     </div>

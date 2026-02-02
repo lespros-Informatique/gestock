@@ -207,6 +207,10 @@ switch ($action) {
         $ajx = new ClientController();
         $ajx->modalAddClient();
         break;
+    case 'btn_add_client_data':
+        $ajx = new ClientController();
+        $ajx->addNewClient();
+        break;
 
     // versement
     case 'frm_modal_detail_versement':

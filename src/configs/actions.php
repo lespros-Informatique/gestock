@@ -1355,15 +1355,11 @@ function daysBetweenDates($dateDebut, $dateFin)
 function bchargerListeClient()
 {
 
+  $personne = new Personne();
+  $clients = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE], [], 'fetchAll', ['nom_client ASC']);
+  if (!empty($clients))
 
-  $fc = new Personne();
-  $clients = $fc->bGetAllClients("654465");
-  // **
-
-  if (!empty($clients)) {
-
-    return service()::clientDataForSearching($clients);
-  }
+    return personneService()::clientDataService($clients);
 }
 
 function chargerListeClient($start, $end)

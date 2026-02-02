@@ -13,36 +13,33 @@ class Factory extends Model
     public string $id = 'code_hotel';
 
 
-     public function getYearActivityStart($hotel_id)
+    public function getYearActivityStart($hotel_id)
     {
         $data = [];
         try {
             $sql = "SELECT YEAR(created_reservation) AS date_started FROM reservations r WHERE r.hotel_id = :hotel LIMIT 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['hotel' => $hotel_id]);
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['date_started'];
             }
-
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
 
-     public function getInfoHotel($hotel_id)
+    public function getInfoHotel($hotel_id)
     {
         $data = [];
         try {
             $sql = "SELECT * FROM hotels h WHERE h.code_hotel = :hotel LIMIT 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['hotel' => $hotel_id]);
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetch();
-            
             }
-
         } catch (Exception $e) {
             die($e->getMessage());
         }
@@ -120,9 +117,8 @@ class Factory extends Model
                 'code' => $codeUser,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0)
-            $data = $stmt->fetch();
-        
+            if ($stmt->rowCount() > 0)
+                $data = $stmt->fetch();
         } catch (Exception $e) {
             die($e->getMessage());
         }
@@ -163,7 +159,7 @@ class Factory extends Model
         return $data;
     }
 
-public function getGroupesAndRolesUser($code): ?array
+    public function getGroupesAndRolesUser($code): ?array
     {
         $data = [];
         try {
@@ -176,7 +172,7 @@ public function getGroupesAndRolesUser($code): ?array
                 "hotel_id" => Auth::user("hotel_id"),
                 "user_id" => $code
             ]);
-            if($stmt->rowCount() > 0)
+            if ($stmt->rowCount() > 0)
                 $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -286,7 +282,7 @@ public function getGroupesAndRolesUser($code): ?array
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 'reservation_id' => $reservation,
-               
+
                 'hotel_id' => Auth::user('hotel_id')
             ]);
             $data = $stmt->fetchAll();
@@ -309,15 +305,15 @@ public function getGroupesAndRolesUser($code): ?array
                 'hotel_id' => Auth::user('hotel_id'),
                 'code_versement' => $codeVersement
             ]);
-            
-            if($stmt->rowCount() > 0)
+
+            if ($stmt->rowCount() > 0)
                 $data = $stmt->fetch();
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
-    
+
     public  function getAllReservationsToPrint(string $codeVersement, $etat = 1)
     {
         $data = [];
@@ -335,7 +331,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'code_versement' => $codeVersement,
                 'hotel_id' => Auth::user('hotel_id'),
                 'statut' => STATUT_RESERVATION[1]
-                
+
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $etat) {
@@ -343,7 +339,7 @@ public function getGroupesAndRolesUser($code): ?array
         }
         return $data;
     }
-    
+
     public  function getAllReservationsGroupeTypeChambreToPrint(string $codeVersement, $etat = 1)
     {
         $data = [];
@@ -360,7 +356,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'code_versement' => $codeVersement,
                 'hotel_id' => Auth::user('hotel_id'),
                 'statut' => STATUT_RESERVATION['1'],
-                
+
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
@@ -382,7 +378,7 @@ public function getGroupesAndRolesUser($code): ?array
             $stmt->execute([
                 'code_versement' => $codeVersement,
                 'hotel_id' => Auth::user('hotel_id'),
-                
+
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
@@ -406,7 +402,7 @@ public function getGroupesAndRolesUser($code): ?array
             $stmt->execute([
                 'code_versement' => $codeVersement,
                 'hotel_id' => Auth::user('hotel_id'),
-                
+
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
@@ -444,13 +440,13 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
- public  function getAllReservationsActive($dend,$dstart = null)
+    public  function getAllReservationsActive($dend, $dstart = null)
     {
         $data = [];
         try {
-            if(is_null($dstart)){ 
+            if (is_null($dstart)) {
 
-            $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
+                $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
         FROM reservations r
         JOIN clients cl ON cl.code_client = r.client_id
         JOIN chambres ch ON ch.code_chambre = r.chambre_id
@@ -458,15 +454,15 @@ public function getGroupesAndRolesUser($code): ?array
         WHERE  r.hotel_id = :hotel_id AND  statut_reservation = :statut AND DATE(r.date_sortie) >= :dend AND checkin IS NOT NULL 
         GROUP BY r.code_reservation
         ORDER BY r.created_reservation DESC";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-               "hotel_id" => Auth::user('hotel_id'),
-               "dend" => $dend,
-               "statut" => STATUT_RESERVATION[1]
-            ]);
-        }else{
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    "hotel_id" => Auth::user('hotel_id'),
+                    "dend" => $dend,
+                    "statut" => STATUT_RESERVATION[1]
+                ]);
+            } else {
 
-             $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
+                $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
         FROM reservations r
         JOIN clients cl ON cl.code_client = r.client_id
         JOIN chambres ch ON ch.code_chambre = r.chambre_id
@@ -474,31 +470,30 @@ public function getGroupesAndRolesUser($code): ?array
         WHERE  r.hotel_id = :hotel_id AND  statut_reservation = :statut AND DATE(r.date_sortie) <= :dstart AND DATE(r.date_sortie) >= :dend AND checkin IS NOT NULL 
         GROUP BY r.code_reservation
         ORDER BY r.created_reservation DESC";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-               "hotel_id" => Auth::user('hotel_id'),
-               "dstart" => $dstart,
-               "dend" => $dend,
-               "statut" => STATUT_RESERVATION[1]
-            ]);
-        }
-        
-            if($stmt->rowCount() > 0)
-            $data = $stmt->fetchAll();
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    "hotel_id" => Auth::user('hotel_id'),
+                    "dstart" => $dstart,
+                    "dend" => $dend,
+                    "statut" => STATUT_RESERVATION[1]
+                ]);
+            }
 
+            if ($stmt->rowCount() > 0)
+                $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
 
-     public  function getAllReservationsArrive($dstart,$dend= null)
+    public  function getAllReservationsArrive($dstart, $dend = null)
     {
         $data = [];
         try {
-            if(is_null($dend)){ 
+            if (is_null($dend)) {
 
-            $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
+                $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
         FROM reservations r
         JOIN clients cl ON cl.code_client = r.client_id
         JOIN chambres ch ON ch.code_chambre = r.chambre_id
@@ -506,15 +501,15 @@ public function getGroupesAndRolesUser($code): ?array
         WHERE  r.hotel_id = :hotel_id AND  statut_reservation = :statut AND DATE(r.date_entree) >= :dstart  AND checkin IS NULL 
         GROUP BY r.code_reservation
         ORDER BY r.created_reservation DESC";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-               "hotel_id" => Auth::user('hotel_id'),
-               "dstart" => $dstart,
-               "statut" => STATUT_RESERVATION[0]
-            ]);
-        }else{
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    "hotel_id" => Auth::user('hotel_id'),
+                    "dstart" => $dstart,
+                    "statut" => STATUT_RESERVATION[0]
+                ]);
+            } else {
 
-             $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
+                $sql = "SELECT r.*, cl.*,CONCAT(tp.libelle_typechambre,'/',ch.libelle_chambre) AS chambre
         FROM reservations r
         JOIN clients cl ON cl.code_client = r.client_id
         JOIN chambres ch ON ch.code_chambre = r.chambre_id
@@ -522,24 +517,23 @@ public function getGroupesAndRolesUser($code): ?array
         WHERE  r.hotel_id = :hotel_id AND  statut_reservation = :statut AND DATE(r.date_entree) >= :dstart AND DATE(r.date_entree) <= :dend AND checkin IS NULL 
         GROUP BY r.code_reservation
         ORDER BY r.created_reservation DESC";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-               "hotel_id" => Auth::user('hotel_id'),
-               "dstart" => $dstart,
-               "dend" => $dend,
-               "statut" => STATUT_RESERVATION[0]
-            ]);
-        }
-        
-            if($stmt->rowCount() > 0)
-            $data = $stmt->fetchAll();
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    "hotel_id" => Auth::user('hotel_id'),
+                    "dstart" => $dstart,
+                    "dend" => $dend,
+                    "statut" => STATUT_RESERVATION[0]
+                ]);
+            }
 
+            if ($stmt->rowCount() > 0)
+                $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
-    public  function getAllReservationsCheckIn($date,$etat=0)
+    public  function getAllReservationsCheckIn($date, $etat = 0)
     {
         $data = [];
         try {
@@ -565,7 +559,7 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
-      public  function getAllReservationsCheckOut($date,$etat=1)
+    public  function getAllReservationsCheckOut($date, $etat = 1)
     {
         $data = [];
         try {
@@ -633,8 +627,8 @@ public function getGroupesAndRolesUser($code): ?array
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            
-            if($stmt->rowCount() > 0)
+
+            if ($stmt->rowCount() > 0)
                 $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -659,15 +653,15 @@ public function getGroupesAndRolesUser($code): ?array
                 'ouverture' => $ouverture,
                 'cloture' => $cloture
             ]);
-            
-            if($stmt->rowCount() > 0)
+
+            if ($stmt->rowCount() > 0)
                 $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
-    public function getEtatCaisseUser($user,$hotel)
+    public function getEtatCaisseUser($user, $hotel)
     {
         $result = [];
         try {
@@ -679,8 +673,8 @@ public function getGroupesAndRolesUser($code): ?array
                 'hotel_id' => $hotel,
                 'user_id' => $user
             ]);
-            if($stmt->rowCount() > 0)
-            $result = $stmt->fetch();
+            if ($stmt->rowCount() > 0)
+                $result = $stmt->fetch();
         } catch (Exception $e) {
             die($e->getMessage());
         }
@@ -698,7 +692,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'v_id' => $code_versement,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_facture'];
             }
@@ -707,7 +701,7 @@ public function getGroupesAndRolesUser($code): ?array
         }
         return $data;
     }
-    
+
     public  function getRecapReservationForUserCompte($code_versement, $etat = 1)
     {
         $data = [];
@@ -738,7 +732,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_services'];
             }
@@ -748,7 +742,7 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
-     public  function getRecaptReservationForUserCompteEnAttente($code_versement, $etat = 0)
+    public  function getRecaptReservationForUserCompteEnAttente($code_versement, $etat = 0)
     {
         $data = [];
         try {
@@ -799,7 +793,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_services'];
             }
@@ -825,8 +819,8 @@ public function getGroupesAndRolesUser($code): ?array
                 'hotel_id' => Auth::user('hotel_id'),
                 'user_code' => $userCode
             ]);
-            
-            if($stmt->rowCount() > 0)
+
+            if ($stmt->rowCount() > 0)
                 $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -839,8 +833,8 @@ public function getGroupesAndRolesUser($code): ?array
      * CAISSE -------------------
      */
 
-// depot caisse
-     public  function getTota5577lFactureCaisseComptable($code_versement)
+    // depot caisse
+    public  function getTota5577lFactureCaisseComptable($code_versement)
     {
         $data = [];
         try {
@@ -851,7 +845,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'v_id' => $code_versement,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_facture'];
             }
@@ -861,7 +855,7 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
-    public  function getTotalFactureStandByCaisseComptable(string $ouverture,string $cloture,$etat = 0)
+    public  function getTotalFactureStandByCaisseComptable(string $ouverture, string $cloture, $etat = 0)
     {
         $data = [];
         try {
@@ -875,7 +869,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'cloture' => $cloture,
                 'etat' => $etat
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_facture'];
             }
@@ -885,7 +879,7 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
-    public  function getTotalFactureEncaisseCaisseComptable(string $ouverture,string $cloture,$etat = 1)
+    public  function getTotalFactureEncaisseCaisseComptable(string $ouverture, string $cloture, $etat = 1)
     {
         $data = [];
         try {
@@ -899,7 +893,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'cloture' => $cloture,
                 'etat' => $etat
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_cloture'];
             }
@@ -909,7 +903,7 @@ public function getGroupesAndRolesUser($code): ?array
         return $data;
     }
 
-    public  function getTotalFactureOpenCaisseComptable(string $ouverture,string $cloture,$etat = 0)
+    public  function getTotalFactureOpenCaisseComptable(string $ouverture, string $cloture, $etat = 0)
     {
         $data = [];
         try {
@@ -923,7 +917,7 @@ public function getGroupesAndRolesUser($code): ?array
                 'cloture' => $cloture,
                 'etat' => $etat
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $res = $stmt->fetch();
                 $data = $res['montant_facture'];
             }
@@ -932,246 +926,246 @@ public function getGroupesAndRolesUser($code): ?array
         }
         return $data;
     }
-// bilan caisse
+    // bilan caisse
 
-public  function getTotalDepenseCaisseComptable(string $ouverture,string $cloture,$etat = 1)
-{
-    $data = 0;
-    try {
-        $sql = "SELECT SUM(d.montant_depense) AS montant_depense FROM depenses d  
+    public  function getTotalDepenseCaisseComptable(string $ouverture, string $cloture, $etat = 1)
+    {
+        $data = 0;
+        try {
+            $sql = "SELECT SUM(d.montant_depense) AS montant_depense FROM depenses d  
         WHERE d.hotel_id = :hotel_id AND d.periode_depense BETWEEN :ouverture AND :cloture AND d.etat_depense = :etat";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'hotel_id' => Auth::user('hotel_id'),
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'etat' => $etat
-        ]);
-        if($stmt->rowCount() > 0){ 
-           
-            $res = $stmt->fetch();
-            $data = $res['montant_depense'];
-        }
-    } catch (Exception $e) {
-        die($e->getMessage());
-    }
-    return $data;
-}
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'hotel_id' => Auth::user('hotel_id'),
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'etat' => $etat
+            ]);
+            if ($stmt->rowCount() > 0) {
 
-public  function getTotalSalaireCaisseComptable(string $ouverture,string $cloture,$etat = 1)
-{
-    $data = 0;
-    try {
-        $sql = "SELECT SUM(s.montant_salaire) AS montant_salaire FROM salaires s  
+                $res = $stmt->fetch();
+                $data = $res['montant_depense'];
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
+    }
+
+    public  function getTotalSalaireCaisseComptable(string $ouverture, string $cloture, $etat = 1)
+    {
+        $data = 0;
+        try {
+            $sql = "SELECT SUM(s.montant_salaire) AS montant_salaire FROM salaires s  
         WHERE s.hotel_id = :hotel_id AND s.created_salaire BETWEEN :ouverture AND :cloture AND s.etat_salaire = :etat";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'hotel_id' => Auth::user('hotel_id'),
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'etat' => $etat
-        ]);
-        if($stmt->rowCount() > 0){ 
-           
-            $res = $stmt->fetch();
-            $data = $res['montant_salaire'];
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'hotel_id' => Auth::user('hotel_id'),
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'etat' => $etat
+            ]);
+            if ($stmt->rowCount() > 0) {
+
+                $res = $stmt->fetch();
+                $data = $res['montant_salaire'];
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
-public  function getDetailsBilanCaisseComptableReservation(string $ouverture,string $cloture, $etat = 1)
-{
-    $data = [];
-    try {
-        $sql = "SELECT r.* FROM reservations r
+    public  function getDetailsBilanCaisseComptableReservation(string $ouverture, string $cloture, $etat = 1)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT r.* FROM reservations r
     WHERE  r.hotel_id = :hotel_id AND  r.etat_reservation = :etat AND r.created_reservation BETWEEN :ouverture AND :cloture";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id'),
-            'ouverture' => $ouverture,
-            'cloture' => $cloture
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
-        }
-    } catch (Exception $e) {
-        die($e->getMessage());
-    }
-    return $data;
-}
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
 
-public  function getDeatailsBilanCaisseComptableService(string $ouverture,string $cloture, $etat = 1)
-{
-    $data = [];
-    try {
-        $sql = "SELECT COALESCE(SUM(co.prix_consommation * co.quantite_consommation), 0) AS montant_services FROM consommations co
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id'),
+                'ouverture' => $ouverture,
+                'cloture' => $cloture
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
+    }
+
+    public  function getDeatailsBilanCaisseComptableService(string $ouverture, string $cloture, $etat = 1)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT COALESCE(SUM(co.prix_consommation * co.quantite_consommation), 0) AS montant_services FROM consommations co
     WHERE  co.hotel_id = :hotel_id AND co.etat_consommation = :etat AND co.created_consommation BETWEEN :ouverture AND :cloture";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $res = $stmt->fetch();
-            $data = $res['montant_services'];
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $res = $stmt->fetch();
+                $data = $res['montant_services'];
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function getDetailsBilanCaisseComptableReservationNonRegler(string $ouverture,string $cloture, $etat = 0)
-{
-    $data = [];
-    try {
-        $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
+    public  function getDetailsBilanCaisseComptableReservationNonRegler(string $ouverture, string $cloture, $etat = 0)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
     JOIN clients cl ON cl.code_client = r.client_id
     JOIN chambres ch ON ch.code_chambre = r.chambre_id
     JOIN users us ON us.code_user = r.user_id
     JOIN versements v ON v.code_versement = r.versement_id
     WHERE  r.hotel_id = :hotel_id AND  r.etat_reservation = :etat AND r.created_reservation BETWEEN :ouverture AND :cloture AND r.statut_reservation = :statut";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id'),
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'statut' => STATUT_RESERVATION[1]
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id'),
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'statut' => STATUT_RESERVATION[1]
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function CaisseComptableReservationNonRegler($etat = 0)
-{
-    $data = [];
-    try {
-        $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
+    public  function CaisseComptableReservationNonRegler($etat = 0)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
     JOIN clients cl ON cl.code_client = r.client_id
     JOIN chambres ch ON ch.code_chambre = r.chambre_id
     JOIN users us ON us.code_user = r.user_id
     JOIN versements v ON v.code_versement = r.versement_id
     WHERE  r.hotel_id = :hotel_id AND  r.etat_reservation = :etat AND r.statut_reservation = :statut";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id'),
-            'statut' => STATUT_RESERVATION[1]
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id'),
+                'statut' => STATUT_RESERVATION[1]
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $etat) {
+            die($etat->getMessage());
         }
-    } catch (Exception $etat) {
-        die($etat->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function CaisseComptableServiceNonRegler($etat = 0)
-{
-    $data = [];
-    try {
-        $sql = "SELECT co.*, s.libelle_service FROM consommations co
+    public  function CaisseComptableServiceNonRegler($etat = 0)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT co.*, s.libelle_service FROM consommations co
     JOIN services s ON s.code_service = co.service_id
     WHERE  co.hotel_id = :hotel_id AND co.etat_consommation = :etat";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function getDetailsBilanCaisseComptableServiceNonRegler(string $ouverture,string $cloture, $etat = 0)
-{
-    $data = [];
-    try {
-        $sql = "SELECT co.*, s.libelle_service FROM consommations co
+    public  function getDetailsBilanCaisseComptableServiceNonRegler(string $ouverture, string $cloture, $etat = 0)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT co.*, s.libelle_service FROM consommations co
     JOIN services s ON s.code_service = co.service_id
     WHERE  co.hotel_id = :hotel_id AND co.etat_consommation = :etat AND co.created_consommation BETWEEN :ouverture AND :cloture";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function getDetailsBilanCaisseComptableReservationEnnuler(string $ouverture,string $cloture,$etat = 0)
-{
-    $data = [];
-    try {
-        $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
+    public  function getDetailsBilanCaisseComptableReservationEnnuler(string $ouverture, string $cloture, $etat = 0)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT r.* ,cl.nom_client,  cl.telephone_client, cl.code_client,ch.libelle_chambre, us.nom, us.prenom, v.code_versement, v.montant_cloture FROM reservations r
     JOIN clients cl ON cl.code_client = r.client_id
     JOIN chambres ch ON ch.code_chambre = r.chambre_id
     JOIN users us ON us.code_user = r.user_id
     JOIN versements v ON v.code_versement = r.versement_id
     WHERE  r.hotel_id = :hotel_id AND  r.etat_reservation = :etat AND r.created_reservation BETWEEN :ouverture AND :cloture AND r.statut_reservation = :statut";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id'),
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'statut' => STATUT_RESERVATION[2]
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id'),
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'statut' => STATUT_RESERVATION[2]
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
-public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,string $cloture, $etat = 2)
-{
-    $data = [];
-    try {
-        $sql = "SELECT co.*, s.libelle_service FROM consommations co
+    public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture, string $cloture, $etat = 2)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT co.*, s.libelle_service FROM consommations co
     JOIN services s ON s.code_service = co.service_id
     WHERE  co.hotel_id = :hotel_id AND co.etat_consommation = :etat AND co.created_consommation BETWEEN :ouverture AND :cloture";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'ouverture' => $ouverture,
-            'cloture' => $cloture,
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'ouverture' => $ouverture,
+                'cloture' => $cloture,
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
     // detail
 
@@ -1191,7 +1185,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetchAll();
             }
         } catch (Exception $e) {
@@ -1216,10 +1210,9 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetchAll();
             }
-
         } catch (Exception $e) {
             die($e->getMessage());
         }
@@ -1229,7 +1222,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
 
     // SEXION annuler
 
-     public  function getAllDetailesReservationsAnnulers()
+    public  function getAllDetailesReservationsAnnulers()
     {
         $data = [];
         try {
@@ -1244,7 +1237,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'statut' => STATUT_RESERVATION[2],
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){ 
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetchAll();
             }
         } catch (Exception $e) {
@@ -1253,7 +1246,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $data;
     }
 
-    public  function getAllDetailsServicesAnnulers( $etat = 2)
+    public  function getAllDetailsServicesAnnulers($etat = 2)
     {
         $data = [];
         try {
@@ -1265,14 +1258,13 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         WHERE co.hotel_id =:hotel_id AND co.etat_consommation = :etat ORDER BY co.created_consommation DESC";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-               
+
                 'etat' => $etat,
                 'hotel_id' => Auth::user('hotel_id')
             ]);
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetchAll();
             }
-
         } catch (Exception $e) {
             die($e->getMessage());
         }
@@ -1325,7 +1317,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
 
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $result = $stmt->fetchAll();
             }
         } catch (Exception $e) {
@@ -1335,7 +1327,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
     }
 
 
-    
+
     public function getAllServices($etat = 1)
     {
         $result = [];
@@ -1349,7 +1341,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
             $stmt->execute([
                 'hotel_id' => Auth::user('hotel_id'),
                 'etat' => $etat
-                
+
             ]);
 
             $result = $stmt->fetchAll();
@@ -1359,7 +1351,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
 
         return $result;
     }
-    
+
 
     public function verificationAbleChambre($data)
     {
@@ -1405,7 +1397,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'chambre_id' => $data['chambre_id']
             ]);
 
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $result = $stmt->fetch();
             }
         } catch (Exception $e) {
@@ -1440,7 +1432,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $result;
     }
 
-       public function getCountChambreOccuper($today)
+    public function getCountChambreOccuper($today)
     {
         $result = 0;
 
@@ -1456,7 +1448,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'etat' => STATUT_RESERVATION[1],
             ]);
 
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetch();
                 $result = $data['nbre'];
             }
@@ -1483,17 +1475,22 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'dstart' => $date_start,
                 'dend' => $date_end,
                 'hotel_id' => Auth::user('hotel_id')
-                
+
             ]);
-            if($stmt->rowCount() > 0)
-            $result = $stmt->fetchAll();
-        
+            if ($stmt->rowCount() > 0)
+                $result = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
         }
 
         return $result;
     }
+
+
+
+
+
+
 
 
     public function verifyParam($table, $field, $value)
@@ -1514,7 +1511,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $data;
     }
 
-    public function verifyParam2($table, $field1,$field2, $value1,$value2)
+    public function verifyParam2($table, $field1, $field2, $value1, $value2)
     {
         $data = [];
 
@@ -1526,7 +1523,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'field1' => $value1,
                 'field2' => $value2
             ]);
-            if($stmt->rowCount() > 0){
+            if ($stmt->rowCount() > 0) {
                 $data = $stmt->fetch();
             }
         } catch (Exception $e) {
@@ -1534,7 +1531,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         }
         return $data;
     }
-  
+
 
     public function verifTypechambreLibelle($libelle, $etat = 1)
     {
@@ -1566,7 +1563,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
             return $this->generateCode($table, $field, $prefixe, $length); // Si le code est déjà utilisé, on réessaye
         }
 
-        return $prefixe.$randomCode;
+        return $prefixe . $randomCode;
     }
 
     public function verif($table, $field, $value) // function veriviant l'existance d'une ligne par 1 element
@@ -1604,7 +1601,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $result;
     }
 
-    public function getDataFactureServiceForClient($codeReservation,$etat = 0)
+    public function getDataFactureServiceForClient($codeReservation, $etat = 0)
     {
         $result = [];
 
@@ -1629,27 +1626,27 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
     }
 
     public  function getServicesToPrint(string $codeReservation, $etat = 2)
-{
-    $data = [];
-    try {
-        $sql = "SELECT co.quantite_consommation AS qte,co.prix_consommation AS prix,SUM(co.prix_consommation * co.quantite_consommation) AS total, s.libelle_service FROM consommations co
+    {
+        $data = [];
+        try {
+            $sql = "SELECT co.quantite_consommation AS qte,co.prix_consommation AS prix,SUM(co.prix_consommation * co.quantite_consommation) AS total, s.libelle_service FROM consommations co
     JOIN services s ON s.code_service = co.service_id
     WHERE  co.hotel_id = :hotel_id AND co.etat_consommation != :etat AND co.reservation_id = :code
     GROUP BY s.id ORDER BY co.created_consommation DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            'code' => $codeReservation,
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'code' => $codeReservation,
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
     public function verifFonctionLibelle($libelle, $etat = 1)
     {
@@ -1688,7 +1685,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $result;
     }
 
-    
+
     public  function getAllDepenseForSearching($dstart, $dend)
     {
         $data = [];
@@ -1747,9 +1744,9 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
                 'hotel_id' => Auth::user('hotel_id'),
                 'user' => $user,
                 'mois' => $month
-                
+
             ]);
-            if($stm->rowCount() > 0){
+            if ($stm->rowCount() > 0) {
                 $result = $stm->fetch();
             }
         } catch (Exception $e) {
@@ -1759,11 +1756,11 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
     }
 
 
-    public  function getAllSalaireForSearching($dstart, $dend,$etat = 2,$filter = null)
+    public  function getAllSalaireForSearching($dstart, $dend, $etat = 2, $filter = null)
     {
         $data = [];
-        $sql ="";
-        if($filter){
+        $sql = "";
+        if ($filter) {
 
             $sql = "SELECT s.*, CONCAT(u.nom, ' ', u.prenom) AS user, CONCAT(u2.nom, ' ', u2.prenom) AS user_created, CONCAT(u3.nom, ' ', u3.prenom) AS user_confirm FROM salaires s
         JOIN users u ON u.code_user = s.user_id
@@ -1771,8 +1768,7 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         JOIN users u3 ON u3.code_user = s.confirm_id
         WHERE  s.hotel_id = :hotel_id AND s.etat_salaire = :etat AND s.created_salaire BETWEEN :dstart AND :dend  
         GROUP BY s.code_salaire ORDER BY s.id DESC";
-
-        }else{
+        } else {
 
             $sql = "SELECT s.*, CONCAT(u.nom, ' ', u.prenom) AS user, CONCAT(u2.nom, ' ', u2.prenom) AS user_created, CONCAT(u3.nom, ' ', u3.prenom) AS user_confirm FROM salaires s
         JOIN users u ON u.code_user = s.user_id
@@ -1781,10 +1777,10 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         WHERE  s.hotel_id = :hotel_id AND s.etat_salaire != :etat AND s.created_salaire BETWEEN :dstart AND :dend  
         GROUP BY s.code_salaire ORDER BY s.id DESC";
         }
-        
+
 
         try {
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 'dstart' => $dstart,
@@ -1799,19 +1795,19 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
         return $data;
     }
 
-     public  function getAllSalaireForUser($code_user)
+    public  function getAllSalaireForUser($code_user)
     {
         $data = [];
-    
-            $sql = "SELECT s.*, CONCAT(u.nom, ' ', u.prenom) AS user, CONCAT(u2.nom, ' ', u2.prenom) AS user_created, CONCAT(u3.nom, ' ', u3.prenom) AS user_confirm FROM salaires s
+
+        $sql = "SELECT s.*, CONCAT(u.nom, ' ', u.prenom) AS user, CONCAT(u2.nom, ' ', u2.prenom) AS user_created, CONCAT(u3.nom, ' ', u3.prenom) AS user_confirm FROM salaires s
         JOIN users u ON u.code_user = s.user_id
         JOIN users u2 ON u2.code_user = s.created_user
         LEFT JOIN users u3 ON u3.code_user = s.confirm_id
         WHERE  s.hotel_id = :hotel_id AND s.user_id = :code_user  
         GROUP BY s.code_salaire ORDER BY s.id DESC";
-        
+
         try {
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 'code_user' => $code_user,
@@ -1825,25 +1821,25 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
     }
 
 
-    public  function bilanAnnuelDashboard($year , $etat = 1)
-{
-    $data = [];
-    try {
-        $sql = "SELECT YEAR(v.cloture) AS annee, MONTH(v.cloture) AS mois, SUM(v.montant_cloture) AS montant_total FROM versements v WHERE v.hotel_id = :hotel_id AND YEAR(v.cloture) = :annee AND v.etat_versement = :etat GROUP BY MONTH(v.cloture) ORDER BY MONTH(v.cloture) ASC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            "annee"=> $year,
-            'etat' => $etat,
-            'hotel_id' => Auth::user('hotel_id')
-        ]);
-        if($stmt->rowCount() > 0){ 
-            $data = $stmt->fetchAll();
+    public  function bilanAnnuelDashboard($year, $etat = 1)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT YEAR(v.cloture) AS annee, MONTH(v.cloture) AS mois, SUM(v.montant_cloture) AS montant_total FROM versements v WHERE v.hotel_id = :hotel_id AND YEAR(v.cloture) = :annee AND v.etat_versement = :etat GROUP BY MONTH(v.cloture) ORDER BY MONTH(v.cloture) ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                "annee" => $year,
+                'etat' => $etat,
+                'hotel_id' => Auth::user('hotel_id')
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
-    } catch (Exception $e) {
-        die($e->getMessage());
+        return $data;
     }
-    return $data;
-}
 
 
     public function transactReservationClient(array $client, array $reservation)
@@ -1868,9 +1864,8 @@ public  function getDetailsBilanCaisseComptableServiceEnnuler(string $ouverture,
             // $eleveId = Database::getInstance()->lastInsertId();
             // $eleveId = $this->db->lastInsertId();
             // Insertion parent
-            $query->update("reservations", 'code_reservation', $reservation, ['etat_reservation' => 1,'caisse_id' => Auth::user('caisse')]);
+            $query->update("reservations", 'code_reservation', $reservation, ['etat_reservation' => 1, 'caisse_id' => Auth::user('caisse')]);
             $query->updateServiceClient($reservation);
-
         });
     }
 
