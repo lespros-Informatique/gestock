@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\MainController;
+use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
@@ -19,6 +20,12 @@ class CategorieController extends MainController
      * --------------------------------------------------------------------------
      */
 
+     private $model;
+     public function __construct()
+     {
+        $this->model = new Catalogue();
+     }
+
        public function categorie()
      {
           return $this->view('catalogues/categorie', ['title' => 'Catégorie']);
@@ -34,7 +41,7 @@ class CategorieController extends MainController
      * --------------------------------------------------------------------------
      */
     
-    public function adeleteCategorie()
+    public function aDeleteCategorie()
     {
 
         $_POST = sanitizePostData($_POST);
@@ -50,7 +57,7 @@ class CategorieController extends MainController
             if ($rest) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
-                $msg['message'] = "Categorie chambre Supprimée avec succes";
+                $msg['message'] = "Categorie categorie Supprimée avec succes";
             } else {
                 $msg['message'] = "Echec d'enregistrement!";
             }
@@ -61,59 +68,64 @@ class CategorieController extends MainController
         return;
     }
 
-public function amodalUpdateCategorie()
+public function aModalUpdateCategorie()
     {
 
         $_POST = sanitizePostData($_POST);
 
-        $code = decrypter($_POST['code']);
+        $code = ($_POST['code']);
         $result['code'] = 400;
         $output = "";
         if ($code) {
             $fc = new Factory();
-            $categorie = $fc->verifyParam('type_chambres', 'code_typechambre', $code);
+            $categorie = $this->model->aGetCategorieByField("code_categorie",$code);
             if (!empty($categorie)) {
-                $output = Service::modalUpdateTypeCategorie($categorie);
+                $output = CatalogueService::modalUpdateCategorie($categorie);
                 $result['data'] = $output;
                 $result['code'] = 200;
-            }
-
-            echo json_encode($result);
-            return;
+             }else{
+            $result['data'] = "Erreur lors de la recuperation!";
+            $result['code'] = 400;
         }
+
+            
+        }else{
+            $result['data'] = "Categorie introuvable!";
+            $result['code'] = 400;
+        }
+        echo json_encode($result);return;
     }
  
-    public function aupdateCategorie()
+    public function aUpdateCategorie()
     {
 
         $_POST = sanitizePostData($_POST);
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
-        $code = ($_POST['id_categorie']);
+        $code = ($_POST['code_categorie']);
 
         if (!empty($code)) {
 
             if (!empty($_POST['libelle_categorie'])) {
                 extract($_POST);
-
                 $fc = new Factory();
 
-                $categorie = $fc->verifTypechambreLibelle($libelle_categorie);
+                $categorie = $this->model->aGetCategorieByField("libelle_categorie",$libelle_categorie);
 
-                if (empty($categorie) || ($code == $categorie['code_typechambre'])) {
+                if (empty($categorie) || ($code == $categorie['code_categorie'])) {
 
                     $data_categorie = [
-                        'libelle_typechambre' => strtoupper($libelle_categorie),
-                        'description_typechambre' => ucfirst($description_categorie),
+                        'libelle_categorie' => strtoupper($libelle_categorie),
+                        'description_categorie' => ucfirst($description_categorie),
                     ];
 
-                    $rest = $fc->update("type_chambres", 'code_typechambre', $code, $data_categorie);
+                    $rest = $fc->update("categories", 'code_categorie', $code, $data_categorie);
 
                     if ($rest) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
-                        $msg['message'] = "Categorie chambre modifiée avec succes";
+                        $msg['message'] = "Categorie categorie modifiée avec succes";
                     } else {
                         $msg['message'] = "Echec d'enregistrement!";
                     }

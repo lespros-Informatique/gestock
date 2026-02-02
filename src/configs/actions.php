@@ -9,14 +9,6 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\Service;
 
-function bTest()
-{
-  echo "test";
-}
-
-function aTest(){
-  return true;
-}
 function chargerDashboardAdmin()
 {
 
@@ -463,11 +455,11 @@ function achargerListeCategories()
 
         <!-- libellé -->
         <td class="text-center">
-          <?= htmlspecialchars($data['libelle_categorie']) ?>
+          <?= ($data['libelle_categorie']) ?>
         </td>
 
         <!-- description fictive (design conservé) -->
-        <td class="text-center" data-titles="<?= htmlspecialchars($data['description_categorie']) ?>">
+        <td class="text-center" data-titles="<?= ($data['description_categorie']) ?>">
           ...
         </td>
 

@@ -3,9 +3,9 @@ const URL_HOME = URLS + "/gestock/";
 const URL_AJAX = URL_HOME + "src/controllers/ajx.php";
 moment.locale('fr');
 
-asupprimer_categorie();
+aSupprimer_categorie();
 
-function asupprimer_categorie() {
+function aSupprimer_categorie() {
     $("body").delegate(".categorieDeleteCategorie", "click", function(e) {
         e.preventDefault();
         var code = $(this).data("categorie");
@@ -67,14 +67,13 @@ function asupprimer_categorie() {
     });
 }
 
-aopenModalUpdateCategorie();
+aOpenModalUpdateCategorie();
 
-function aopenModalUpdateCategorie() {
+function aOpenModalUpdateCategorie() {
     $("body").delegate(".frmModifierCategorie", "click", function(e) {
         e.preventDefault();
         var code_categorie = $(this).data("categorie");
         var id = $(this).attr("id");
-
         $.ajax({
             method: "POST",
             url: URL_AJAX,
@@ -89,6 +88,7 @@ function aopenModalUpdateCategorie() {
 
             },
             success: function(data) {
+                
                 btnRes("#" + id, 'Modifier', 'fa-edit');
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
@@ -105,9 +105,9 @@ function aopenModalUpdateCategorie() {
 
 
 // CATEGORIE
-aopenModalAddCategorie();
+aOpenModalAddCategorie();
 
-function aopenModalAddCategorie() {
+function aOpenModalAddCategorie() {
     $('#categorieAddModal').click(function(e) {
         e.preventDefault();
         
@@ -125,6 +125,7 @@ function aopenModalAddCategorie() {
 
             },
             success: function(data) {
+
                 btnRes("#categorieAddModal");
                 ;
 
@@ -142,8 +143,8 @@ function aopenModalAddCategorie() {
 }
 
 
-aajouter_categorie();
-function aajouter_categorie() {
+aAjouter_categorie();
+function aAjouter_categorie() {
     $("body").delegate("#frmAddCategorie", "submit", function(e) {
         e.preventDefault();
         var data = $(this).serialize();
@@ -152,12 +153,11 @@ function aajouter_categorie() {
             method: "POST",
             url: URL_AJAX,
             data: data,
-            // dataType: "json",
+            dataType: "json",
             beforeSend: function() {
-                // btnReq("#btn_ajouter_categorie", "Enregistrement...");
+                btnReq("#btn_ajouter_categorie", "Enregistrement...");
             },
             success: function(data) {
-                console.log(data);return;
                 
                 btnRes("#btn_ajouter_categorie");
                 if (data.code == 200) {
