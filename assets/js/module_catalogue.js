@@ -176,3 +176,173 @@ function aAjouter_categorie() {
 }
 // FIN CATEGORIE
 
+aSupprimer_mark();
+function aSupprimer_mark() {
+    $("body").delegate(".markDeleteMark", "click", function(e) {
+        e.preventDefault();
+        var code = $(this).data("mark");
+        var id = $(this).attr("id");
+        swal({
+            title: "Êtes vous sûr ?",
+            text: "Cela entrainera la suppression de plusieurs données",
+            type: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "Annuler",
+                    className: 'btn btn-default'
+                },
+                confirm: {
+                    text: 'Confirmer',
+                    className: 'btn btn-danger'
+                }
+            }
+
+        }).then(function(result) {
+            if (result) {
+
+                $.ajax({
+                    method: "POST",
+                    url: URL_AJAX,
+                    data: {
+                        action: 'btn_delete_mark',
+                        code_mark: code
+                    },
+                    dataType: "json",
+                    beforeSend: function() {
+                        $(".loader_backdrop2").css('display', "block");
+                        btnReq("#" + id, "Traitement...");
+
+                    },
+                    success: function(data) {
+                        btnRes("#" + id, 'Supprimer', 'fa-trash');
+                        if (data.code == 200) {
+                            resetDataTable();
+                            $.notify(data.message, "success");
+                            $("#sexion_mark").load(" #sexion_mark > *");
+                            $(".loader_backdrop2").css('display', "none");
+                            setTimeout(initDataTable, 200);
+                        
+
+                        } else {
+                            $.notify(data.message, "error");
+                        }
+                    }
+                })
+            }
+
+        })
+
+
+    });
+}
+
+aOpenModalUpdateMark();
+
+function aOpenModalUpdateMark() {
+    $("body").delegate(".frmModifierMark", "click", function(e) {
+        e.preventDefault();
+        var code_mark = $(this).data("mark");
+        var id = $(this).attr("id");
+
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'modal_modifier_mark',
+                code: code_mark
+            },
+            dataType: "JSON",
+            beforeSend: function() {
+                $(".loader_backdrop2").css('display', "block");
+                btnReq("#" + id, "Traitement...");
+
+            },
+            success: function(data) {
+                
+                btnRes("#" + id, 'Modifier', 'fa-edit');
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#mark-modal").modal("show");
+                    $(".loader_backdrop2").css('display', "none");
+                } else {
+                    $.notify("Erreur lors du traitement", "error");
+                }
+
+            }
+        })
+    });
+}
+
+
+// mark
+aOpenModalAddmark();
+
+function aOpenModalAddmark() {
+    $('#markAddModal').click(function(e) {
+        e.preventDefault();
+        
+
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'btn_showmodal_mark'
+            },
+            dataType: "JSON",
+            beforeSend: function() {
+                $(".loader_backdrop2").css('display', "block");
+                btnReq("#markAddModal", "Traitement...");
+
+            },
+            success: function(data) {
+
+                btnRes("#markAddModal");
+                ;
+
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#mark-modal").modal("show");
+                    $(".loader_backdrop2").css('display', "none");
+
+
+                }
+
+            }
+        })
+    });
+}
+
+
+aAjouter_mark();
+function aAjouter_mark() {
+    $("body").delegate("#frmAddMark", "submit", function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: data,
+            dataType: "json",
+            beforeSend: function() {
+                btnReq("#btn_ajouter_mark", "Enregistrement...");
+            },
+            success: function(data) {
+                
+                btnRes("#btn_ajouter_mark");
+                if (data.code == 200) {
+                    // resetDataTable();
+                    $.notify(data.message, "success");
+                    $("#mark-modal").modal("hide");
+                    $("#sexion_mark").load(" #sexion_mark > *");
+                    // setInterval(initDataTable, 120);
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        })
+    });
+}
+// FIN mark
+

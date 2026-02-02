@@ -269,7 +269,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.depense')?>">
+                                <a class="item-link" href="<?=  url('mark')?>">
                                     <span class="sub-item">Marque</span>
                                 </a>
                             </li>

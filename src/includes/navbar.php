@@ -5,7 +5,7 @@
                 <a href="<?= route('home') ?>" class="logo">
                    
                   
-                    <span style="color: #fff; font-size:18px" class="navbar-brand"> G-HOTEL</span>
+                    <span style="color: #fff; font-size:18px" class="navbar-brand"> G-STOCK</span>
 
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"

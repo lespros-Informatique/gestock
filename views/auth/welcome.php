@@ -4,7 +4,7 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="">G-HOTEL</a>
+      <a class="navbar-brand" href="">G-STOCK</a>
       <?php if(auth()->check()):  ?>
       <a href="<?= route('page1',['val' =>25]) ?>" class="btn btn-outline-primary text-white"> Mon Espace  </a>
       <?php else: ?>

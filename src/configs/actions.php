@@ -409,42 +409,15 @@ function chargerListeServiceAnnuler()
 }
 
 
-function chargerListeCategories()
-{
-  $categories = (new Factory())->select("type_chambres")->where("hotel_id", Auth::user('hotel_id'))->where("etat_typechambre", 1)->All();
 
-  if (!empty($categories)) {
-    $i = 0;
-    foreach ($categories as $data) {
-      $i++; ?>
 
-      <tr>
-        <th scope="row"><?= $i ?></th>
-        <td class="text-center"><?= $data['libelle_typechambre'] ?></td>
-        <td class="text-center" data-titles="<?= $data['description_typechambre'] ?>">...</td>
-        <td class="table_button">
-          <button id="frmModifierCategorie<?= $i ?>" type="button" class="btn btn-primary btn-sm mr-2 frmModifierCategorie"
-            data-categorie="=<?= crypter($data['code_typechambre']) ?>"><i class="fa fa-edit"></i> Modifier </button>
-          <button id="categorieDelete<?= $i ?>" type="button" class="btn btn-danger btn-sm categorieDelete"
-            data-categorie="=<?= crypter($data['code_typechambre']) ?>"><i class="fa fa-trash"></i> Supprimer </button>
-        </td>
-      </tr>
-    <?php }
-  } else {
-    echo "<tr>
-      <td colspan='5' class='text-center text-danger'>Aucune categorie enregistrée</td> </tr>";
-  }
-}
-
-function achargerListeCategories()
+function aChargerListeCategories()
 {
   // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
-  $compte   = "CMP_001";
-  $boutique = "BTQ_001";
 
   $categorieModel = new Catalogue();
 
-  $categories = $categorieModel->getAllCategorieByCompteBoutique($compte, $boutique, ETAT_ACTIF);
+  $categories = $categorieModel->getAllCategorieByCompteBoutique(COMPTE_CODE, BOUTIQUE_CODE, ETAT_ACTIF);
   if (!empty($categories)) {
     $i = 0;
     foreach ($categories as $data) {
@@ -488,6 +461,56 @@ function achargerListeCategories()
         <tr>
             <td colspan='5' class='text-center text-danger'>
                 Aucune categorie enregistrée
+            </td>
+        </tr>";
+  }
+}
+
+function aChargerListeMark()
+{
+  // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
+
+  $markModel = new Catalogue();
+
+  $marks = $markModel->getAllMarkByCompteBoutique(COMPTE_CODE, BOUTIQUE_CODE, ETAT_ACTIF);
+  if (!empty($marks)) {
+    $i = 0;
+    foreach ($marks as $data) {
+      $i++; ?>
+
+      <tr>
+        <th scope="row"><?= $i ?></th>
+
+        <!-- libellé -->
+        <td class="text-center">
+          <?= ($data['libelle_mark']) ?>
+        </td>
+
+        <td class="table_button">
+          <button
+            id="frmModifiermark<?= $i ?>"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierMark"
+            data-mark="<?= ($data['code_mark']) ?>">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="markDeleteMark<?= $i ?>"
+            type="button"
+            class="btn btn-danger btn-sm markDeleteMark"
+            data-mark="<?= ($data['code_mark']) ?>">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+        </td>
+      </tr>
+
+    <?php }
+  } else {
+    echo "
+        <tr>
+            <td colspan='5' class='text-center text-danger'>
+                Aucune mark enregistrée
             </td>
         </tr>";
   }
