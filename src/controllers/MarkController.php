@@ -104,7 +104,6 @@ public function aModalUpdateMark()
         $msg['type'] = "warning";
 
         $code = ($_POST['code_mark']);
-
         if (!empty($code)) {
 
             if (!empty($_POST['libelle_mark'])) {
@@ -138,8 +137,7 @@ public function aModalUpdateMark()
             $msg['message'] = "Erreur de donnée, vueillez ressayer plus tard. ";
         }
 
-        echo json_encode($msg);
-        return;
+        echo json_encode($msg);return;
     }
 
         public function aModalAddMark()

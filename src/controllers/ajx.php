@@ -11,6 +11,8 @@ use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerPrinter;
 use App\Controllers\MarkController;
+use App\Controllers\ProduitController;
+use App\Controllers\UniteController;
 use App\Controllers\UserController;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -271,6 +273,29 @@ switch ($action) {
         $ajx = new CategorieController();
         $ajx->aDeleteCategorie();
     break;
+    // ajouter Produit 
+    case 'btn_showmodal_produit':
+        $ajx = new ProduitController();
+        $ajx->aModalAddProduit();
+    break;
+
+    case 'btn_ajouter_produit':
+        $ajx = new ProduitController();
+        
+        $ajx->aAjouterProduit();
+    break;
+    case 'modal_modifier_produit':
+        $ajx = new ProduitController();
+        $ajx->aModalUpdateProduit();
+    break;
+    case 'btn_modifier_produit':
+        $ajx = new ProduitController();
+        $ajx->aUpdateProduit();
+    break;
+    case 'btn_delete_produit':
+        $ajx = new ProduitController();
+        $ajx->aDeleteProduit();
+    break;
 
     // ajouter mark 
     case 'btn_showmodal_mark':
@@ -294,6 +319,30 @@ switch ($action) {
     case 'btn_delete_mark':
         $ajx = new MarkController();
         $ajx->aDeleteMark();
+    break;
+
+    // ajouter Unite 
+    case 'btn_showmodal_unite':
+        $ajx = new UniteController();
+        $ajx->aModalAddUnite();
+    break;
+
+    case 'btn_ajouter_unite':
+        $ajx = new UniteController();
+        
+        $ajx->aAjouterUnite();
+    break;
+    case 'modal_modifier_unite':
+        $ajx = new UniteController();
+        $ajx->aModalUpdateUnite();
+    break;
+    case 'btn_modifier_unite':
+        $ajx = new UniteController();
+        $ajx->aUpdateUnite();
+    break;
+    case 'btn_delete_unite':
+        $ajx = new UniteController();
+        $ajx->aDeleteUnite();
     break;
 
     // ajouter chambre

@@ -465,7 +465,75 @@ function aChargerListeCategories()
         </tr>";
   }
 }
+function aChargerListeProduits()
+{
+    // 👉 récupère le compte et la boutique courante
+    $produitModel = new Catalogue();
 
+    $produits = $produitModel->getAllProduitByCompteBoutique(
+        COMPTE_CODE,
+        BOUTIQUE_CODE,
+        ETAT_ACTIF
+    );
+
+    if (!empty($produits)) {
+        $i = 0;
+        foreach ($produits as $data) {
+            $i++; ?>
+
+            <tr>
+                <th scope="row"><?= $i ?></th>
+
+                <!-- Libellé produit -->
+                <td class="text-center">
+                    <?= $data['libelle_produit'] ?>
+                </td>
+
+                <!-- Prix achat -->
+                <td class="text-center">
+                    <?= number_format($data['prix_achat'], 0, ',', ' ') ?>
+                </td>
+
+                <!-- Prix vente -->
+                <td class="text-center">
+                    <?= number_format($data['prix_vente'], 0, ',', ' ') ?>
+                </td>
+
+                <!-- Stock -->
+                <td class="text-center">
+                    <?= $data['stock_produit'] ?>
+                </td>
+
+                <!-- Actions -->
+                <td class="table_button">
+                    <button
+                        id="frmModifierProduit<?= $i ?>"
+                        type="button"
+                        class="btn btn-primary btn-sm mr-2 frmModifierProduit"
+                        data-produit="<?= $data['code_produit'] ?>">
+                        <i class="fa fa-edit"></i> Modifier
+                    </button>
+
+                    <button
+                        id="produitDeleteProduit<?= $i ?>"
+                        type="button"
+                        class="btn btn-danger btn-sm produitDeleteProduit"
+                        data-produit="<?= $data['code_produit'] ?>">
+                        <i class="fa fa-trash"></i> Supprimer
+                    </button>
+                </td>
+            </tr>
+
+        <?php }
+    } else {
+        echo "
+        <tr>
+            <td colspan='6' class='text-center text-danger'>
+                Aucun produit enregistré
+            </td>
+        </tr>";
+    }
+}
 function aChargerListeMark()
 {
   // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
@@ -511,6 +579,55 @@ function aChargerListeMark()
         <tr>
             <td colspan='5' class='text-center text-danger'>
                 Aucune mark enregistrée
+            </td>
+        </tr>";
+  }
+}
+function aChargerListeUnite()
+{
+  // 👉 récupère le compte et la boutique courante (à adapter selon ton système)
+
+  $uniteModel = new Catalogue();
+
+  $unites = $uniteModel->getAllUniteByCompteBoutique(COMPTE_CODE, BOUTIQUE_CODE, ETAT_ACTIF);
+  if (!empty($unites)) {
+    $i = 0;
+    foreach ($unites as $data) {
+      $i++; ?>
+
+      <tr>
+        <th scope="row"><?= $i ?></th>
+
+        <!-- libellé -->
+        <td class="text-center">
+          <?= ($data['libelle_unite']) ?>
+        </td>
+
+        <td class="table_button">
+          <button
+            id="frmModifierUnite<?= $i ?>"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierUnite"
+            data-unite="<?= ($data['code_unite']) ?>">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="uniteDeleteUnite<?= $i ?>"
+            type="button"
+            class="btn btn-danger btn-sm uniteDeleteUnite"
+            data-unite="<?= ($data['code_unite']) ?>">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+        </td>
+      </tr>
+
+    <?php }
+  } else {
+    echo "
+        <tr>
+            <td colspan='5' class='text-center text-danger'>
+                Aucune unite enregistrée
             </td>
         </tr>";
   }

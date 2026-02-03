@@ -274,12 +274,12 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.versement')?>">
+                                <a class="item-link" href="<?=  url('unite')?>">
                                     <span class="sub-item">Unité</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.versement')?>">
+                                <a class="item-link" href="<?=  url('produit')?>">
                                     <span class="sub-item">Produit</span>
                                 </a>
                             </li>
