@@ -79,7 +79,7 @@
                             </li>
 
                             <li>
-                                <a class="item-link" href="<?= route('admin.user') ?>">
+                                <a class="item-link" href="<?= url('user/liste') ?>">
                                     <span class="sub-item">Employés</span>
                                 </a>
                             </li>

@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use App\Core\Auth;
-use App\Core\Model;
-use Exception;
 use PDO;
-use Roles;
 use TABLES;
+use Exception;
+use App\Core\Model;
 
 class Personne extends Model
 {
     protected string $table = "users";
     public string $id = 'code_user';
+
 
 
     public function bGetAllClients($codeBoutique)
@@ -50,6 +49,7 @@ class Personne extends Model
         }
         return $data;
     }
+
     public function bGetAllFournisseurs($codeBoutique)
     {
         $data = [];

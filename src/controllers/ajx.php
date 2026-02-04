@@ -12,6 +12,7 @@ use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -225,6 +226,32 @@ switch ($action) {
         $ajx = new ClientController();
         $ajx->bUpdateClient();
         break;
+    // end client
+    // debut fournisseur
+
+    case 'bcharger_data_fournisseurs':
+        // sleep(2);
+        $ajx = new FournisseurController();
+        $ajx->bGetListeFournisseurs();
+        break;
+    case 'btn_showmodal_fournisseur_add':
+        $ajx = new FournisseurController();
+        $ajx->bModalAddFournisseur();
+        break;
+    case 'btn_add_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bAddNewFournisseur();
+        break;
+    case 'frm_modal_modifier_fournisseur':
+        $ajx = new FournisseurController();
+        $ajx->bModalUpdateFournisseur();
+        break;
+    case 'btn_modifier_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bUpdateFournisseur();
+        break;
+
+    // end fournisseur
     // versement
     case 'frm_modal_detail_versement':
         $ajx = new ControllerHotel();

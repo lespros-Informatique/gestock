@@ -2,18 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
-use App\Core\Gqr;
-use App\Core\MainController;
-use App\Models\Factory;
-use App\Models\Personne;
-use App\Services\PersonneService;
-use App\Services\Service;
-use PDO;
-use Roles;
 use TABLES;
+use App\Models\Personne;
+use App\Services\Service;
+use App\Core\MainController;
+use App\Services\PersonneService;
 
-class ClientController extends MainController
+class FournisseurController extends MainController
 {
     /**
      * ------------------------------------------------------------------------
@@ -25,9 +20,9 @@ class ClientController extends MainController
      */
 
 
-    public  function client()
+    public  function fournisseur()
     {
-        return $this->view('clients/liste', ['title' => "Clients"]);
+        return $this->view('fournisseurs/liste', ['title' => "Fournisseurs"]);
     }
 
 
@@ -42,18 +37,17 @@ class ClientController extends MainController
      */
 
 
-    public function bGetListeClients()
+    public function bGetListeFournisseurs()
     {
 
         extract($_POST);
         $output = "";
         $personne = new Personne();
-        $columns = ['nom_client', 'email_client', 'telephone_client', 'sexe_client', 'client_created_at'];
+        $columns = ['nom_fournisseur', 'email_fournisseur', 'telephone_fournisseur', 'sexe_fournisseur', 'fournisseur_created_at'];
 
         $likeParams = [];
         $whereParams = ['boutique_code' => BOUTIQUE_CODE];
-        $orderBy = ["nom_client" => "ASC"];
-
+        $orderBy = ["nom_fournisseur" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
         $search = $_POST['search']['value'] ?? '';
@@ -61,26 +55,24 @@ class ClientController extends MainController
 
         // 🔎 Recherche
         if (!empty($search)) {
-            $likeParams = ['nom_client' => $search, 'telephone_client' => $search, 'sexe_client' => $search];
+            $likeParams = ['nom_fournisseur' => $search, 'telephone_fournisseur' => $search, 'sexe_fournisseur' => $search];
         }
 
         // 🔢 Total
-        $total = $personne->dataTbleCountTotalRow(TABLES::CLIENTS, $whereParams);
+        $total = $personne->dataTbleCountTotalRow(TABLES::FOURNISSEURS, $whereParams);
 
         // 🔢 Total filtré
 
-        $totalFiltered = $personne->dataTbleCountTotalRow(TABLES::CLIENTS, $whereParams, $likeParams);
-
+        $totalFiltered = $personne->dataTbleCountTotalRow(TABLES::FOURNISSEURS, $whereParams, $likeParams);
         // 📄 Données
 
-        $clients = $personne->DataTableFetchAllListe(TABLES::CLIENTS, $whereParams, $likeParams, $orderBy, $start, $limit);
-
+        $fournisseur = $personne->DataTableFetchAllListe(TABLES::FOURNISSEURS, $whereParams, $likeParams, $orderBy, $start, $limit);
 
 
         $data = [];
 
 
-        $data = PersonneService::clientDataService($clients);
+        $data = PersonneService::fournisseurDataService($fournisseur);
         echo json_encode([
             "draw"            => intval($_POST['draw']),
             "recordsTotal"    => $total,
@@ -92,52 +84,52 @@ class ClientController extends MainController
         return;
     }
 
-    public function bModalAddClient()
+    public function bModalAddFournisseur()
     {
 
         extract($_POST);
-        $output = PersonneService::bClientAddModalService();
+        $output = PersonneService::bFournisseurAddModalService();
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
 
-    public function bAddNewClient()
+    public function bAddNewFournisseur()
     {
         $_POST = sanitizePostData($_POST);
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
-        if (!empty($_POST['nom_client']) && !empty($_POST['telephone_client']) && !empty($_POST['sexe'])) {
+        if (!empty($_POST['nom_fournisseur']) && !empty($_POST['telephone_fournisseur']) && !empty($_POST['sexe'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone_client);
+            $telephone = removeSpace($telephone_fournisseur);
             $telephone = str_replace('(+225)', '', $telephone);
 
             if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
 
                 $personne = new Personne();
 
-                $client = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE, 'telephone_client' => $telephone]);
+                $fournisseur = $personne->getFieldsForParams(TABLES::FOURNISSEURS, ['boutique_code' => BOUTIQUE_CODE, 'telephone_fournisseur' => $telephone]);
 
-                if (empty($client)) {
+                if (empty($fournisseur)) {
                     $date = date("Y-m-d H:i:s");
-                    $codeCient = $personne->generatorCode(TABLES::CLIENTS, "code_client");
+                    $codeFournisseur = $personne->generatorCode(TABLES::FOURNISSEURS, "code_fournisseur");
 
-                    $data_client = [
-                        'nom_client' => strtoupper($nom_client),
-                        'telephone_client' => $telephone,
-                        'code_client' => $codeCient,
+                    $data_fournisseur = [
+                        'nom_fournisseur' => strtoupper($nom_fournisseur),
+                        'telephone_fournisseur' => $telephone,
+                        'code_fournisseur' => $codeFournisseur,
                         'boutique_code' => BOUTIQUE_CODE,
                         'compte_code' => COMPTE_CODE,
-                        'sexe_client' => $sexe,
-                        'client_created_at' => $date
+                        'sexe_fournisseur' => $sexe,
+                        'fournisseur_created_at' => $date
                     ];
 
-                    if ($personne->create(TABLES::CLIENTS, $data_client)) {
+                    if ($personne->create(TABLES::FOURNISSEURS, $data_fournisseur)) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
-                        $msg['message'] = "Client enregistré avec succès";
+                        $msg['message'] = "Fournisseur enregistré avec succès";
                     } else {
-                        $msg['message'] = "Désolé, erreur d'enregistrement du client";
+                        $msg['message'] = "Désolé, erreur d'enregistrement du fournisseur";
                     }
                 } else {
                     $msg['message'] = "Desolé, ce numéro de telephone existe déjà.";
@@ -146,38 +138,38 @@ class ClientController extends MainController
                 $msg['message'] = "Numero de telephone invalide.";
             }
         } else {
-            $msg['message'] = "Veuillez remplire tous les champs.";
+            $msg['message'] = "Veuillez renseigner tous les champs.";
         }
 
         echo json_encode($msg);
         return;
     }
 
-    public static function bModalUpdateClient()
+    public static function bModalUpdateFournisseur()
     {
         $_POST = sanitizePostData($_POST);
         extract($_POST);
         $msg['code'] = 400;
         $msg['type'] = "warning";
         $personne = new Personne();
-        $client = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE, 'code_client' => $codeClient]);
+        $fournisseur = $personne->getFieldsForParams(TABLES::FOURNISSEURS, ['boutique_code' => BOUTIQUE_CODE, 'code_fournisseur' => $codeFournisseur]);
 
-        $output = PersonneService::bClientUpdateModalService($client);
+        $output = PersonneService::bFournisseurUpdateModalService($fournisseur);
 
         // $output = Service::frmUpdateReservation($code_reservation);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
 
-    public function bUpdateClient()
+    public function bUpdateFournisseur()
     {
         $_POST = sanitizePostData($_POST);
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
-        if (!empty($_POST['nom_client']) && !empty($_POST['telephone_client']) && !empty($_POST['sexe']) && !empty($_POST['code_client'])) {
+        if (!empty($_POST['nom_fournisseur']) && !empty($_POST['telephone_fournisseur']) && !empty($_POST['sexe']) && !empty($_POST['code_fournisseur'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone_client);
+            $telephone = removeSpace($telephone_fournisseur);
             $telephone = str_replace('(+225)', '', $telephone);
 
 
@@ -185,25 +177,25 @@ class ClientController extends MainController
 
                 $personne = new Personne();
 
-                $client = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE, 'telephone_client' => $telephone]);
+                $fournisseur = $personne->getFieldsForParams(TABLES::FOURNISSEURS, ['boutique_code' => BOUTIQUE_CODE, 'telephone_fournisseur' => $telephone]);
 
 
-                if (empty($client) || ($code_client == $client['code_client'])) {
+                if (empty($fournisseur) || ($code_fournisseur == $fournisseur['code_fournisseur'])) {
 
-                    $data_client = [
-                        'nom_client' => strtoupper($nom_client),
-                        'telephone_client' => $telephone,
-                        'sexe_client' => $sexe,
-                        'email_client' => $email_client,
+                    $data_fournisseur = [
+                        'nom_fournisseur' => strtoupper($nom_fournisseur),
+                        'telephone_fournisseur' => $telephone,
+                        'sexe_fournisseur' => $sexe,
+                        'email_fournisseur' => $email_fournisseur,
                     ];
 
-                    $rest = $personne->update(TABLES::CLIENTS, 'code_client', $code_client, $data_client);
+                    $rest = $personne->update(TABLES::FOURNISSEURS, 'code_fournisseur', $code_fournisseur, $data_fournisseur);
                     if ($rest || $rest == 0) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
-                        $msg['message'] = "Client modifié avec succès";
+                        $msg['message'] = "Fournisseur modifié avec succès";
                     } else {
-                        $msg['message'] = "Désolé, erreur de modification du client";
+                        $msg['message'] = "Désolé, erreur de modification du fournisseur";
                     }
                 } else {
                     $msg['message'] = "Desolé, ce numéro de telephone existe déjà.";

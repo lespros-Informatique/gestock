@@ -25,6 +25,7 @@ use App\Controllers\ControllerException;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerMailer;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
 use App\Core\Router;
@@ -69,8 +70,9 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
     $router->get('/login', [UserController::class, 'login']);
 
     $router->get('/categorie', [CategorieController::class, 'categorie']);
-    $router->get('/client/liste', [ClientController::class, 'Client']);
+    $router->get('/client/liste', [ClientController::class, 'client']);
     $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
+    $router->get('/user/liste', [UserController::class, 'user']);
 });
 
 /**

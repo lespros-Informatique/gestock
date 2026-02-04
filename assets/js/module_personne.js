@@ -30,15 +30,15 @@ function btnRes(selector, message = 'Ajouter', icon = "fa-plus-circle") {
 }
 
 
-function testDatable() {
+function testDatable(action, selector) {
     $.ajax({
         method: "POST",
         url: URL_AJAX,
         data: {
-            action: 'bcharger_data_clients',
+            action: action,
             length: 2,
             start: 2,
-            search: $('#data-table-client').DataTable().search().value,
+            search: $(selector).DataTable().search().value,
             draw: 1
         },
         // dataType: "JSON",
@@ -61,7 +61,7 @@ function testDatable() {
 function loadDataTable(tableId,selector,action) {
     if ($(selector + ':visible').length) {
 
-        // testDatable();
+        // testDatable(action, selector);
 
         // return;
         
@@ -171,11 +171,11 @@ function bOpenModalUpdateClient() {
             dataType: "JSON",
             beforeSend: function() {
                 $(".loader_backdrop2").css('display', "block");
-                btnReq("#btnSubmitForm", "Traitement...");
+                // btnReq(".modal_footer", "Traitement...");
 
             },
             success: function(data) {
-                btnRes("#btnSubmitForm", 'Enregistrer le client', 'fa-save');
+                // btnRes(".modal_footer", 'Enregistrer le client', 'fa-save');
                 $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
@@ -216,6 +216,154 @@ function bUpdateClient() {
                     tables['data-table-client'].ajax.reload(null, false);
                     $.notify(data.message, "success");
                     $("#client-modal").modal("hide");
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        })
+    });
+}
+
+/** FIN SECTION CLIENT */
+
+
+
+
+/** DEBUT SECTION FOURNISSEUR */
+
+loadDataTable('data-table-fournisseur', '#data-table-fournisseur', 'bcharger_data_fournisseurs');
+
+bopenModalAddFournisseur();
+function bopenModalAddFournisseur() {
+    $('#FournisseurAddModal').click(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'btn_showmodal_fournisseur_add'
+            },
+            dataType: "JSON",
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                // btnReq("#ClientAddModal", "Traitement...");
+
+            },
+            success: function (data) {
+                // btnRes("#ClientAddModal", 'Ajouter un client', 'fa-plus');
+                // ;
+                console.log(data);
+                
+
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#fournisseur-modal").modal("show");
+                    $(".loader_backdrop2").css('display', "none");
+
+
+                }
+
+            }
+        })
+    });
+}
+
+bAjouterFournisseur();
+function bAjouterFournisseur() {
+    $("body").delegate("#frmAddFournisseurData", "submit", function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: data,
+            dataType: "json",
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                
+                btnReq(".modal_footer", "Enregistrement...");
+            },
+            success: function(data) {
+                console.log(data);
+                    $(".loader_backdrop2").css('display', "none");
+
+                btnRes(".modal_footer", "Ajouter le fournisseur", "fa-save");
+                if (data.code == 200) {
+                    tables['data-table-fournisseur'].ajax.reload(null, false);
+                    $.notify(data.message, "success");
+                    $("#fournisseur-modal").modal("hide");
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        })
+    });
+}
+
+bOpenModalUpdateFournisseur();
+function bOpenModalUpdateFournisseur() { 
+    $("body").delegate(".frmModifierFournisseurData", "click", function (e) { 
+        var code_fournisseur = $(this).data("fournisseur");
+        console.log(code_fournisseur);
+       
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'frm_modal_modifier_fournisseur',
+                codeFournisseur: code_fournisseur
+            },
+            dataType: "JSON",
+            beforeSend: function() {
+                $(".loader_backdrop2").css('display', "block");
+                // btnReq(".modal_footer", "Traitement...");
+
+            },
+            success: function(data) {
+                // btnRes(".modal_footer", 'Enregistrer le fournisseur', 'fa-save');
+                $(".loader_backdrop2").css('display', "none");
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#fournisseur-modal").modal("show");
+                } else {
+                    $.notify("Erreur lors du traitement", "error");
+                }
+
+            }
+        })
+    }
+    );
+}
+
+bUpdateFournisseur();
+function bUpdateFournisseur() {
+    $("body").delegate("#frmUpdateFournisseurData", "submit", function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+
+
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: data,
+            dataType: "json",
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                
+                btnReq(".modal_footer", "Mise à jour en cours...");
+            },
+            success: function(data) {
+                console.log(data);
+                $(".loader_backdrop2").css('display', "none");
+
+                btnRes(".modal_footer", "Mettre à jour le fournisseur", "fa-edit");
+                if (data.code == 200) {
+                    tables['data-table-fournisseur'].ajax.reload(null, false);
+                    $.notify(data.message, "success");
+                    $("#fournisseur-modal").modal("hide");
 
                 } else {
                     $.notify(data.message);
