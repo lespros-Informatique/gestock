@@ -1,7 +1,4 @@
-const URLS = window.origin;
-const URL_HOME = URLS + "/gestock/";
-const URL_AJAX = URL_HOME + "src/controllers/ajx.php";
-moment.locale('fr');
+loadDataTable('data-table-categorie', '#data-table-categorie', 'bcharger_data_categories');
 
 aSupprimer_categorie();
 

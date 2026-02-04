@@ -11,6 +11,47 @@ use Roles;
 
 class CatalogueService
 {
+
+public static function categorieDataService($categories)
+    {
+        $data = [];
+
+        $i = 0;
+        foreach ($categories as $categorie) :
+            $i++;
+            $data[] = [
+                $i,
+                $categorie['libelle_categorie'],
+                $categorie['description_categorie'],
+                '
+                <div class="table_button">
+
+                <button
+            id="frmModifierCategorie'. $i .'"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierCategorie"
+            data-categorie="'. ($categorie['code_categorie']) .'">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="categorieDeleteCategorie'. $i .'"
+            type="button"
+            class="btn btn-danger btn-sm categorieDeleteCategorie"
+            data-categorie="'.$categorie['code_categorie'] .'">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+
+                </div>
+               '
+            ];
+
+        endforeach;
+
+        return $data;
+    }
+
+
     public static function aModalAddCategorie()
     {
         return '
@@ -125,7 +166,7 @@ class CatalogueService
     public static function aModalAddProduit($categories, $marks, $unites)
     {
         // $cl = (new Factory())->verifyParam("fournisseurs","etat_fournieur",);
-        //  $categorie = (new Catalogue())->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        //  $categorie = (new Catalogue())->aGetCatalogueByFields('categories', 'compte_code', 'categorie_code', COMPTE_CODE, categorie_CODE);
 var_dump($categories);return;
        
     }

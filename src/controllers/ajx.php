@@ -327,6 +327,11 @@ switch ($action) {
         break;
 
     // ajouter categorie 
+
+    case 'bcharger_data_categories':
+        $ajx = new CategorieController();
+        $ajx->aGetListeCategorie();
+    break;
     case 'btn_showmodal_categorie':
         $ajx = new CategorieController();
         $ajx->aModalAddCategorie();
