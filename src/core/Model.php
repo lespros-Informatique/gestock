@@ -164,6 +164,93 @@ abstract class Model
         };
     }
 
+    function dataTbleCountTotalRow($table, array $whereParams, $likeParams = [])
+    {
+
+        $where = '';
+        if (!empty($whereParams)) {
+            $where = 'WHERE ';
+            $where .=  implode(
+                ' AND ',
+                array_map(fn($f) => "$f = :$f ", array_keys($whereParams))
+            );
+        }
+
+        if (!empty($likeParams)) {
+            $where .= empty($where) ? ' WHERE ' : ' AND ';
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                // $key = "$field";
+                $likes[] = "$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            // return $likeParams;
+            $where .= '(' . implode(' OR ', $likes) . ')';
+        }
+
+        $sql = "SELECT COUNT(*) FROM $table $where";
+        $stmt = $this->db->prepare($sql);
+        // return $sql;
+        $stmt->execute(array_merge($whereParams, $likeParams));
+        return (int) $stmt->fetchColumn();
+    }
+
+    function DataTableFetchAllListe(string $table, array $whereParams,  array $likeParams, array $orderBy = [], int $start = 0, int $limit = 10)
+    {
+
+        $where = '';
+        if (!empty($whereParams)) {
+            $where = 'WHERE ';
+            $where .=  implode(
+                ' AND ',
+                array_map(fn($f) => "$f = :$f ", array_keys($whereParams))
+            );
+        }
+
+        if (!empty($likeParams)) {
+            $where .= empty($where) ? ' WHERE ' : ' AND ';
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                $likes[] = "$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            $where .= '(' . implode(' OR ', $likes) . ')';
+        }
+
+        $orders = '';
+
+        if (!empty($orderBy)) {
+            $orders = 'ORDER BY ' . implode(', ', array_map(fn($f) => "$f " . $orderBy[$f], array_keys($orderBy)));
+        }
+
+        $sql = "SELECT * FROM $table $where $orders LIMIT :start, :limit";
+
+        $stmt = $this->db->prepare($sql);
+
+        // Bind WHERE params
+        if (!empty($whereParams)) {
+            foreach ($whereParams as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+        }
+
+        if (!empty($likeParams)) {
+            foreach ($likeParams as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+        }
+
+        // ✅ Bind LIMIT params correctement
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+
+        // return $sql;
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getFieldsForParams(string $table, array $params = [], array $columns = [], string $methodFetch = 'fetch', array $order = [])
     {
         $result = [];

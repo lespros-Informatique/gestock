@@ -2,15 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
-use App\Core\Gqr;
 use App\Core\MainController;
-use App\Models\Factory;
 use App\Models\Personne;
 use App\Services\PersonneService;
 use App\Services\Service;
-use PDO;
-use Roles;
 use TABLES;
 
 class ClientController extends MainController
@@ -51,7 +46,7 @@ class ClientController extends MainController
         $columns = ['nom_client', 'email_client', 'telephone_client', 'sexe_client', 'client_created_at'];
 
         $likeParams = [];
-        $whereParams = ['boutique_code' => BOUTIQUE_CODE];
+        $whereParams = ['boutique_code' => BOUTIQUE_CODE, 'etat_client' => 1];
         $orderBy = ["nom_client" => "ASC"];
 
         $limit  = $_POST['length'];
@@ -61,7 +56,7 @@ class ClientController extends MainController
 
         // 🔎 Recherche
         if (!empty($search)) {
-            $likeParams = ['nom_client' => $search, 'telephone_client' => $search, 'sexe_client' => $search];
+            $likeParams = ['nom_client' => $search, 'telephone_client' => $search, 'sexe_client' => $search, 'client_created_at' => $search];
         }
 
         // 🔢 Total
