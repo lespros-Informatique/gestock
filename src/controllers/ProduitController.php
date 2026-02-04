@@ -153,7 +153,6 @@ class ProduitController extends MainController
         $categorie = $this->model->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
         $mark = $this->model->aGetCatalogueByFields("marks", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
         $unite = $this->model->aGetCatalogueByFields("unites", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-
         $output = CatalogueService::aModalAddProduit($categorie, $mark, $unite);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
