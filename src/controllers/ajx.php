@@ -6,6 +6,7 @@ session_name("APP15464655_SESSION");
 session_start();
 include __DIR__ . '/../../src/Core/security.php';
 
+use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
 use App\Controllers\Controller;
@@ -249,6 +250,32 @@ switch ($action) {
     case 'btn_modifier_fournisseur_data':
         $ajx = new FournisseurController();
         $ajx->bUpdateFournisseur();
+        break;
+
+    // end fournisseur
+
+    // debut boutique
+
+    case 'bcharger_data_boutiques':
+        // sleep(2);
+        $ajx = new BoutiqueController();
+        $ajx->bGetListeBoutique();
+        break;
+    case 'btn_showmodal_boutique_add':
+        $ajx = new BoutiqueController();
+        $ajx->bModalAddBoutique();
+        break;
+    case 'btn_add_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bAddNewBoutique();
+        break;
+    case 'frm_modal_modifier_boutique':
+        $ajx = new BoutiqueController();
+        $ajx->bModalUpdateBoutique();
+        break;
+    case 'btn_modifier_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bUpdateBoutique();
         break;
 
     // end fournisseur

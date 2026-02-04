@@ -46,7 +46,7 @@ class FournisseurController extends MainController
         $columns = ['nom_fournisseur', 'email_fournisseur', 'telephone_fournisseur', 'sexe_fournisseur', 'fournisseur_created_at'];
 
         $likeParams = [];
-        $whereParams = ['boutique_code' => BOUTIQUE_CODE];
+        $whereParams = ['boutique_code' => BOUTIQUE_CODE, 'etat_fournisseur' => 1];
         $orderBy = ["nom_fournisseur" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -55,7 +55,7 @@ class FournisseurController extends MainController
 
         // 🔎 Recherche
         if (!empty($search)) {
-            $likeParams = ['nom_fournisseur' => $search, 'telephone_fournisseur' => $search, 'sexe_fournisseur' => $search];
+            $likeParams = ['nom_fournisseur' => $search, 'telephone_fournisseur' => $search, 'sexe_fournisseur' => $search, 'email_fournisseur' => $search, 'fournisseur_created_at' => $search];
         }
 
         // 🔢 Total

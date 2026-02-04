@@ -21,6 +21,7 @@ class PersonneService
              <form method="post" id="frmAddClientData">
                  <div class="row mb-3 px-3 ">
                      <input type="hidden" value="btn_add_client_data" name="action">
+                     <input type="hidden" name="csrf_token" value="' . csrfToken()::token() . '"> 
 
                      <label for="nom_client" class="form-label">Nom & prénoms <strong
                              class="text-danger">*</strong></label>
@@ -169,6 +170,7 @@ class PersonneService
              <form method="post" id="frmAddFournisseurData">
                  <div class="row mb-3 px-3 ">
                      <input type="hidden" value="btn_add_fournisseur_data" name="action">
+                        <input type="hidden" name="csrf_token" value="' . csrfToken()::token() . '">
 
                      <label for="nom_fournisseur" class="form-label">Nom & prénoms <strong
                              class="text-danger">*</strong></label>

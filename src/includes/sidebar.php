@@ -73,6 +73,11 @@
                                 </a>
                             </li>
                             <li>
+                                <a class="item-link" href="<?= url('boutique/liste') ?>">
+                                    <span class="sub-item">Boutiques</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a class="item-link" href="<?= url('fournisseur/liste') ?>">
                                     <span class="sub-item">Fournisseurs</span>
                                 </a>

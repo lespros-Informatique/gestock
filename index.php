@@ -17,6 +17,7 @@ include __DIR__ . '/src/Core/security.php';
 
 require __DIR__ . '/vendor/autoload.php';
 
+use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
 use App\Controllers\Controller;
@@ -73,6 +74,7 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
     $router->get('/client/liste', [ClientController::class, 'client']);
     $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
     $router->get('/user/liste', [UserController::class, 'user']);
+    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
 });
 
 /**
