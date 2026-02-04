@@ -239,12 +239,15 @@
     background-blend-mode: lighten;
     /* opacity: 0.3; */
 }
-
+.modal-footer{
+    height: 60px!important;
+}
 .modal_footer{
     position: fixed;
-    right: 10px;
-    bottom: 20px;
+    right: 20px;
+    bottom: 10px;
 }
+
 .modal-content{
     min-height: 600px; 
     position: relative;
