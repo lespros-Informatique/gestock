@@ -1,11 +1,14 @@
 
 <?php
-    session_name("APP15464655_SESSION");
+session_name("APP15464655_SESSION");
 
 
 session_start();
+include __DIR__ . '/../../src/Core/security.php';
 
+use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
+use App\Controllers\ClientController;
 use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
@@ -13,6 +16,7 @@ use App\Controllers\ControllerPrinter;
 use App\Controllers\MarkController;
 use App\Controllers\ProduitController;
 use App\Controllers\UniteController;
+use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -28,58 +32,58 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $action = $_POST['action'] ?? null;
 // var_dump($_POST);
-        // return;
+// return;
 
 switch ($action) {
     /**
      * SEXION data configuration
      */
-    
+
     // Debut Actions pour les utilisateurs
     case 'btn_load_data_role':
         $ajx = new Controller();
         $ajx->loadDataRole();
-    break;
+        break;
     case 'btn_add_permission':
         $ajx = new Controller();
         $ajx->ajouterPermissionRole();
-    break;
+        break;
     case 'frm_modal_add_permission':
         $ajx = new Controller();
         $ajx->modalAddPermission();
-    break;
+        break;
     // ajouter utlisateur
     case 'frm_modal_user':
         $ajx = new UserController();
         $ajx->modalAddUser();
-    break;
+        break;
     case 'btn_add_user':
         $ajx = new UserController();
         $ajx->addUser();
-    break;
+        break;
 
     case 'btn_disable_user':
         $ajx = new UserController();
         $ajx->disableUser();
-    break;
+        break;
 
     case 'btn_enable_user':
         $ajx = new UserController();
         $ajx->enableUser();
-    break;
+        break;
     case 'btn_send_mail_activation':
         $ajx = new UserController();
         $ajx->sendMailActivation();
-    break;
+        break;
 
     case 'btn_ouvrir_caisse';
         $ajx = new UserController();
         $ajx->openCaisse();
-    break;
+        break;
     case 'btn_fermer_caisse':
         $ajx = new UserController();
         $ajx->closeCaisse();
-    break;
+        break;
 
     //end Actions pour les utilisateurs
 
@@ -87,23 +91,23 @@ switch ($action) {
     case 'frm_modal_fonction':
         $ajx = new UserController();
         $ajx->modalAddFonction();
-    break;
+        break;
     case 'btn_add_fonction':
         $ajx = new UserController();
         $ajx->addFonction();
-    break;
+        break;
     case 'frm_update_fonction':
         $ajx = new UserController();
         $ajx->modalModifierFonction();
-    break;
+        break;
     case 'btn_modifier_fonction':
         $ajx = new UserController();
         $ajx->modifierFonction();
-    break;
+        break;
     case 'btn_delete_fonction':
         $ajx = new UserController();
         $ajx->deleteFonction();
-    break;
+        break;
 
     // end fonction
 
@@ -112,143 +116,215 @@ switch ($action) {
     case 'btn_search_chambre':
         $ajx = new ControllerHotel();
         $ajx->verification();
-    break;
+        break;
     case 'btn_search_telephone':
         // sleep(2);
         $ajx = new ControllerHotel();
         $ajx->verificationNumber();
-    break;
-     case 'btn_ajouter_client':
+        break;
+    case 'btn_ajouter_client':
         // sleep(2);
         $ajx = new ControllerHotel();
         $ajx->addNewClient();
-    break;
+        break;
     case 'btn_showmodal_reservation':
         $ajx = new ControllerHotel();
         $ajx->modalShowReservation();
-    break;
+        break;
     case 'btn_ajouter_reservation':
         $ajx = new ControllerHotel();
         $ajx->ajouterReservation();
-    break;
-     case 'btn_recapt_liste_reservations':
+        break;
+    case 'btn_recapt_liste_reservations':
         $ajx = new ControllerHotel();
         $ajx->listeReservationsRecapt();
-    break;
+        break;
     case 'btn_liste_reservations':
         $ajx = new ControllerHotel();
         $ajx->listeReservations();
-    break;
-     case 'btn_liste_reservations_active':
+        break;
+    case 'btn_liste_reservations_active':
         $ajx = new ControllerHotel();
         $ajx->listeReservationsActive();
-    break;
-      case 'btn_liste_reservations_arrive':
+        break;
+    case 'btn_liste_reservations_arrive':
         $ajx = new ControllerHotel();
         $ajx->listeReservationsArrive();
-    break;
+        break;
     case 'btn_delete_reservation':
         $ajx = new ControllerHotel();
         $ajx->deleteReservation();
-    break;
+        break;
     case 'btn_modal_confirme':
         $ajx = new ControllerHotel();
         $ajx->confirmReservation();
-    break;
+        break;
     case 'btn_add_facture':
         $ajx = new ControllerHotel();
         $ajx->factureReservtion();
-    break;
+        break;
     case 'frm_modal_service_reservation':
         $ajx = new ControllerHotel();
         $ajx->modalServiceReservation();
-    break;
+        break;
     case 'btn_modal_modifier_reservation':
         $ajx = new ControllerHotel();
         $ajx->modalUpdateReservation();
-    break;
+        break;
     case 'btn_ajouter_service_reservation':
         $ajx = new ControllerHotel();
         $ajx->attribuerServiceReservation();
-    break;
+        break;
     case 'frm_modal_modifier_service_reservation':
         $ajx = new ControllerHotel();
         $ajx->modalModifierServiceReservation();
-    break;
+        break;
     case 'btn_modifier_service_for_reservation':
         $ajx = new ControllerHotel();
         $ajx->modifierServiceForReservation();
-    break;
+        break;
     case 'btn_delete_service_reservation':
         $ajx = new ControllerHotel();
         $ajx->deleteServiceClient();
-    break;
+        break;
     case 'frm_modal_reglernote_service_reservation':
         $ajx = new ControllerHotel();
         $ajx->modalReglerNoteServiceReservation();
-    break;
+        break;
     case 'btn_facture_service_client':
         $ajx = new ControllerHotel();
         $ajx->reglerFactureServiceReservtion();
-    break;
+        break;
 
     // client
-     case 'btn_recapt_liste_clients':
+    case 'btn_recapt_liste_clients':
         $ajx = new ControllerHotel();
         $ajx->listeClientsRecapt();
-    break;
+        break;
     case 'btn_liste_clients':
         $ajx = new ControllerHotel();
         $ajx->listeClients();
-    break;
+        break;
     case 'btn_update_client':
         $ajx = new ControllerHotel();
         $ajx->updateClient();
-    break;
+        break;
+    case 'bcharger_data_clients':
+        // sleep(2);
+        $ajx = new ClientController();
+        $ajx->bGetListeClients();
+        break;
+    case 'btn_showmodal_client_add':
+        $ajx = new ClientController();
+        $ajx->bModalAddClient();
+        break;
+    case 'btn_add_client_data':
+        $ajx = new ClientController();
+        $ajx->bAddNewClient();
+        break;
+    case 'frm_modal_modifier_client':
+        $ajx = new ClientController();
+        $ajx->bModalUpdateClient();
+        break;
+    case 'btn_modifier_client_data':
+        $ajx = new ClientController();
+        $ajx->bUpdateClient();
+        break;
+    // end client
+    // debut fournisseur
 
+    case 'bcharger_data_fournisseurs':
+        // sleep(2);
+        $ajx = new FournisseurController();
+        $ajx->bGetListeFournisseurs();
+        break;
+    case 'btn_showmodal_fournisseur_add':
+        $ajx = new FournisseurController();
+        $ajx->bModalAddFournisseur();
+        break;
+    case 'btn_add_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bAddNewFournisseur();
+        break;
+    case 'frm_modal_modifier_fournisseur':
+        $ajx = new FournisseurController();
+        $ajx->bModalUpdateFournisseur();
+        break;
+    case 'btn_modifier_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bUpdateFournisseur();
+        break;
+
+    // end fournisseur
+
+    // debut boutique
+
+    case 'bcharger_data_boutiques':
+        // sleep(2);
+        $ajx = new BoutiqueController();
+        $ajx->bGetListeBoutique();
+        break;
+    case 'btn_showmodal_boutique_add':
+        $ajx = new BoutiqueController();
+        $ajx->bModalAddBoutique();
+        break;
+    case 'btn_add_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bAddNewBoutique();
+        break;
+    case 'frm_modal_modifier_boutique':
+        $ajx = new BoutiqueController();
+        $ajx->bModalUpdateBoutique();
+        break;
+    case 'btn_modifier_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bUpdateBoutique();
+        break;
+
+    // end fournisseur
     // versement
     case 'frm_modal_detail_versement':
         $ajx = new ControllerHotel();
         $ajx->modalDetailsVersement();
-    break;
+        break;
 
     // confirm depot
     case 'btn_confirm_depot_user_comptable':
         $ajx = new ControllerComptable();
         $ajx->confirmDepotUserComptable();
-    break;
+        break;
 
     case 'btn_liste_depot_caisse_comptable':
         $ajx = new ControllerComptable();
         $ajx->listeDepotCaisseComptable();
-    break;
+        break;
 
     case 'btn_liste_bilant_caisse_comptable':
         $ajx = new ControllerComptable();
         $ajx->listeBilanCaisseComptable();
-    break;
+        break;
 
     // ajouter service chambre
     case 'btn_showmodal_service':
         $ajx = new ControllerHotel();
         $ajx->modalAddService();
-    break;
+        break;
     case 'btn_ajouter_service':
         $ajx = new ControllerHotel();
         $ajx->ajouterServices();
-    break;
+        break;
     case 'modal_modifier_service':
         $ajx = new ControllerHotel();
         $ajx->modalUpdateService();
-    break;
+        break;
     case 'btn_modifier_service':
         $ajx = new ControllerHotel();
         $ajx->updateService();
-    break;
+        break;
     case 'btn_delete_service':
         $ajx = new ControllerHotel();
         $ajx->deleteService();
-    break;
+        break;
 
     // ajouter categorie 
     case 'btn_showmodal_categorie':
@@ -261,6 +337,14 @@ switch ($action) {
         
         $ajx->aAjouterCategorie();
     break;
+        $ajx->amodalAddCategorie();
+        break;
+
+    case 'btn_ajouter_categorie':
+        $ajx = new CategorieController();
+
+        $ajx->aajouterCategorie();
+        break;
     case 'modal_modifier_categorie':
         $ajx = new CategorieController();
         $ajx->aModalUpdateCategorie();
@@ -296,6 +380,16 @@ switch ($action) {
         $ajx = new ProduitController();
         $ajx->aDeleteProduit();
     break;
+        $ajx->amodalUpdateCategorie();
+        break;
+    case 'btn_modifier_categorie':
+        $ajx = new CategorieController();
+        $ajx->aupdateCategorie();
+        break;
+    case 'btn_delete_categorie':
+        $ajx = new CategorieController();
+        $ajx->adeleteCategorie();
+        break;
 
     // ajouter mark 
     case 'btn_showmodal_mark':
@@ -349,60 +443,60 @@ switch ($action) {
     case 'btn_showmodal_chambre':
         $ajx = new ControllerHotel();
         $ajx->modalAddChambre();
-    break;
+        break;
     case 'btn_ajouter_chambre':
         $ajx = new ControllerHotel();
         $ajx->ajouterChambre();
-    break;
+        break;
     case 'frm_update_chambre':
         $ajx = new ControllerHotel();
         $ajx->modalUpdateChambre();
-    break;
+        break;
     case 'btn_modifier_chambre':
         $ajx = new ControllerHotel();
         $ajx->updateChambre();
-    break;
+        break;
     case 'btn_delete_chambre':
         $ajx = new ControllerHotel();
         $ajx->deleteChammbre();
-    break;
+        break;
 
 
 
     //Debut depense
 
-     case 'btn_recapt_liste_depense':
+    case 'btn_recapt_liste_depense':
         $ajx = new ControllerComptable();
         $ajx->listeDepenseRecapt();
-    break;
+        break;
     case 'btn_liste_depense':
         $ajx = new ControllerComptable();
         $ajx->listeDepense();
-    break;
-     case 'btn_showmodal_depense':
+        break;
+    case 'btn_showmodal_depense':
         $ajx = new ControllerComptable();
         $ajx->modalAddDepense();
-    break;
+        break;
     case 'btn_ajouter_depense':
         $ajx = new ControllerComptable();
         $ajx->ajouterDepense();
-    break;
+        break;
     case 'btn_confirm_depense':
         $ajx = new ControllerComptable();
         $ajx->confirmDepense();
-    break;
+        break;
     case 'frm_update_depense':
         $ajx = new ControllerComptable();
         $ajx->modalUpdateDepense();
-    break;
+        break;
     case 'btn_modifier_depense':
         $ajx = new ControllerComptable();
         $ajx->updateDepense();
-    break;
+        break;
     case 'btn_delete_depense':
         $ajx = new ControllerComptable();
         $ajx->deleteDepense();
-    break;
+        break;
     // Fin depense
 
     // debut Salaire 
@@ -410,31 +504,31 @@ switch ($action) {
     case 'btn_liste_salaire':
         $ajx = new ControllerComptable();
         $ajx->listeSalaire();
-    break;
+        break;
     case 'btn_showmodal_salaire':
         $ajx = new ControllerComptable();
         $ajx->modalAddSalaire();
-    break;
+        break;
     case 'btn_ajouter_salaire':
         $ajx = new ControllerComptable();
         $ajx->ajouterSalaire();
-    break;
+        break;
     case 'btn_confirm_salaire':
         $ajx = new ControllerComptable();
         $ajx->confirmSalaire();
-    break;
+        break;
     case 'frm_update_salaire':
         $ajx = new ControllerComptable();
         $ajx->modalUpdateSalaire();
-    break;
+        break;
     case 'btn_modifier_salaire':
         $ajx = new ControllerComptable();
         $ajx->updateSalaire();
-    break;
+        break;
     case 'btn_delete_salaire':
         $ajx = new ControllerComptable();
         $ajx->deleteSalaire();
-    break;
+        break;
 
     // Fin de Salaire 
     // Fin Actions pour les hotels
@@ -443,12 +537,12 @@ switch ($action) {
     case 'pdf_facture':
         $fac = new ControllerPrinter();
         $fac->factureData();
-    break;
-        
+        break;
+
     case 'pdf_version_save':
         $pdfGen = new ControllerPrinter();
         $pdfGen->newVersionPdfSave();
-    break;
+        break;
 
     // Fin Actions pour les utilisateurs
     /**
@@ -456,63 +550,62 @@ switch ($action) {
      */
 
 
-// SEXION CHART
+        // SEXION CHART
 
     case 'chart_bilan_dashboard':
         $pdfGen = new ControllerComptable();
         $pdfGen->bilanDashboard();
-    break;
+        break;
 
 // END SEXION CHART
 
 
-/**
- * *******************
- * connexio et deconnexio de user 
- * *******************
- * */
+    /**
+     * *******************
+     * connexio et deconnexio de user 
+     * *******************
+     * */
 
     case 'update_hotel':
         $ajx = new UserController();
         $ajx->updateHotel();
-    break;
+        break;
     case 'btn_upload_logo':
         $ajx = new UserController();
         $ajx->updateLogo();
-    break;
+        break;
 
 
     case 'btnLogin':
         $ajx = new UserController();
         $ajx->loginUser();
-    break;
+        break;
     case 'btnRegister':
         $ajx = new UserController();
         $ajx->registerUser();
-    break;
-     case 'btn_update_user':
+        break;
+    case 'btn_update_user':
         $ajx = new UserController();
         $ajx->updateUser();
-    break;
+        break;
     case 'btn_reset_password':
         $ajx = new UserController();
         $ajx->resetPasswordUser();
-    break;
+        break;
     case 'btn_user_Deconnect':
         $ajx = new UserController();
         $ajx->deconnexion();
-    break;
+        break;
 
-      case 'changer_password':
+    case 'changer_password':
         $ajx = new UserController();
         $ajx->changePasswordUser();
-    break;
-  
-   
+        break;
+
+
 
     // Autres cas...
     default:
         echo json_encode(['status' => 'error', 'message' => 'Action inconnue']);
-    break;
+        break;
 }
-
