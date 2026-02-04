@@ -48,7 +48,7 @@ class BoutiqueController extends MainController
         $columns = ['libelle_boutique', 'email_boutique', 'telephone_boutique', 'telephone2_boutique', 'adresse_boutique', 'boutique_created_at'];
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE, 'etat_boutique' => 1];
+        $whereParams = ['compte_code' => COMPTE_CODE, 'etat_boutique' => ETAT_ACTIF  ];
         $orderBy = ["libelle_boutique" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];

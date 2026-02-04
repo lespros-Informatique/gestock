@@ -80,9 +80,6 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
     
     $router->get('/', [HomeController::class, 'acueil']);
 
-    $router->get('/login', [UserController::class, 'login']);
-
-    $router->get('/categorie', [CategorieController::class, 'categorie']);
     $router->get('/client/liste', [ClientController::class, 'client']);
     $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
     $router->get('/user/liste', [UserController::class, 'user']);

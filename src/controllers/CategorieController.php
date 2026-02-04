@@ -7,6 +7,7 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
+use TABLES;
 
 class CategorieController extends MainController
 {
@@ -40,6 +41,51 @@ class CategorieController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+          public function aGetListeCategorie()
+    {
+
+        extract($_POST);
+        $output = "";
+        $categorie = new Catalogue();
+
+        $likeParams = [];
+        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_categorie' => ETAT_ACTIF];
+        $orderBy = ["libelle_categorie" => "ASC"];
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search']['value'] ?? '';
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['libelle_categorie' => $search];
+        }
+
+        // 🔢 Total
+        $total = $categorie->dataTbleCountTotalRow(TABLES::CATEGORIES, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $categorie->dataTbleCountTotalRow(TABLES::CATEGORIES, $whereParams, $likeParams);
+        // 📄 Données
+
+        $categorieList = $categorie->DataTableFetchAllListe(TABLES::CATEGORIES, $whereParams, $likeParams, $orderBy, $start, $limit);
+
+        $data = [];
+
+
+        $data = CatalogueService::categorieDataService($categorieList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $data
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
+
     
     public function aDeleteCategorie()
     {
@@ -153,7 +199,7 @@ public function aModalUpdateCategorie()
     }
 
 
-        public function aajouterCategorie()
+        public function aAjouterCategorie()
     {
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
