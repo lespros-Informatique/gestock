@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 04 fév. 2026 à 18:41
+-- Généré le : mer. 04 fév. 2026 à 18:25
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -98,24 +98,26 @@ CREATE TABLE IF NOT EXISTS `boutiques` (
   `code_boutique` varchar(50) NOT NULL,
   `compte_code` varchar(50) NOT NULL,
   `libelle_boutique` varchar(150) DEFAULT NULL,
-  `adresse` text,
-  `email` varchar(100) DEFAULT NULL,
-  `telephone` varchar(100) DEFAULT NULL,
-  `logo` varchar(100) DEFAULT NULL,
+  `adresse_boutique` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `email_boutique` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `telephone_boutique` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `telephone2_boutique` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `logo_boutique` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `etat_boutique` int DEFAULT '1',
-  `created_at` datetime DEFAULT NULL,
+  `boutique_created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_boutique`),
   UNIQUE KEY `code_boutique` (`code_boutique`),
   KEY `compte_code` (`compte_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `boutiques`
 --
 
-INSERT INTO `boutiques` (`id_boutique`, `code_boutique`, `compte_code`, `libelle_boutique`, `adresse`, `email`, `telephone`, `logo`, `etat_boutique`, `created_at`) VALUES
-(1, 'BTQ_001', 'CMP_001', 'Boutique Centrale', 'Abidjan Cocody', 'contact@boutique.ci', '0101010101', 'logo.png', 1, '2026-01-31 16:28:28'),
-(2, 'BTQ_002', 'CMP_002', 'Boutique du Marché', 'Abidjan Yopougon', 'contact@marche.ci', '0202020202', 'logo_btq2.png', 1, '2026-01-31 16:32:32');
+INSERT INTO `boutiques` (`id_boutique`, `code_boutique`, `compte_code`, `libelle_boutique`, `adresse_boutique`, `email_boutique`, `telephone_boutique`, `telephone2_boutique`, `logo_boutique`, `etat_boutique`, `boutique_created_at`) VALUES
+(1, 'BTQ_001', 'CMP_001', 'BOUTIQUE CENTRALE', 'Abidjan Cocody', 'contact@boutique.ci', '0101010101', '+1 (642) 921-5139', 'logo.png', 1, '2026-01-31 16:28:28'),
+(2, 'BTQ_002', 'CMP_002', 'Boutique du Marché', 'Abidjan Yopougon', 'contact@marche.ci', '0202020202', NULL, 'logo_btq2.png', 1, '2026-01-31 16:32:32'),
+(3, '3IB5biEDbV', 'CMP_001', 'ACCUSAMUS CONSEQUAT', 'Consequuntur dolor u', 'zylepopyn@mailinator.com', '0102030405', '+1 (802) 813-9428', NULL, 1, '2026-02-04 14:42:01');
 
 -- --------------------------------------------------------
 
@@ -162,14 +164,19 @@ CREATE TABLE IF NOT EXISTS `categories` (
   UNIQUE KEY `code_categorie` (`code_categorie`),
   KEY `compte_code` (`compte_code`),
   KEY `boutique_code` (`boutique_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `categories`
 --
 
 INSERT INTO `categories` (`id_categorie`, `code_categorie`, `boutique_code`, `libelle_categorie`, `description_categorie`, `etat_categorie`, `compte_code`) VALUES
-(1, 'CATEGORIE-1', 'BTQ_001', 'xcdf', 'sqd', 1, 'CMP_001');
+(1, 'CAT_001', 'BTQ_001', 'Boissons', 'Boissons chic', 1, 'CMP_001'),
+(2, 'CAT_101', 'BTQ_002', 'Fruits et légumes', 'Fruits frais', 1, 'CMP_002'),
+(3, 'CAT_102', 'BTQ_002', 'Céréales', 'cereales doux', 1, 'CMP_002'),
+(4, 'CAT_103', 'BTQ_002', 'Produits locaux', 'produits de tous genre', 1, 'CMP_002'),
+(5, 'CAT-S36OV5JY', 'BTQ_001', 'LUXE', 'Sa', 1, 'CMP_001'),
+(6, 'CAT-9B2SCXPV', 'BTQ_001', 'LUXE;,', 'B,bvbjq', 0, 'CMP_001');
 
 -- --------------------------------------------------------
 
@@ -185,13 +192,31 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `nom_client` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `telephone_client` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email_client` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `sexe_client` varchar(10) NOT NULL,
   `etat_client` int DEFAULT '1',
   `compte_code` varchar(50) NOT NULL,
+  `client_created_at` date NOT NULL,
   PRIMARY KEY (`id_client`),
   UNIQUE KEY `code_client` (`code_client`),
   KEY `compte_code` (`compte_code`),
   KEY `boutique_code` (`boutique_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `clients`
+--
+
+INSERT INTO `clients` (`id_client`, `code_client`, `boutique_code`, `nom_client`, `telephone_client`, `email_client`, `sexe_client`, `etat_client`, `compte_code`, `client_created_at`) VALUES
+(1, 'tF0mpgjJUtc2123NY4QAvvXOJaxC', 'BTQ_001', 'CLIENT 4', '0646546464', '', 'Mr', 1, 'CMP_001', '2026-02-02'),
+(2, 'No4TJqx4MAKSd', 'BTQ_001', 'MOMO FAR', '0654564646', NULL, 'Mr', 1, 'CMP_001', '2026-02-02'),
+(3, 'A2ULMF7SIFL', 'BTQ_001', 'TESTYSJSJ', '0102030405', '', 'Mme', 1, 'CMP_001', '2026-02-02'),
+(4, 'scgSRkpxPOjljKXlfah', 'BTQ_001', 'MOMO FAR', '0678765456', '', 'Mlle', 1, 'CMP_001', '2026-02-02'),
+(5, 'vxLsr7nv4XwSBQklowrtLrptYS4a', 'BTQ_001', 'MOMO FAR', '0666765455', NULL, 'Mlle', 1, 'CMP_001', '2026-02-02'),
+(6, 'eFK2popT03', 'BTQ_001', 'MOMO FAR', '0565656565', NULL, 'Mlle', 1, 'CMP_001', '2026-02-02'),
+(7, 'PFZS4h6dYRS0XHDbfyEKLKUIhZi6zg', 'BTQ_001', 'MOMO FAR', '0654594646', NULL, 'Mlle', 1, 'CMP_001', '2026-02-04'),
+(8, 'dofNIrTonBi1wWo1d38ttsjbVl', 'BTQ_001', 'MOMO FAR', '0659956466', NULL, 'Mlle', 1, 'CMP_001', '2026-02-04'),
+(9, 'p1T13OnWvwgttQvcA9AYdK1n0Z', 'BTQ_001', 'MOMO FAR', '0699956464', NULL, 'Mr', 1, 'CMP_001', '2026-02-04'),
+(10, 'tVPaaTCdcZW0yqmoV3', 'BTQ_001', 'OPPJ KJD', '0465454654', '', 'Mr', 1, 'CMP_001', '2026-02-04');
 
 -- --------------------------------------------------------
 
@@ -257,23 +282,28 @@ DROP TABLE IF EXISTS `fournisseurs`;
 CREATE TABLE IF NOT EXISTS `fournisseurs` (
   `id_fournisseur` int NOT NULL AUTO_INCREMENT,
   `code_fournisseur` varchar(50) NOT NULL,
-  `nom` varchar(150) DEFAULT NULL,
-  `telephone` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
+  `nom_fournisseur` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `telephone_fournisseur` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `email_fournisseur` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `sexe_fournisseur` varchar(20) NOT NULL,
+  `fournisseur_created_at` date NOT NULL,
   `etat_fournisseur` int DEFAULT '1',
+  `boutique_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `compte_code` varchar(50) NOT NULL,
   PRIMARY KEY (`id_fournisseur`),
   UNIQUE KEY `code_fournisseur` (`code_fournisseur`),
-  KEY `compte_code` (`compte_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `compte_code` (`compte_code`),
+  KEY `fournisseurs_ibfk_1` (`boutique_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `fournisseurs`
 --
 
-INSERT INTO `fournisseurs` (`id_fournisseur`, `code_fournisseur`, `nom`, `telephone`, `email`, `etat_fournisseur`, `compte_code`) VALUES
-(1, 'fsgJJHZ', 'Fourn1', '0677889977', 'fourn@gmail.com', 1, 'CMP_001'),
-(2, 'dxcsfsfc', 'Fourn2', '01773266288', 'fourn@gmail.com', 1, 'CMP_002');
+INSERT INTO `fournisseurs` (`id_fournisseur`, `code_fournisseur`, `nom_fournisseur`, `telephone_fournisseur`, `email_fournisseur`, `sexe_fournisseur`, `fournisseur_created_at`, `etat_fournisseur`, `boutique_code`, `compte_code`) VALUES
+(1, 'VDqYoCFtFmQKgcrdvd7LRHj', 'COMMODO RATIONE NON 2', '0102030405', '', 'Mlle', '2026-02-04', 1, 'BTQ_001', 'CMP_001'),
+(2, 'SJsL1xckxBRMUemY6ir4HqMjT1QKoJx', 'VENTOSUS ADIUVO DERIDEO', '0102030605', NULL, 'Mr', '2026-02-04', 1, 'BTQ_001', 'CMP_001'),
+(3, 'tcdxEKAHSNplJliYun', 'CUM DESERUNT VEL ET', '0002350405', NULL, 'Mlle', '2026-02-04', 1, 'BTQ_001', 'CMP_001');
 
 -- --------------------------------------------------------
 
@@ -334,29 +364,14 @@ CREATE TABLE IF NOT EXISTS `marks` (
   `id_mark` int NOT NULL AUTO_INCREMENT,
   `code_mark` varchar(50) NOT NULL,
   `boutique_code` varchar(50) NOT NULL,
-  `libelle_mark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `libelle` varchar(100) DEFAULT NULL,
   `etat_mark` int DEFAULT '1',
   `compte_code` varchar(50) NOT NULL,
   PRIMARY KEY (`id_mark`),
   UNIQUE KEY `code_mark` (`code_mark`),
   KEY `compte_code` (`compte_code`),
   KEY `boutique_code` (`boutique_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `marks`
---
-
-INSERT INTO `marks` (`id_mark`, `code_mark`, `boutique_code`, `libelle_mark`, `etat_mark`, `compte_code`) VALUES
-(2, 'MRK_001', 'BTQ_001', 'NIKE', 1, 'CMP_001'),
-(3, 'MRK_002', 'BTQ_001', 'ADIDA', 1, 'CMP_001'),
-(4, 'MRK_003', 'BTQ_001', 'Puma', 0, 'CMP_001'),
-(5, 'MRK_004', 'BTQ_002', 'Samsung', 1, 'CMP_002'),
-(6, 'MRK_005', 'BTQ_002', 'Apple', 1, 'CMP_002'),
-(7, 'MRK_006', 'BTQ_002', 'Tecno', 1, 'CMP_002'),
-(8, 'CAT-1R9QU5KX', 'BTQ_001', 'STANLEY', 0, 'CMP_001'),
-(9, 'CAT-QR808VOX', 'BTQ_001', 'MAKITAS', 1, 'CMP_001'),
-(10, 'CAT-PHRIC5W5', 'BTQ_001', 'LEGRAND', 0, 'CMP_001');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -408,15 +423,7 @@ CREATE TABLE IF NOT EXISTS `produits` (
   KEY `categorie_code` (`categorie_code`),
   KEY `mark_code` (`mark_code`),
   KEY `unite_code` (`unite_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `produits`
---
-
-INSERT INTO `produits` (`id_produit`, `code_produit`, `code_bar`, `boutique_code`, `categorie_code`, `mark_code`, `unite_code`, `libelle_produit`, `prix_achat`, `prix_vente`, `garantie_produit`, `stock_produit`, `etat_produit`, `compte_code`) VALUES
-(3, 'PORXSELZ22d', '123333221', 'BTQ_001', 'CAT-9B2SCXPV', 'MRK_001', 'UNT_005', 'Chaussure Nike Air', 25000.00, 35000.00, 2, 50, 1, 'CMP_001'),
-(4, 'xCXCs', 'wwdsx', 'BTQ_002', 'CAT-9B2SCXPV', 'MRK_002', 'UNT_006', 'Survêtement Adidas', 18000.00, 28000.00, 1, 100, 1, 'CMP_002');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -498,28 +505,14 @@ CREATE TABLE IF NOT EXISTS `unites` (
   `id_unite` int NOT NULL AUTO_INCREMENT,
   `code_unite` varchar(50) NOT NULL,
   `boutique_code` varchar(50) NOT NULL,
-  `libelle_unite` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `libelle` varchar(50) DEFAULT NULL,
   `etat_unite` int DEFAULT '1',
   `compte_code` varchar(50) NOT NULL,
   PRIMARY KEY (`id_unite`),
   UNIQUE KEY `code_unite` (`code_unite`),
   KEY `compte_code` (`compte_code`),
   KEY `boutique_code` (`boutique_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `unites`
---
-
-INSERT INTO `unites` (`id_unite`, `code_unite`, `boutique_code`, `libelle_unite`, `etat_unite`, `compte_code`) VALUES
-(1, 'UNT_001', 'BTQ_001', 'PIèCE', 1, 'CMP_001'),
-(2, 'UNT_002', 'BTQ_001', 'Carton', 1, 'CMP_001'),
-(3, 'UNT_003', 'BTQ_001', 'Kilogramme', 1, 'CMP_001'),
-(4, 'UNT_004', 'BTQ_001', 'LITRE', 1, 'CMP_001'),
-(5, 'UNT_005', 'BTQ_002', 'Pièce', 1, 'CMP_002'),
-(6, 'UNT_006', 'BTQ_002', 'Paquet', 1, 'CMP_002'),
-(7, 'UNT_007', 'BTQ_002', 'Sachet', 1, 'CMP_002'),
-(8, 'CAT-3NL5AOB9', 'BTQ_001', 'POPSQS', 0, 'CMP_001');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -658,7 +651,7 @@ ALTER TABLE `depenses`
 -- Contraintes pour la table `fournisseurs`
 --
 ALTER TABLE `fournisseurs`
-  ADD CONSTRAINT `fournisseurs_ibfk_1` FOREIGN KEY (`compte_code`) REFERENCES `comptes` (`code_compte`);
+  ADD CONSTRAINT `fournisseurs_ibfk_1` FOREIGN KEY (`boutique_code`) REFERENCES `boutiques` (`code_boutique`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Contraintes pour la table `ligne_achats`

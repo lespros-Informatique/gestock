@@ -3256,37 +3256,39 @@ function openModalAddCategorie() {
     });
 }
 
-ajouter_categorie();
+// ajouter_categorie();
 
-function ajouter_categorie() {
-    $("body").delegate("#frmAddCategorie", "submit", function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
+// function ajouter_categorie() {
+//     $("body").delegate("#frmAddCategorie", "submit", function(e) {
+//         e.preventDefault();
+//         var data = $(this).serialize();
         
-        $.ajax({
-            method: "POST",
-            url: URL_AJAX,
-            data: data,
-            dataType: "json",
-            beforeSend: function() {
-                btnReq("#btn_ajouter_categorie", "Enregistrement...");
-            },
-            success: function(data) {
-                btnRes("#btn_ajouter_categorie");
-                if (data.code == 200) {
-                    // resetDataTable();
-                    $.notify(data.message, "success");
-                    $("#categorie-modal").modal("hide");
-                    $("#sexion_categorie").load(" #sexion_categorie > *");
-                    // setInterval(initDataTable, 120);
+//         $.ajax({
+//             method: "POST",
+//             url: URL_AJAX,
+//             data: data,
+//             dataType: "json",
+//             beforeSend: function() {
+//                 btnReq("#btn_ajouter_categorie", "Enregistrement...");
+//             },
+//             success: function(data) {
+//                 console.log(data);
+                
+//                 btnRes("#btn_ajouter_categorie");
+//                 if (data.code == 200) {
+//                     // resetDataTable();
+//                     $.notify(data.message, "success");
+//                     $("#categorie-modal").modal("hide");
+//                     $("#sexion_categorie").load(" #sexion_categorie > *");
+//                     // setInterval(initDataTable, 120);
 
-                } else {
-                    $.notify(data.message);
-                }
-            }
-        })
-    });
-}
+//                 } else {
+//                     $.notify(data.message);
+//                 }
+//             }
+//         })
+//     });
+// }
 
 openModalUpdateCategorie();
 

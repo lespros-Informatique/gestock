@@ -13,6 +13,9 @@ use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\MarkController;
+use App\Controllers\ProduitController;
+use App\Controllers\UniteController;
 use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 
@@ -323,9 +326,22 @@ switch ($action) {
         $ajx->deleteService();
         break;
 
-    // ajouter categorie chambre
+    // ajouter categorie 
+
+    case 'bcharger_data_categories':
+        $ajx = new CategorieController();
+        $ajx->aGetListeCategorie();
+    break;
     case 'btn_showmodal_categorie':
         $ajx = new CategorieController();
+        $ajx->aModalAddCategorie();
+    break;
+
+    case 'btn_ajouter_categorie':
+        $ajx = new CategorieController();
+        
+        $ajx->aAjouterCategorie();
+    break;
         $ajx->amodalAddCategorie();
         break;
 
@@ -336,6 +352,39 @@ switch ($action) {
         break;
     case 'modal_modifier_categorie':
         $ajx = new CategorieController();
+        $ajx->aModalUpdateCategorie();
+    break;
+    case 'btn_modifier_categorie':
+        $ajx = new CategorieController();
+        $ajx->aUpdateCategorie();
+    break;
+    case 'btn_delete_categorie':
+        $ajx = new CategorieController();
+        $ajx->aDeleteCategorie();
+    break;
+    // ajouter Produit 
+    case 'btn_showmodal_produit':
+        $ajx = new ProduitController();
+        $ajx->aModalAddProduits();
+    break;
+
+    case 'btn_ajouter_produit':
+        $ajx = new ProduitController();
+        
+        $ajx->aAjouterProduit();
+    break;
+    case 'modal_modifier_produit':
+        $ajx = new ProduitController();
+        $ajx->aModalUpdateProduit();
+    break;
+    case 'btn_modifier_produit':
+        $ajx = new ProduitController();
+        $ajx->aUpdateProduit();
+    break;
+    case 'btn_delete_produit':
+        $ajx = new ProduitController();
+        $ajx->aDeleteProduit();
+    break;
         $ajx->amodalUpdateCategorie();
         break;
     case 'btn_modifier_categorie':
@@ -346,6 +395,54 @@ switch ($action) {
         $ajx = new CategorieController();
         $ajx->adeleteCategorie();
         break;
+
+    // ajouter mark 
+    case 'btn_showmodal_mark':
+        $ajx = new MarkController();
+        $ajx->aModalAddMark();
+    break;
+
+    case 'btn_ajouter_mark':
+        $ajx = new MarkController();
+        
+        $ajx->aAjouterMark();
+    break;
+    case 'modal_modifier_mark':
+        $ajx = new MarkController();
+        $ajx->aModalUpdateMark();
+    break;
+    case 'btn_modifier_mark':
+        $ajx = new MarkController();
+        $ajx->aUpdateMark();
+    break;
+    case 'btn_delete_mark':
+        $ajx = new MarkController();
+        $ajx->aDeleteMark();
+    break;
+
+    // ajouter Unite 
+    case 'btn_showmodal_unite':
+        $ajx = new UniteController();
+        $ajx->aModalAddUnite();
+    break;
+
+    case 'btn_ajouter_unite':
+        $ajx = new UniteController();
+        
+        $ajx->aAjouterUnite();
+    break;
+    case 'modal_modifier_unite':
+        $ajx = new UniteController();
+        $ajx->aModalUpdateUnite();
+    break;
+    case 'btn_modifier_unite':
+        $ajx = new UniteController();
+        $ajx->aUpdateUnite();
+    break;
+    case 'btn_delete_unite':
+        $ajx = new UniteController();
+        $ajx->aDeleteUnite();
+    break;
 
     // ajouter chambre
     case 'btn_showmodal_chambre':

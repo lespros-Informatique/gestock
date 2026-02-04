@@ -1,7 +1,7 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="">G-HOTEL</a>
+            <a class="navbar-brand" href="">G-STOCK</a>
 
         </div>
     </nav>

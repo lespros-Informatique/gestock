@@ -316,16 +316,19 @@
                                 </a>
                             </li>
                             <li>
+                                <a class="item-link" href="<?=  url('mark')?>">
                                 <a class="item-link" href="<?= route('catalogue.depense') ?>">
                                     <span class="sub-item">Marque</span>
                                 </a>
                             </li>
                             <li>
+                                <a class="item-link" href="<?=  url('unite')?>">
                                 <a class="item-link" href="<?= route('catalogue.versement') ?>">
                                     <span class="sub-item">Unité</span>
                                 </a>
                             </li>
                             <li>
+                                <a class="item-link" href="<?=  url('produit')?>">
                                 <a class="item-link" href="<?= route('catalogue.versement') ?>">
                                     <span class="sub-item">Produit</span>
                                 </a>
