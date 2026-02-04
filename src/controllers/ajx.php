@@ -13,6 +13,7 @@ use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\MarkController;
 use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 
@@ -326,6 +327,14 @@ switch ($action) {
     // ajouter categorie 
     case 'btn_showmodal_categorie':
         $ajx = new CategorieController();
+        $ajx->aModalAddCategorie();
+    break;
+
+    case 'btn_ajouter_categorie':
+        $ajx = new CategorieController();
+        
+        $ajx->aAjouterCategorie();
+    break;
         $ajx->amodalAddCategorie();
         break;
 
@@ -356,6 +365,30 @@ switch ($action) {
         $ajx = new CategorieController();
         $ajx->adeleteCategorie();
         break;
+
+    // ajouter mark 
+    case 'btn_showmodal_mark':
+        $ajx = new MarkController();
+        $ajx->aModalAddMark();
+    break;
+
+    case 'btn_ajouter_mark':
+        $ajx = new MarkController();
+        
+        $ajx->aAjouterMark();
+    break;
+    case 'modal_modifier_mark':
+        $ajx = new MarkController();
+        $ajx->aModalUpdateMark();
+    break;
+    case 'btn_modifier_mark':
+        $ajx = new MarkController();
+        $ajx->aUpdateMark();
+    break;
+    case 'btn_delete_mark':
+        $ajx = new MarkController();
+        $ajx->aDeleteMark();
+    break;
 
     // ajouter chambre
     case 'btn_showmodal_chambre':

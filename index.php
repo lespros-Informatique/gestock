@@ -29,6 +29,7 @@ use App\Controllers\ControllerPrinter;
 use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
+use App\Controllers\MarkController;
 use App\Core\Router;
 use App\Middlewares\RouteMiddleWare;
 use Phroute\Phroute\Dispatcher;
@@ -66,6 +67,12 @@ $router = new Router();
 
 $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
+    $router->get('/login',[UserController::class, 'login']);
+    
+    $router->get('/categorie',[CategorieController::class, 'categorie']);
+
+    $router->get('/mark',[MarkController::class, 'mark']);
+    
     $router->get('/', [HomeController::class, 'acueil']);
 
     $router->get('/login', [UserController::class, 'login']);
