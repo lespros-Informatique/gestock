@@ -7,6 +7,7 @@
 use App\Core\Auth;
 use App\Models\Catalogue;
 use App\Models\Factory;
+use App\Models\Personne;
 use App\Services\Service;
 
 function bTest()
@@ -14,7 +15,8 @@ function bTest()
   echo "test";
 }
 
-function aTest(){
+function aTest()
+{
   return true;
 }
 function chargerDashboardAdmin()
@@ -1350,7 +1352,15 @@ function daysBetweenDates($dateDebut, $dateFin)
   // Retourner le nombre de jours
   return $intervalle->days + 1;
 }
+function bchargerListeClient()
+{
 
+  $personne = new Personne();
+  $clients = $personne->getFieldsForParams(TABLES::CLIENTS, ['boutique_code' => BOUTIQUE_CODE], [], 'fetchAll', ['nom_client ASC']);
+  if (!empty($clients))
+
+    return personneService()::clientDataService($clients);
+}
 
 function chargerListeClient($start, $end)
 {

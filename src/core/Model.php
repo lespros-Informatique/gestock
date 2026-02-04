@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Core;
 
 use Exception;
@@ -33,17 +34,16 @@ abstract class Model
         }
 
         if (!$this->id) {
-           $this->getId();
-        //    get_class_vars($this->id);
+            $this->getId();
+            //    get_class_vars($this->id);
         }
-        
     }
 
     // public function setTable( string $table): self
     // {
     //     $this->table = $table;
     //     return $this;
-      
+
     // }
 
     public function getId(): string
@@ -51,30 +51,30 @@ abstract class Model
         return $this->id;
     }
     /**
- * Définir la colonne pour lastInsertId
- */
-public function setLastInsertIdColumn(string $column): self
-{
-    $this->lastInsertIdColumn = $column;
-    return $this;
-}
-
-/**
- * Retourne le dernier ID inséré
- */
-public function lastInsertId(): string
-{
-    if ($this->lastInsertIdColumn) {
-        // Si la colonne est définie, récupère la valeur via une requête
-        $stmt = $this->db->query(
-            "SELECT LAST_INSERT_ID({$this->lastInsertIdColumn}) as last_id"
-        );
-        return $stmt->fetch()['last_id'];
+     * Définir la colonne pour lastInsertId
+     */
+    public function setLastInsertIdColumn(string $column): self
+    {
+        $this->lastInsertIdColumn = $column;
+        return $this;
     }
 
-    // Sinon retour par défaut PDO
-    return $this->db->lastInsertId();
-}
+    /**
+     * Retourne le dernier ID inséré
+     */
+    public function lastInsertId(): string
+    {
+        if ($this->lastInsertIdColumn) {
+            // Si la colonne est définie, récupère la valeur via une requête
+            $stmt = $this->db->query(
+                "SELECT LAST_INSERT_ID({$this->lastInsertIdColumn}) as last_id"
+            );
+            return $stmt->fetch()['last_id'];
+        }
+
+        // Sinon retour par défaut PDO
+        return $this->db->lastInsertId();
+    }
 
 
     public function all()
@@ -82,14 +82,14 @@ public function lastInsertId(): string
         return $this->getQuery()->fetchAll();
     }
 
-    public function first():mixed
+    public function first(): mixed
     {
         // $this->limit(1);
         $this->fetch = 'fetch';
         return $this->getQuery()->fetchAll();
     }
 
-   
+
     public function find(string $table, string $field, string $id)
     {
         $stmt = $this->db->prepare("SELECT * FROM {$table} WHERE {$field} = ?");
@@ -153,9 +153,140 @@ public function lastInsertId(): string
 
         return new class($results) {
             private $data;
-            public function __construct($data) { $this->data = $data; }
-            public function fetchAll() { return $this->data; }
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+            public function fetchAll()
+            {
+                return $this->data;
+            }
         };
+    }
+
+    function dataTbleCountTotalRow($table, array $whereParams, $likeParams = [])
+    {
+
+        $where = '';
+        if (!empty($whereParams)) {
+            $where = 'WHERE ';
+            $where .=  implode(
+                ' AND ',
+                array_map(fn($f) => "$f = :$f ", array_keys($whereParams))
+            );
+        }
+
+        if (!empty($likeParams)) {
+            $where .= empty($where) ? ' WHERE ' : ' AND ';
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                // $key = "$field";
+                $likes[] = "$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            // return $likeParams;
+            $where .= '(' . implode(' OR ', $likes) . ')';
+        }
+
+        $sql = "SELECT COUNT(*) FROM $table $where";
+        $stmt = $this->db->prepare($sql);
+        // return $sql;
+        $stmt->execute(array_merge($whereParams, $likeParams));
+        return (int) $stmt->fetchColumn();
+    }
+
+    function DataTableFetchAllListe(string $table, array $whereParams,  array $likeParams, array $orderBy = [], int $start = 0, int $limit = 10)
+    {
+
+        $where = '';
+        if (!empty($whereParams)) {
+            $where = 'WHERE ';
+            $where .=  implode(
+                ' AND ',
+                array_map(fn($f) => "$f = :$f ", array_keys($whereParams))
+            );
+        }
+
+        if (!empty($likeParams)) {
+            $where .= empty($where) ? ' WHERE ' : ' AND ';
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                $likes[] = "$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            $where .= '(' . implode(' OR ', $likes) . ')';
+        }
+
+        $orders = '';
+
+        if (!empty($orderBy)) {
+            $orders = 'ORDER BY ' . implode(', ', array_map(fn($f) => "$f " . $orderBy[$f], array_keys($orderBy)));
+        }
+
+        $sql = "SELECT * FROM $table $where $orders LIMIT :start, :limit";
+
+        $stmt = $this->db->prepare($sql);
+
+        // Bind WHERE params
+        if (!empty($whereParams)) {
+            foreach ($whereParams as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+        }
+
+        if (!empty($likeParams)) {
+            foreach ($likeParams as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+        }
+
+        // ✅ Bind LIMIT params correctement
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+
+        // return $sql;
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getFieldsForParams(string $table, array $params = [], array $columns = [], string $methodFetch = 'fetch', array $order = [])
+    {
+        $result = [];
+        $cols = !empty($columns) ? implode(', ', $columns) : '*';
+        $orderBy = !empty($order) ? ' ORDER BY ' . implode(', ', $order) : '';
+
+        try {
+            if (empty($params)) {
+                return [];
+            }
+
+            // Champs
+            $fields = array_keys($params);
+
+            // field = :field
+            $conditions = implode(
+                ' AND ',
+                array_map(fn($f) => "$f = :$f", $fields)
+            );
+
+            $sql = "SELECT {$cols} FROM {$table} WHERE {$conditions} {$orderBy}";
+            $stmt = $this->db->prepare($sql);
+
+            // Exécution directe (PDO fait le binding)
+            $stmt->execute($params);
+
+            $data = ($methodFetch === 'fetchAll')
+                ? $stmt->fetchAll()
+                : $stmt->fetch();
+
+            if ($data)
+                $result = $data;
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $result;
     }
 
     public function select(string $table, array $columns = ['*']): self
@@ -175,7 +306,7 @@ public function lastInsertId(): string
     //     return $stmt->fetchAll();
     // }
 
-   
+
     public function create(string $table, array $data)
     {
         $result = false;
@@ -191,26 +322,30 @@ public function lastInsertId(): string
         return $result;
     }
 
-    public function update(string $table,string $key,string $id, array $data)
+    public function update(string $table, string $key, string $id, array $data)
     {
         $result = false;
-        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
-        $sql = "UPDATE {$table} SET $set WHERE {$key} = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($data, ['id' => $id]));
-        if ($stmt->rowCount() > 0) {
-            $result = true;
+        try {
+            $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+            $sql = "UPDATE {$table} SET $set WHERE {$key} = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(array_merge($data, ['id' => $id]));
+            if ($stmt->rowCount() > 0) {
+                $result = true;
+            }
+        } catch (\Exception $e) {
+            die($e->getMessage());
         }
         return $result;
     }
 
-    public function update2(string $table,array $keys, array $data)
+    public function update2(string $table, array $keys, array $data)
     {
         $result = false;
-         $key = implode(' AND ', array_map(fn($k) => "$k = :$k", array_keys($keys)));
-         $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
-        
-         $sql = "UPDATE {$table} SET $set WHERE $key";
+        $key = implode(' AND ', array_map(fn($k) => "$k = :$k", array_keys($keys)));
+        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+
+        $sql = "UPDATE {$table} SET $set WHERE $key";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array_merge($data, $keys));
 
@@ -218,7 +353,6 @@ public function lastInsertId(): string
             $result = true;
         }
         return $result;
-
     }
 
     public function updateServiceClient(string $code)
@@ -227,9 +361,9 @@ public function lastInsertId(): string
 
         $sql = "UPDATE consommations SET etat_consommation = :etat, caisse_id = :caisse_id WHERE reservation_id = :code AND etat_consommation = :statut AND hotel_id = :hotel_id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute( [
-            'code' => $code, 
-            'statut' => 0, 
+        $stmt->execute([
+            'code' => $code,
+            'statut' => 0,
             'etat' => 1,
             'hotel_id' => Auth::user('hotel_id'),
             'caisse_id' => Auth::user('caisse')
@@ -241,7 +375,7 @@ public function lastInsertId(): string
         return $result;
     }
 
-    public function delete(string $table,string $key,string $id)
+    public function delete(string $table, string $key, string $id)
     {
         $stmt = $this->db->prepare("DELETE FROM {$table} WHERE {$this->id} = ?");
         return $stmt->execute([$id]);
@@ -264,20 +398,18 @@ public function lastInsertId(): string
     {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        return $data =$stmt->$fetch();
-        
+        return $data = $stmt->$fetch();
     }
 
- 
+
 
     public function generatorCode(string $table, string $field)
-{
-    $code= generetor(rand(5,32));
+    {
+        $code = generetor(rand(5, 32));
 
-    if(!empty($this->find($table,$field,$code))){
-        $this->generatorCode($table,$field);
+        if (!empty($this->find($table, $field, $code))) {
+            $this->generatorCode($table, $field);
+        }
+        return $code;
     }
-    return $code;   
-}
-
 }

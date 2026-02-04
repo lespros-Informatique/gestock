@@ -1,7 +1,8 @@
 <?php
 // if (session_status() === PHP_SESSION_NONE) {
-    session_name("APP15464655_SESSION");
-    session_start();
+session_name("APP15464655_SESSION");
+session_start();
+include __DIR__ . '/src/Core/security.php';
 
 // }
 // Charger le fichier de configuration une fois en ligne
@@ -16,13 +17,16 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
+use App\Controllers\ClientController;
 use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerException;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerMailer;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
 use App\Core\Router;
@@ -32,7 +36,7 @@ use Phroute\Phroute\Dispatcher;
 
 
 
-$path = parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH);
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 $title = "";
 
@@ -60,14 +64,17 @@ $router = new Router();
  * ************************************************
  */
 
-$router->group(['before' => '','prefix' => 'gestock'], function($router){
-    
-    $router->get('/',[HomeController::class, 'acueil']);
+$router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
-    $router->get('/login',[UserController::class, 'login']);
-    
-    $router->get('/categorie',[CategorieController::class, 'categorie']);
-    
+    $router->get('/', [HomeController::class, 'acueil']);
+
+    $router->get('/login', [UserController::class, 'login']);
+
+    $router->get('/categorie', [CategorieController::class, 'categorie']);
+    $router->get('/client/liste', [ClientController::class, 'client']);
+    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
+    $router->get('/user/liste', [UserController::class, 'user']);
+    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
 });
 
 /**
@@ -77,8 +84,8 @@ $router->group(['before' => '','prefix' => 'gestock'], function($router){
  */
 
 
-$router->group(['before' => '','prefix' => 'hotel/email'], function($router){
-    
+$router->group(['before' => '', 'prefix' => 'hotel/email'], function ($router) {
+
     // $router->get('/',[ControllerMailer::class, 'acueil'],['before' => 'auth']);
 });
 
@@ -96,40 +103,35 @@ $router->group(['before' => '','prefix' => 'hotel/email'], function($router){
  * ************************************************
  */
 
- $router->group(['before' => '','prefix' => 'hotel/print'], function($router){
-
-});
+$router->group(['before' => '', 'prefix' => 'hotel/print'], function ($router) {});
 
 
 
-    /**
+/**
  * ************************************************
  *  Routes SEXION HOTEL LISTE RECAP
  * ************************************************
  */
 
-  /**
+/**
  * ************************************************
  *  Routes SEXION HOTEL AUTRES
  * ************************************************
  */
 
 
- // Route pour les utilisateurs connectés
- 
- 
-$router->get('hotel/',[UserController::class, 'acueil'],['before' => 'auth'])->name('home');
+// Route pour les utilisateurs connectés
+
+
+$router->get('hotel/', [UserController::class, 'acueil'], ['before' => 'auth'])->name('home');
 
 // Route pour sexion admin
 
 
 
 // Route pour les visiteurs
-$router->group(["prefix" => 'hotel/welcome'],function($router){
-    $router->get('/',[UserController::class, 'home']);
-    
-
-    
+$router->group(["prefix" => 'hotel/welcome'], function ($router) {
+    $router->get('/', [UserController::class, 'home']);
 });
 
 /*
@@ -138,7 +140,7 @@ je
 /**
  * Page for test
  */
-    $router->get('hotel/test',[Controller::class, 'testing']);
+$router->get('hotel/test', [Controller::class, 'testing']);
 
 
 /*
@@ -147,9 +149,9 @@ je
 /**
  * Page not found
  */
-$router->get('hotel/page-not-found',[ControllerException::class, 'notFound'])->name('page.notfound');
+$router->get('hotel/page-not-found', [ControllerException::class, 'notFound'])->name('page.notfound');
 
-  /**
+/**
  * ************************************************
  *  FIN Routes SEXION HOTEL AUTRES
  * ************************************************
@@ -157,6 +159,6 @@ $router->get('hotel/page-not-found',[ControllerException::class, 'notFound'])->n
 
 
 $dispatcher = new Dispatcher($router->getData());
-$response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'],$path);
+$response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);
 
 echo $response;
