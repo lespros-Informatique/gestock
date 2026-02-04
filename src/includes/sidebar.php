@@ -5,16 +5,19 @@
             <!-- user connected -->
             <div class="user">
                 <div class="avatar-sm float-left mr-2">
-                <div class="name-user">
-                                    <span style="font-size: 16px; font-weight: bold;" class=""><?php //shortName(auth()->user('nom')) ?></span>
-                                </div>
+                    <div class="name-user">
+                        <span style="font-size: 16px; font-weight: bold;" class=""><?php //shortName(auth()->user('nom')) 
+                                                                                    ?></span>
+                    </div>
                 </div>
-                
+
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>
-                            <?php //(string) auth()->user("nom")?>
-                            <span class="user-level text-success"><?php //(string) auth()->user("fonction")?></span>
+                            <?php //(string) auth()->user("nom")
+                            ?>
+                            <span class="user-level text-success"><?php //(string) auth()->user("fonction")
+                                                                    ?></span>
                             <span class="caret"></span>
                         </span>
                     </a>
@@ -24,7 +27,8 @@
                         <ul class="nav">
                             <li>
                                 <a class="item-link" href="<?php
-                                //  route('user.profile',['code' => auth()->user('id')])?>">
+                                                            //  route('user.profile',['code' => auth()->user('id')])
+                                                            ?>">
                                     <span class="link-collapse">Profile</span>
                                 </a>
                             </li>
@@ -43,15 +47,16 @@
 
             <ul class="nav nav-primary">
                 <li class="nav-item">
-                    <a style="background: #8debfcf1;" class=""  href="<?= route('home') ?>">
+                    <a style="background: #8debfcf1;" class="" href="<?= route('home') ?>">
                         <i class="fas fa-home"></i>
-                    <p>ACCUEIL</p>
+                        <p>ACCUEIL</p>
                     </a>
                 </li>
 
                 <!-- Groupes::ADMIN => -->
 
-                <?php //if(auth()->hasGroupe(Groupes::ADMIN)): ?>
+                <?php //if(auth()->hasGroupe(Groupes::ADMIN)): 
+                ?>
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#admin">
                         <i class="fas fa-pen-square"></i>
@@ -60,10 +65,26 @@
                     </a>
                     <div class="collapse" id="admin">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::ADMIN_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::ADMIN_H)): 
+                            ?>
+                            <li>
+                                <a class="item-link" href="<?= url('client/liste') ?>">
+                                    <span class="sub-item">Clients</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="item-link" href="<?= url('boutique/liste') ?>">
+                                    <span class="sub-item">Boutiques</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="item-link" href="<?= url('fournisseur/liste') ?>">
+                                    <span class="sub-item">Fournisseurs</span>
+                                </a>
+                            </li>
 
                             <li>
-                                <a class="item-link" href="<?= route('admin.user') ?>">
+                                <a class="item-link" href="<?= url('user/liste') ?>">
                                     <span class="sub-item">Employés</span>
                                 </a>
                             </li>
@@ -72,29 +93,34 @@
                                     <span class="sub-item">Fonction</span>
                                 </a>
                             </li>
-                            <?php //endif; ?>
-                            <?php //if(auth()->hasRole(Roles::DASHBOARD_H)): ?>
+                            <?php //endif; 
+                            ?>
+                            <?php //if(auth()->hasRole(Roles::DASHBOARD_H)): 
+                            ?>
 
                             <li>
                                 <a class="item-link" href="<?= route('admin.role') ?>">
                                     <span class="sub-item">Permissions</span>
                                 </a>
                             </li>
-                             <li>
-                                <a class="item-link" href="<?=  route('hotel.abonnement')?>">
+                            <li>
+                                <a class="item-link" href="<?= route('hotel.abonnement') ?>">
                                     <span class="sub-item">Abonnement</span>
                                 </a>
                             </li>
-                            
-                            <?php //endif; ?>
+
+                            <?php //endif; 
+                            ?>
 
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
                 <!-- Groupes::COMPTABLE => -->
-                <?php //if(auth()->hasGroupe(Groupes::COMPTABLE)): ?>
+                <?php //if(auth()->hasGroupe(Groupes::COMPTABLE)): 
+                ?>
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#comptable">
                         <i class="fas fa-pen-square"></i>
@@ -103,42 +129,48 @@
                     </a>
                     <div class="collapse" id="comptable">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): 
+                            ?>
 
-                                <li>
-                                <a class="item-link" href="<?=  route('comptable.caisse')?>">
+                            <li>
+                                <a class="item-link" href="<?= route('comptable.caisse') ?>">
                                     <span class="sub-item">Caisse</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('comptable.depense')?>">
+                                <a class="item-link" href="<?= route('comptable.depense') ?>">
                                     <span class="sub-item">Depenses</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('comptable.versement')?>">
+                                <a class="item-link" href="<?= route('comptable.versement') ?>">
                                     <span class="sub-item">Versements</span>
                                 </a>
                             </li>
 
-                            <?php //endif; ?>
+                            <?php //endif; 
+                            ?>
 
-                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): 
+                            ?>
 
-                           <li>
-                                <a class="item-link" href="<?=  route('hotel.salaire')?>">
+                            <li>
+                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
                                     <span class="sub-item">Salaires</span>
-                              </a>
+                                </a>
                             </li>
-                            <?php //endif; ?>
+                            <?php //endif; 
+                            ?>
 
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
                 <!-- Groupes::HOTEL => -->
-                <?php //if(auth()->hasGroupe(Groupes::HOTEL)): ?>
+                <?php //if(auth()->hasGroupe(Groupes::HOTEL)): 
+                ?>
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#hotel">
                         <i class="fas fa-table"></i>
@@ -147,43 +179,49 @@
                     </a>
                     <div class="collapse" id="hotel">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::DEPENSE_H)) :?>
-                            
+                            <?php //if(auth()->hasRole(Roles::DEPENSE_H)) :
+                            ?>
+
                             <li>
                                 <a class="item-link" href="<?= route('hotel.depenses') ?>">
                                     <span class="sub-item">Depenses</span>
                                 </a>
                             </li>
-                            <?php //endif; ?>
-                            
-                            
-                            <?php //if(auth()->hasRole(Roles::MANAGER_H)): ?>
+                            <?php //endif; 
+                            ?>
+
+
+                            <?php //if(auth()->hasRole(Roles::MANAGER_H)): 
+                            ?>
                             <li>
                                 <a class="item-link" href="<?= route('hotel.chambres') ?>">
                                     <span class="sub-item">Chambres</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('categorie.chambres')?>">
+                                <a class="item-link" href="<?= route('categorie.chambres') ?>">
                                     <span class="sub-item">Type Chambre</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('hotel.services')?>">
+                                <a class="item-link" href="<?= route('hotel.services') ?>">
                                     <span class="sub-item">Services</span>
                                 </a>
                             </li>
-                            <?php //endif; ?>
-                           
+                            <?php //endif; 
+                            ?>
+
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
-            
+
 
                 <!-- Groupes::RECEPTION => -->
-                <?php //if(auth()->hasGroupe(Groupes::RECEPTION)): ?>
+                <?php //if(auth()->hasGroupe(Groupes::RECEPTION)): 
+                ?>
 
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#reception">
@@ -193,7 +231,8 @@
                     </a>
                     <div class="collapse" id="reception">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::RECEPTION_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::RECEPTION_H)): 
+                            ?>
                             <li>
                                 <a class="item-link" href="<?= route('hotel.reservation') ?>">
                                     <span class="sub-item">Reservation</span>
@@ -205,27 +244,30 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('client')?>">
+                                <a class="item-link" href="<?= route('client') ?>">
                                     <span class="sub-item">Liste client</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('versement')?>">
+                                <a class="item-link" href="<?= route('versement') ?>">
                                     <span class="sub-item">Ma caisse</span>
                                 </a>
                             </li>
-                            <?php //endif; ?>
+                            <?php //endif; 
+                            ?>
 
 
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
 
 
                 <!-- Groupes::PARAMETRE => -->
-                <?php //if(auth()->hasGroupe(Groupes::PARAMETRE)): ?>
+                <?php //if(auth()->hasGroupe(Groupes::PARAMETRE)): 
+                ?>
 
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#parametre">
@@ -235,24 +277,28 @@
                     </a>
                     <div class="collapse" id="parametre">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::PARAMETRE)): ?>
+                            <?php //if(auth()->hasRole(Roles::PARAMETRE)): 
+                            ?>
 
                             <li>
                                 <a class="item-link" href="<?= route('setting.home') ?>">
                                     <span class="sub-item">Hotel</span>
                                 </a>
                             </li>
-                           
-                            <?php //endif; ?>
+
+                            <?php //endif; 
+                            ?>
 
 
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
-                    <!-- Groupes::catalogue => -->
-                <?php //if(auth()->hasGroupe(Groupes::catalogue)): ?>
+                <!-- Groupes::catalogue => -->
+                <?php //if(auth()->hasGroupe(Groupes::catalogue)): 
+                ?>
                 <li class="nav-item">
                     <a data-toggle="collapse" href="#catalogue">
                         <i class="fas fa-boxes"></i>
@@ -261,44 +307,49 @@
                     </a>
                     <div class="collapse" id="catalogue">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): 
+                            ?>
 
-                                <li>
-                                <a class="item-link" href="<?=  url('categorie')?>">
+                            <li>
+                                <a class="item-link" href="<?= url('categorie') ?>">
                                     <span class="sub-item">Catégories</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.depense')?>">
+                                <a class="item-link" href="<?= route('catalogue.depense') ?>">
                                     <span class="sub-item">Marque</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.versement')?>">
+                                <a class="item-link" href="<?= route('catalogue.versement') ?>">
                                     <span class="sub-item">Unité</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  route('catalogue.versement')?>">
+                                <a class="item-link" href="<?= route('catalogue.versement') ?>">
                                     <span class="sub-item">Produit</span>
                                 </a>
                             </li>
 
-                            <?php //endif; ?>
+                            <?php //endif; 
+                            ?>
 
-                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): ?>
+                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): 
+                            ?>
 
-                           <li>
-                                <a class="item-link" href="<?=  route('hotel.salaire')?>">
+                            <li>
+                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
                                     <span class="sub-item">Salaires</span>
-                              </a>
+                                </a>
                             </li>
-                            <?php //endif; ?>
+                            <?php //endif; 
+                            ?>
 
                         </ul>
                     </div>
                 </li>
-                <?php //endif; ?>
+                <?php //endif; 
+                ?>
 
 
             </ul>
