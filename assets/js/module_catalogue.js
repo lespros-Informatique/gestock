@@ -583,62 +583,61 @@ function aSupprimer_produit() {
 
 // aOpenModalUpdateProduit();
 
-// function aOpenModalUPdateproduit() {
-//     $("body").delegate(".frmModifierProduit", "click", function(e) {
-//         e.preventDefault();
-//         var code_produit = $(this).data("produit");
-//         var id = $(this).attr("id");
-//         $.ajax({
-//             method: "POST",
-//             url: URL_AJAX,
-//             data: {
-//                 action: 'modal_modifier_produit',
-//                 code: code_produit
-//             },
-//             dataType: "JSON",
-//             beforeSend: function() {
-//                 $(".loader_backdrop2").css('display', "block");
-//                 btnReq("#" + id, "Traitement...");
+function aOpenModalUPdateproduit() {
+    $("body").delegate(".frmModifierProduit", "click", function(e) {
+        e.preventDefault();
+        var code_produit = $(this).data("produit");
+        var id = $(this).attr("id");
+        // alert("" + id + "");return false;
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'modal_modifier_produit',
+                code: code_produit
+            },
+            dataType: "JSON",
+            beforeSend: function() {
+                $(".loader_backdrop2").css('display', "block");
+                btnReq("#" + id, "Traitement...");
 
-//             },
-//             success: function(data) {
+            },
+            success: function(data) {
                 
-//                 btnRes("#" + id, 'Modifier', 'fa-edit');
-//                 if (data.code == 200) {
-//                     $(".data-modal").html(data.data);
-//                     $("#produit-modal").modal("show");
-//                     $(".loader_backdrop2").css('display', "none");
-//                 } else {
-//                     $.notify("Erreur lors du traitement", "error");
-//                 }
+                btnRes("#" + id, 'Modifier', 'fa-edit');
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#produit-modal").modal("show");
+                    $(".loader_backdrop2").css('display', "none");
+                } else {
+                    $.notify("Erreur lors du traitement", "error");
+                }
 
-//             }
-//         })
-//     });
-// }
+            }
+        })
+    });
+}
 
 
 // produit
 aOpenModalAddProduit();
-
 function aOpenModalAddProduit() {
     $('#produitAddModal').click(function(e) {
         e.preventDefault();
-        alert("fs");
         $.ajax({
             method: "POST",
             url: URL_AJAX,
             data: {
                 action: 'btn_showmodal_produit'
             },
-            dataType: "JSON",
+            // dataType: "JSON",
             beforeSend: function() {                
                 $(".loader_backdrop2").css('display', "block");
                 btnReq("#produitAddModal", "Traitement...");
 
             },
             success: function(data) {
-                console.log(data);return;
+                console.log(data);
 
                 btnRes("#produitAddModal");
                 ;

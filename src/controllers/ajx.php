@@ -276,7 +276,7 @@ switch ($action) {
     // ajouter Produit 
     case 'btn_showmodal_produit':
         $ajx = new ProduitController();
-        $ajx->aModalAddProduit();
+        $ajx->aModalAddProduits();
     break;
 
     case 'btn_ajouter_produit':

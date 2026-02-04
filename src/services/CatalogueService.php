@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Core\Auth;
+use App\Models\Catalogue;
+use App\Models\Factory;
 use DateTime;
 use IntlDateFormatter;
 use Roles;
@@ -48,7 +50,7 @@ class CatalogueService
             </form>
         ';
     }
-    
+
     public static function aModalAddMark()
     {
         return '
@@ -121,159 +123,12 @@ class CatalogueService
     }
 
     public static function aModalAddProduit($categories, $marks, $unites)
-{
-    return '
-    <form action="" id="frmAddProduit" method="POST">
+    {
+        // $cl = (new Factory())->verifyParam("fournisseurs","etat_fournieur",);
+        //  $categorie = (new Catalogue())->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+var_dump($categories);return;
+       
+    }
 
-        <div class="form-group">
-            <label>Libellé produit <span class="text-danger">*</span></label>
-            <input type="text" name="libelle_produit" class="form-control" required>
-        </div>
 
-        <div class="form-group">
-            <label>Code barre</label>
-            <input type="text" name="code_bar" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Catégorie</label>
-            <select name="categorie_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-                foreach ($categories as $cat) {
-                    $form .= '<option value="'.$cat['code_categorie'].'">'.$cat['libelle_categorie'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Marque</label>
-            <select name="mark_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-                foreach ($marks as $mark) {
-                    $form .= '<option value="'.$mark['code_mark'].'">'.$mark['libelle_mark'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Unité</label>
-            <select name="unite_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-                foreach ($unites as $unite) {
-                    $form .= '<option value="'.$unite['code_unite'].'">'.$unite['libelle_unite'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Prix achat</label>
-            <input type="number" step="0.01" name="prix_achat" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Prix vente</label>
-            <input type="number" step="0.01" name="prix_vente" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Garantie (mois)</label>
-            <input type="number" name="garantie_produit" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Stock initial</label>
-            <input type="number" name="stock_produit" class="form-control">
-        </div>
-
-        <input type="hidden" name="boutique_code" value="'.$boutique_code.'">
-        <input type="hidden" name="compte_code" value="'.$compte_code.'">
-        <input type="hidden" name="action" value="btn_ajouter_produit">
-
-        <button type="submit" class="btn btn-primary modal_footer">
-            <i class="fa fa-check-circle"></i> Enregistrer
-        </button>
-
-    </form>';
-}
-
-public static function modalUpdateProduit($produit, $categories, $marks, $unites)
-{
-    return '
-    <form action="" id="frmUpdateProduit" method="POST">
-
-        <div class="form-group">
-            <label>Libellé produit</label>
-            <input type="text" name="libelle_produit" value="'.$produit['libelle_produit'].'" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Code barre</label>
-            <input type="text" name="code_bar" value="'.$produit['code_bar'].'" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Catégorie</label>
-            <select name="categorie_code" class="form-control">';
-                foreach ($categories as $cat) {
-                    $selected = ($cat['code_categorie'] == $produit['categorie_code']) ? 'selected' : '';
-                    $form .= '<option value="'.$cat['code_categorie'].'" '.$selected.'>'.$cat['libelle_categorie'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Marque</label>
-            <select name="mark_code" class="form-control">';
-                foreach ($marks as $mark) {
-                    $selected = ($mark['code_mark'] == $produit['mark_code']) ? 'selected' : '';
-                    $form .= '<option value="'.$mark['code_mark'].'" '.$selected.'>'.$mark['libelle_mark'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Unité</label>
-            <select name="unite_code" class="form-control">';
-                foreach ($unites as $unite) {
-                    $selected = ($unite['code_unite'] == $produit['unite_code']) ? 'selected' : '';
-                    $form .= '<option value="'.$unite['code_unite'].'" '.$selected.'>'.$unite['libelle_unite'].'</option>';
-                }
-$form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Prix achat</label>
-            <input type="number" step="0.01" name="prix_achat" value="'.$produit['prix_achat'].'" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Prix vente</label>
-            <input type="number" step="0.01" name="prix_vente" value="'.$produit['prix_vente'].'" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Garantie (mois)</label>
-            <input type="number" name="garantie_produit" value="'.$produit['garantie_produit'].'" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Stock</label>
-            <input type="number" name="stock_produit" value="'.$produit['stock_produit'].'" class="form-control">
-        </div>
-
-        <input type="hidden" name="code_produit" value="'.$produit['code_produit'].'">
-        <input type="hidden" name="action" value="btn_modifier_produit">
-
-        <button type="submit" class="btn btn-primary modal_footer">
-            <i class="fa fa-check-circle"></i> Modifier
-        </button>
-
-    </form>';
-}
 }

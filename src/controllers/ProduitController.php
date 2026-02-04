@@ -147,15 +147,16 @@ class ProduitController extends MainController
         return;
     }
 
-    public function aModalAddProduit()
+    public function aModalAddProduits()
     {
         $output = "";
         $categorie = $this->model->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
         $mark = $this->model->aGetCatalogueByFields("marks", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
         $unite = $this->model->aGetCatalogueByFields("unites", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        // echo json_encode(['cat' => $categorie, 'mark' => $mark,"unite"=>$unite]);return;
         $output = CatalogueService::aModalAddProduit($categorie, $mark, $unite);
-        echo json_encode(['data' => $output, 'code' => 200]);
-        return;
+
+        echo json_encode(['data' => $output, 'code' => 200]);return;
     }
 
 
