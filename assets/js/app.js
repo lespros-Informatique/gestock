@@ -5,6 +5,8 @@
 // const URL_HOME = URLS + "/hotel/";
 // const URL_AJAX = URL_HOME + "src/controllers/ajx.php";
 // moment.locale('fr');
+const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
 
 
 let rolesPermissions = [];

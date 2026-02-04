@@ -2,6 +2,7 @@
 // if (session_status() === PHP_SESSION_NONE) {
 session_name("APP15464655_SESSION");
 session_start();
+include __DIR__ . '/src/Core/security.php';
 
 // }
 // Charger le fichier de configuration une fois en ligne
@@ -69,6 +70,7 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
     $router->get('/categorie', [CategorieController::class, 'categorie']);
     $router->get('/client/liste', [ClientController::class, 'Client']);
+    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
 });
 
 /**

@@ -4,6 +4,7 @@ session_name("APP15464655_SESSION");
 
 
 session_start();
+include __DIR__ . '/../../src/Core/security.php';
 
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
@@ -203,15 +204,27 @@ switch ($action) {
         $ajx = new ControllerHotel();
         $ajx->updateClient();
         break;
+    case 'bcharger_data_clients':
+        // sleep(2);
+        $ajx = new ClientController();
+        $ajx->bGetListeClients();
+        break;
     case 'btn_showmodal_client_add':
         $ajx = new ClientController();
-        $ajx->modalAddClient();
+        $ajx->bModalAddClient();
         break;
     case 'btn_add_client_data':
         $ajx = new ClientController();
-        $ajx->addNewClient();
+        $ajx->bAddNewClient();
         break;
-
+    case 'frm_modal_modifier_client':
+        $ajx = new ClientController();
+        $ajx->bModalUpdateClient();
+        break;
+    case 'btn_modifier_client_data':
+        $ajx = new ClientController();
+        $ajx->bUpdateClient();
+        break;
     // versement
     case 'frm_modal_detail_versement':
         $ajx = new ControllerHotel();

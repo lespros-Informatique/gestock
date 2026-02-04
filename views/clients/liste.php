@@ -1,6 +1,6 @@
 <div class="card mt-2 bg_light">
 
-    <div class="card-header bg-dark text-light">
+    <div class="card-header">
         <div class="table_row_header">
             <div class="table_row_header_left">
                 <h4 class=" text-upper"> <i class="fa fa-list"></i> &nbsp; Liste des clients</h4>
@@ -18,7 +18,7 @@
     <div class="card-body">
         <div class="table-responsive table-responsive-md" id="sexion_categorie">
 
-            <table class="table table-striped table-bordered  table-hover table-sm table-data">
+            <table id="data-table-client" class="table table-striped table-bordered  table-hover table-sm table-data">
                 <thead class="">
                     <tr>
                         <th>#</th>
@@ -29,9 +29,7 @@
                         <th width="6%">Options</th>
                     </tr>
                 </thead>
-                <tbody class="">
-                    <?= bchargerListeClient() ?>
-                </tbody>
+
             </table>
         </div>
     </div>
