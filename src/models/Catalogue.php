@@ -46,23 +46,26 @@ public function getAllCategorieByCompteBoutique($compte, $boutique,$etat_actif):
     return $data;
 }
 
-public function averifTypechambreLibelle($libelle, $etat = ETAT_ACTIF)
-    {
-        $result = [];
-        try {
-            $sql = "SELECT * FROM categories  WHERE boutique_code = :boutique AND description_categorie = :libelle AND etat_categorie = :etat LIMIT 1";
-            $stm = $this->db->prepare($sql);
-            $stm->execute([
-                'hotel_id' => Auth::user('hotel_id'),
-                'libelle' => $libelle,
-                'etat' => $etat
-            ]);
-            $result = $stm->fetch();
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
-        return $result;
+public function aGetCategorieByField($field, $valeur)
+{
+    $allowedFields = ['code_categorie','libelle_categorie', 'id_categorie'];
+
+    if (!in_array($field, $allowedFields)) {
+        return false;
     }
+
+    try {
+        $sql = "SELECT * FROM categories WHERE {$field} = :valeur LIMIT 1";
+        $stm = $this->db->prepare($sql);
+        $stm->execute([
+            ':valeur' => $valeur
+        ]);
+        return $stm->fetch();
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
 
 }

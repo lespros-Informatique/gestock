@@ -323,7 +323,7 @@ switch ($action) {
         $ajx->deleteService();
         break;
 
-    // ajouter categorie chambre
+    // ajouter categorie 
     case 'btn_showmodal_categorie':
         $ajx = new CategorieController();
         $ajx->amodalAddCategorie();
@@ -336,6 +336,16 @@ switch ($action) {
         break;
     case 'modal_modifier_categorie':
         $ajx = new CategorieController();
+        $ajx->aModalUpdateCategorie();
+    break;
+    case 'btn_modifier_categorie':
+        $ajx = new CategorieController();
+        $ajx->aUpdateCategorie();
+    break;
+    case 'btn_delete_categorie':
+        $ajx = new CategorieController();
+        $ajx->aDeleteCategorie();
+    break;
         $ajx->amodalUpdateCategorie();
         break;
     case 'btn_modifier_categorie':
