@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Core\Auth;
+use App\Models\Catalogue;
+use App\Models\Factory;
 use DateTime;
 use IntlDateFormatter;
 use Roles;
@@ -28,7 +30,6 @@ class CatalogueService
         ';
     }
 
-
     public static function modalUpdateCategorie($categorie)
     {
         return '
@@ -49,6 +50,7 @@ class CatalogueService
             </form>
         ';
     }
+
     public static function aModalAddMark()
     {
         return '
@@ -65,7 +67,6 @@ class CatalogueService
               </form>
         ';
     }
-
 
     public static function modalUpdateMark($mark)
     {
@@ -85,4 +86,49 @@ class CatalogueService
             </form>
         ';
     }
+    public static function aModalAddUnite()
+    {
+        return '
+        <form action="" id="frmAddUnite" method="POST">
+                  <div class="form-group">
+                      <label for="libelle_unite">Libelle <span class="text-danger">*</span> </label>
+                      <input name="libelle_unite" type="text" class="form-control"  id="libelle_unite" >
+                  </div>
+
+                  <div class="form-group">
+                  <input value="btn_ajouter_unite" name="action" type="hidden">
+                  </div>
+                    <button type="submit" id="btn_add_unite" class="btn btn-primary modal_footer"> <i class="fa fa-check-circle"></i> Enregistrer </button>
+              </form>
+        ';
+    }
+
+    public static function modalUpdateUnite($unite)
+    {
+        return '
+        <form action="" id="frmAddUnite" method="POST">
+                <div class="form-group">
+                    <label for="libelle_unite">Libelle <span class="text-danger">*</span>  </label>
+                    <input name="libelle_unite" type="text" class="form-control" value="' . $unite['libelle_unite'] . '" id="libelle_unite" >
+                </div>
+
+                <div class="form-group">
+                    <input name="code_unite" value="' . ($unite['code_unite']) . '" type="hidden">
+                    <input name="action" value="btn_modifier_unite" type="hidden">
+                </div>
+                        <button type="submit" id="btn_add_unite" class="btn btn-primary modal_footer"> <i class="fa fa-check-circle"></i> Enregistrer </button>
+
+            </form>
+        ';
+    }
+
+    public static function aModalAddProduit($categories, $marks, $unites)
+    {
+        // $cl = (new Factory())->verifyParam("fournisseurs","etat_fournieur",);
+        //  $categorie = (new Catalogue())->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+var_dump($categories);return;
+       
+    }
+
+
 }
