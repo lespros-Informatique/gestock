@@ -199,7 +199,7 @@ public function aModalUpdateCategorie()
     }
 
 
-        public function aajouterCategorie()
+        public function aAjouterCategorie()
     {
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
@@ -218,7 +218,7 @@ public function aModalUpdateCategorie()
                     'libelle_categorie' => strtoupper($libelle_categorie),
                     'code_categorie' => $code,
                     'compte_code' => COMPTE_CODE,
-                    // 'categorie_code' => categorie_CODE,
+                    'boutique_code' => BOUTIQUE_CODE,
                     'description_categorie' => $description
                 ];
                 

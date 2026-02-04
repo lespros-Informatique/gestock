@@ -1,4 +1,7 @@
 loadDataTable('data-table-categorie', '#data-table-categorie', 'bcharger_data_categories');
+loadDataTable('data-table-mark', '#data-table-mark', 'bcharger_data_marks');
+loadDataTable('data-table-unite', '#data-table-unite', 'bcharger_data_unites');
+loadDataTable('data-table-produit', '#data-table-produit', 'bcharger_data_produits');
 
 aSupprimer_categorie();
 
@@ -42,13 +45,12 @@ function aSupprimer_categorie() {
                     },
                     success: function(data) {
                         
+                        $(".loader_backdrop2").css('display', "none");
                         btnRes("#" + id, 'Supprimer', 'fa-trash');
                         if (data.code == 200) {
-                            resetDataTable();
+                            tables['data-table-categorie'].ajax.reload(null, false);
+
                             $.notify(data.message, "success");
-                            $("#sexion_categorie").load(" #sexion_categorie > *");
-                            $(".loader_backdrop2").css('display', "none");
-                            setTimeout(initDataTable, 200);
                         
 
                         } else {
@@ -87,10 +89,10 @@ function aOpenModalUpdateCategorie() {
             success: function(data) {
                 
                 btnRes("#" + id, 'Modifier', 'fa-edit');
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#categorie-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
                 } else {
                     $.notify("Erreur lors du traitement", "error");
                 }
@@ -126,11 +128,10 @@ function aOpenModalAddCategorie() {
                 btnRes("#categorieAddModal");
                 ;
 
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#categorie-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
-
 
                 }
 
@@ -157,12 +158,11 @@ function aAjouter_categorie() {
             success: function(data) {
                 
                 btnRes("#btn_ajouter_categorie");
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
-                    // resetDataTable();
+                    tables['data-table-categorie'].ajax.reload(null, false);
                     $.notify(data.message, "success");
                     $("#categorie-modal").modal("hide");
-                    $("#sexion_categorie").load(" #sexion_categorie > *");
-                    // setInterval(initDataTable, 120);
 
                 } else {
                     $.notify(data.message);
@@ -216,13 +216,10 @@ function aSupprimer_mark() {
                     },
                     success: function(data) {
                         btnRes("#" + id, 'Supprimer', 'fa-trash');
+                        $(".loader_backdrop2").css('display', "none");
                         if (data.code == 200) {
-                            resetDataTable();
+                            tables['data-table-mark'].ajax.reload(null, false);
                             $.notify(data.message, "success");
-                            $("#sexion_mark").load(" #sexion_mark > *");
-                            $(".loader_backdrop2").css('display', "none");
-                            setTimeout(initDataTable, 200);
-                        
 
                         } else {
                             $.notify(data.message, "error");
@@ -261,10 +258,10 @@ function aOpenModalUpdateMark() {
             success: function(data) {
                 
                 btnRes("#" + id, 'Modifier', 'fa-edit');
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#mark-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
                 } else {
                     $.notify("Erreur lors du traitement", "error");
                 }
@@ -298,10 +295,10 @@ function aOpenModalAddmark() {
                 btnRes("#markAddModal");
                 ;
 
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#mark-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
 
 
                 }
@@ -328,12 +325,11 @@ function aAjouter_mark() {
             success: function(data) {
                 
                 btnRes("#btn_ajouter_mark");
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
-                    // resetDataTable();
+                    tables['data-table-mark'].ajax.reload(null, false);
                     $.notify(data.message, "success");
                     $("#mark-modal").modal("hide");
-                    $("#sexion_mark").load(" #sexion_mark > *");
-                    // setInterval(initDataTable, 120);
 
                 } else {
                     $.notify(data.message);
@@ -385,13 +381,10 @@ function aSupprimer_unite() {
                     },
                     success: function(data) {
                         btnRes("#" + id, 'Supprimer', 'fa-trash');
+                        $(".loader_backdrop2").css('display', "none");
                         if (data.code == 200) {
-                            resetDataTable();
+                            tables['data-table-unite'].ajax.reload(null, false);
                             $.notify(data.message, "success");
-                            $("#sexion_unite").load(" #sexion_unite > *");
-                            $(".loader_backdrop2").css('display', "none");
-                            setTimeout(initDataTable, 200);
-                        
 
                         } else {
                             $.notify(data.message, "error");
@@ -430,10 +423,10 @@ function aOpenModalUpdateUnite() {
             success: function(data) {
                 
                 btnRes("#" + id, 'Modifier', 'fa-edit');
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#unite-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
                 } else {
                     $.notify("Erreur lors du traitement", "error");
                 }
@@ -465,12 +458,10 @@ function aOpenModalAddUnite() {
             success: function(data) {
 
                 btnRes("#uniteAddModal");
-                ;
-
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#unite-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
 
 
                 }
@@ -497,12 +488,12 @@ function aAjouter_unite() {
             success: function(data) {
                 
                 btnRes("#btn_ajouter_unite");
+                $(".loader_backdrop2").css('display', "none");
+
                 if (data.code == 200) {
-                    // resetDataTable();
+                    tables['data-table-unite'].ajax.reload(null, false);
                     $.notify(data.message, "success");
                     $("#unite-modal").modal("hide");
-                    $("#sexion_unite").load(" #sexion_unite > *");
-                    // setInterval(initDataTable, 120);
 
                 } else {
                     $.notify(data.message);
@@ -557,14 +548,11 @@ function aSupprimer_produit() {
                     success: function(data) {
                         
                         btnRes("#" + id, 'Supprimer', 'fa-trash');
+                        $(".loader_backdrop2").css('display', "none");
                         if (data.code == 200) {
-                            resetDataTable();
+                            tables['data-table-produit'].ajax.reload(null, false);
                             $.notify(data.message, "success");
-                            $("#sexion_produit").load(" #sexion_produit > *");
-                            $(".loader_backdrop2").css('display', "none");
-                            setTimeout(initDataTable, 200);
                         
-
                         } else {
                             $.notify(data.message, "error");
                         }
@@ -602,10 +590,10 @@ function aOpenModalUPdateproduit() {
             success: function(data) {
                 
                 btnRes("#" + id, 'Modifier', 'fa-edit');
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#produit-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
                 } else {
                     $.notify("Erreur lors du traitement", "error");
                 }
@@ -637,12 +625,11 @@ function aOpenModalAddProduit() {
                 console.log(data);
 
                 btnRes("#produitAddModal");
-                ;
 
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $(".data-modal").html(data.data);
                     $("#produit-modal").modal("show");
-                    $(".loader_backdrop2").css('display', "none");
 
 
                 }
@@ -670,12 +657,12 @@ function aAjouter_produit() {
             success: function(data) {
                 
                 btnRes("#btn_ajouter_produit");
+                $(".loader_backdrop2").css('display', "none");
+
                 if (data.code == 200) {
-                    // resetDataTable();
+                    tables['data-table-produit'].ajax.reload(null, false);
                     $.notify(data.message, "success");
                     $("#produit-modal").modal("hide");
-                    $("#sexion_produit").load(" #sexion_produit > *");
-                    // setInterval(initDataTable, 120);
 
                 } else {
                     $.notify(data.message);
