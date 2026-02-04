@@ -4,6 +4,7 @@ session_name("APP15464655_SESSION");
 
 
 session_start();
+include __DIR__ . '/../../src/Core/security.php';
 
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
@@ -11,6 +12,7 @@ use App\Controllers\Controller;
 use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerPrinter;
+use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -203,15 +205,53 @@ switch ($action) {
         $ajx = new ControllerHotel();
         $ajx->updateClient();
         break;
+    case 'bcharger_data_clients':
+        // sleep(2);
+        $ajx = new ClientController();
+        $ajx->bGetListeClients();
+        break;
     case 'btn_showmodal_client_add':
         $ajx = new ClientController();
-        $ajx->modalAddClient();
+        $ajx->bModalAddClient();
         break;
     case 'btn_add_client_data':
         $ajx = new ClientController();
-        $ajx->addNewClient();
+        $ajx->bAddNewClient();
+        break;
+    case 'frm_modal_modifier_client':
+        $ajx = new ClientController();
+        $ajx->bModalUpdateClient();
+        break;
+    case 'btn_modifier_client_data':
+        $ajx = new ClientController();
+        $ajx->bUpdateClient();
+        break;
+    // end client
+    // debut fournisseur
+
+    case 'bcharger_data_fournisseurs':
+        // sleep(2);
+        $ajx = new FournisseurController();
+        $ajx->bGetListeFournisseurs();
+        break;
+    case 'btn_showmodal_fournisseur_add':
+        $ajx = new FournisseurController();
+        $ajx->bModalAddFournisseur();
+        break;
+    case 'btn_add_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bAddNewFournisseur();
+        break;
+    case 'frm_modal_modifier_fournisseur':
+        $ajx = new FournisseurController();
+        $ajx->bModalUpdateFournisseur();
+        break;
+    case 'btn_modifier_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bUpdateFournisseur();
         break;
 
+    // end fournisseur
     // versement
     case 'frm_modal_detail_versement':
         $ajx = new ControllerHotel();

@@ -72,9 +72,14 @@
                                     <span class="sub-item">Clients</span>
                                 </a>
                             </li>
+                            <li>
+                                <a class="item-link" href="<?= url('fournisseur/liste') ?>">
+                                    <span class="sub-item">Fournisseurs</span>
+                                </a>
+                            </li>
 
                             <li>
-                                <a class="item-link" href="<?= route('admin.user') ?>">
+                                <a class="item-link" href="<?= url('user/liste') ?>">
                                     <span class="sub-item">Employés</span>
                                 </a>
                             </li>

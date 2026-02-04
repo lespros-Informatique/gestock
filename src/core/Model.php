@@ -164,8 +164,9 @@ abstract class Model
         };
     }
 
-    public function getFieldsForParams(string $table, array $params = [], array $columns = [], string $methodFetch = 'fetch', array $order = []): array|object|null
+    public function getFieldsForParams(string $table, array $params = [], array $columns = [], string $methodFetch = 'fetch', array $order = [])
     {
+        $result = [];
         $cols = !empty($columns) ? implode(', ', $columns) : '*';
         $orderBy = !empty($order) ? ' ORDER BY ' . implode(', ', $order) : '';
 
@@ -189,12 +190,16 @@ abstract class Model
             // Exécution directe (PDO fait le binding)
             $stmt->execute($params);
 
-            return ($methodFetch === 'fetchAll')
+            $data = ($methodFetch === 'fetchAll')
                 ? $stmt->fetchAll()
                 : $stmt->fetch();
+
+            if ($data)
+                $result = $data;
         } catch (Exception $e) {
             die($e->getMessage());
         }
+        return $result;
     }
 
     public function select(string $table, array $columns = ['*']): self
@@ -233,12 +238,16 @@ abstract class Model
     public function update(string $table, string $key, string $id, array $data)
     {
         $result = false;
-        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
-        $sql = "UPDATE {$table} SET $set WHERE {$key} = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($data, ['id' => $id]));
-        if ($stmt->rowCount() > 0) {
-            $result = true;
+        try {
+            $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+            $sql = "UPDATE {$table} SET $set WHERE {$key} = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(array_merge($data, ['id' => $id]));
+            if ($stmt->rowCount() > 0) {
+                $result = true;
+            }
+        } catch (\Exception $e) {
+            die($e->getMessage());
         }
         return $result;
     }

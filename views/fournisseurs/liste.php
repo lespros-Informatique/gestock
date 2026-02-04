@@ -3,12 +3,11 @@
     <div class="card-header">
         <div class="table_row_header">
             <div class="table_row_header_left">
-                <h4 class=" text-upper"> <i class="fa fa-list"></i> &nbsp; Liste des clients</h4>
+                <h4 class=" text-upper"> <i class="fa fa-list"></i> &nbsp; Liste des fournisseurs</h4>
             </div>
             <div class="table_row_header_right">
                 <button class="btn btn-primary "> <i class="fa fa-print"></i> &nbsp; <span class=" text-uppercase">Imprimer</span></button>
-                <button type="button" class="btn btn-info " id="ClientAddModal"> <i class="fa fa-plus-circle fa-2"></i> &nbsp; <span class=" text-uppercase">Enregistrer client</span></button>
-
+                <button type="button" class="btn btn-info " id="FournisseurAddModal"> <i class="fa fa-plus-circle fa-2"></i> &nbsp; <span class=" text-uppercase">Enregistrer fournisseur</span></button>
             </div>
 
         </div>
@@ -18,7 +17,7 @@
     <div class="card-body">
         <div class="table-responsive table-responsive-md" id="sexion_categorie">
 
-            <table id="data-table-client" class="table table-striped table-bordered  table-hover table-sm table-data">
+            <table id="data-table-fournisseur" class="table table-striped table-bordered  table-hover table-sm table-data">
                 <thead class="">
                     <tr>
                         <th>#</th>
@@ -38,11 +37,11 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="client-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
+<div class="modal fade" id="fournisseur-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="fournisseurModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div style="position: relative;" class="modal-content ">
             <div class="modal-header">
-                <h5 class="modal-title text-dark" id="clientModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">Client</span> </h5>
+                <h5 class="modal-title text-dark" id="fournisseurModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">Fournisseur</span> </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

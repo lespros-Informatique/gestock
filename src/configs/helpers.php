@@ -2,6 +2,7 @@
 
 use App\Core\Auth;
 use App\Core\Gqr;
+use App\Middlewares\CsrfMiddleware;
 use App\Services\PersonneService;
 use App\Services\Service;
 
@@ -591,6 +592,13 @@ if (!function_exists('personneService')) {
     function personneService(): PersonneService
     {
         return new PersonneService();
+    }
+}
+
+if (!function_exists('csrfToken')) {
+    function csrfToken(): CsrfMiddleware
+    {
+        return new CsrfMiddleware();
     }
 }
 
