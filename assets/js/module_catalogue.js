@@ -566,14 +566,80 @@ function aSupprimer_produit() {
     });
 }
 
-// aOpenModalUpdateProduit();
+// produit
+aOpenModalAddProduit();
+function aOpenModalAddProduit() {
+    $('#produitAddModal').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'btn_showmodal_produit'
+            },
+            dataType: "JSON",
+            beforeSend: function() {                
+                $(".loader_backdrop2").css('display', "block");
+                btnReq("#produitAddModal", "Traitement...");
 
-function aOpenModalUPdateproduit() {
+            },
+            success: function(data) {
+
+                btnRes("#produitAddModal");
+
+                $(".loader_backdrop2").css('display', "none");
+                if (data.code == 200) {
+                    $(".data-modal").html(data.data);
+                    $("#produit-modal").modal("show");
+
+
+                }
+
+            }
+        })
+    });
+}
+
+
+aAjouter_produit();
+function aAjouter_produit() {
+    $("body").delegate("#frmAddProduit", "submit", function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: data,
+            dataType: "json",
+            beforeSend: function() {
+                btnReq("#btn_ajouter_produit", "Enregistrement...");
+            },
+            success: function(data) {
+                console.log(data);
+                
+                btnRes("#btn_ajouter_produit");
+                $(".loader_backdrop2").css('display', "none");
+
+                if (data.code == 200) {
+                    tables['data-table-produit'].ajax.reload(null, false);
+                    $.notify(data.message, "success");
+                    $("#produit-modal").modal("hide");
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        })
+    });
+}
+
+aOpenModalUpdateProduit();
+function aOpenModalUpdateProduit() {
     $("body").delegate(".frmModifierProduit", "click", function(e) {
         e.preventDefault();
         var code_produit = $(this).data("produit");
         var id = $(this).attr("id");
-        // alert("" + id + "");return false;
+
         $.ajax({
             method: "POST",
             url: URL_AJAX,
@@ -598,75 +664,6 @@ function aOpenModalUPdateproduit() {
                     $.notify("Erreur lors du traitement", "error");
                 }
 
-            }
-        })
-    });
-}
-
-
-// produit
-aOpenModalAddProduit();
-function aOpenModalAddProduit() {
-    $('#produitAddModal').click(function(e) {
-        e.preventDefault();
-        $.ajax({
-            method: "POST",
-            url: URL_AJAX,
-            data: {
-                action: 'btn_showmodal_produit'
-            },
-            dataType: "JSON",
-            beforeSend: function() {                
-                $(".loader_backdrop2").css('display', "block");
-                btnReq("#produitAddModal", "Traitement...");
-
-            },
-            success: function(data) {
-                console.log(data);
-
-                btnRes("#produitAddModal");
-
-                $(".loader_backdrop2").css('display', "none");
-                if (data.code == 200) {
-                    $(".data-modal").html(data.data);
-                    $("#produit-modal").modal("show");
-
-
-                }
-
-            }
-        })
-    });
-}
-
-
-aAjouter_produit();
-function aAjouter_produit() {
-    $("body").delegate("#frmAddProduit", "submit", function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
-        
-        $.ajax({
-            method: "POST",
-            url: URL_AJAX,
-            data: data,
-            dataType: "json",
-            beforeSend: function() {
-                btnReq("#btn_ajouter_produit", "Enregistrement...");
-            },
-            success: function(data) {
-                
-                btnRes("#btn_ajouter_produit");
-                $(".loader_backdrop2").css('display', "none");
-
-                if (data.code == 200) {
-                    tables['data-table-produit'].ajax.reload(null, false);
-                    $.notify(data.message, "success");
-                    $("#produit-modal").modal("hide");
-
-                } else {
-                    $.notify(data.message);
-                }
             }
         })
     });

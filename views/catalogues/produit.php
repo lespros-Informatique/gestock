@@ -1,20 +1,17 @@
 <div class="card mt-2 bg_light">
-  <div class="card-header">
-    <h5 class="card-title text-upper">
-      <i class="fa fa-list"></i> &nbsp;Liste Produits
+    <div class="card-header">
+      <h5 class="card-title text-upper"> <i class="fa fa-list"></i> &nbsp;Liste marque
     </h5>
-
-    <button class="btn btn-info pull-right" id="produitAddModal">
-      <i class="fa fa-plus-circle"></i>&nbsp; &nbsp; Ajouter
-    </button>
-  </div>
-
-  <div class="card-body">
-    <div class="table-responsive table-responsive-md" id="section_produit">
-
-      <table id="data-table-produit" class="table table-striped table-bordered table-hover table-sm table-data">
-        <thead>
-          <tr>
+    <button class="btn btn-info pull-right" id="produitAddModal" > <i class="fa fa-plus-circle"></i>&nbsp; &nbsp; Ajouter</button>
+      
+      
+    </div>
+    <div class="card-body">
+      <div class="table-responsive table-responsive-md" id="sexion_produit">
+     
+      <table id="data-table-produit" class="table table-striped table-bordered  table-hover table-sm table-data">
+          <thead class="">
+           <tr>
             <th class="text-center" width="2px">#</th>
             <th class="text-center">Produit</th>
             <th class="text-center">Prix Achat</th>
@@ -22,12 +19,12 @@
             <th class="text-center">Stock</th>
             <th class="text-center" width="25px">Options</th>
           </tr>
-        </thead>
-
-      </table>
+          </thead>
+       
+        </table>
+      </div>
     </div>
   </div>
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="produit-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="produitModalLabel" aria-hidden="true">
@@ -42,9 +39,7 @@
       <div class="modal-body">
         <div class="row ">
             <div class="col-md-12 data-modal">
-              <form action="" method="post">
-                
-              </form>
+             
             </div>
         </div>
       </div>

@@ -98,7 +98,7 @@ class UniteController extends MainController
             $data_unite = [
                 'etat_unite' => ETAT_INACTIF
             ];
-            $rest = (new Factory())->update("unites", 'code_unite', $code_unite, $data_unite);
+            $rest = (new Factory())->update(TABLES::UNITES, 'code_unite', $code_unite, $data_unite);
             if ($rest) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -164,7 +164,7 @@ public function aModalUpdateUnite()
                         'libelle_unite' => strtoupper($libelle_unite),
                     ];
 
-                    $rest = $fc->update("unites", 'code_unite', $code, $data_unite);
+                    $rest = $fc->update(TABLES::UNITES, 'code_unite', $code, $data_unite);
 
                     if ($rest) {
                         $msg['code'] = 200;
@@ -208,15 +208,15 @@ public function aModalUpdateUnite()
             $fc = new Factory();
 
 
-            if (!$fc->verif("unites","libelle_unite",$libelle_unite)) {
-                $code = $fc->generateCode("unites", "code_unite","CAT-",8);
+            if (!$fc->verif(TABLES::UNITES,"libelle_unite",$libelle_unite)) {
+                $code = $fc->generateCode(TABLES::UNITES, "code_unite","CAT-",8);
                 $data_unite = [
                     'libelle_unite' => strtoupper($libelle_unite),
                     'code_unite' => $code,
                     'compte_code' => COMPTE_CODE,
                     'boutique_code' => BOUTIQUE_CODE
                 ];
-                if ($fc->create('unites', $data_unite)) {
+                if ($fc->create(TABLES::UNITES, $data_unite)) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "unite enregistré avec succes";

@@ -99,7 +99,7 @@ class ProduitController extends MainController
             $data_produit = [
                 'etat_produit' => ETAT_INACTIF
             ];
-            $rest = (new Factory())->update("produits", 'code_produit', $code_produit, $data_produit);
+            $rest = (new Factory())->update(TABLES::PRODUITS, 'code_produit', $code_produit, $data_produit);
             if ($rest) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -125,9 +125,9 @@ class ProduitController extends MainController
         if ($code) {
             $fc = new Factory();
             $produit = $this->model->aGetproduitByField("code_produit", $code);
-            $categorie = $this->model->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-            $mark = $this->model->aGetCatalogueByFields("marks", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-            $unite = $this->model->aGetCatalogueByFields("unites", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+            $categorie = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+            $mark = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+            $unite = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
 
             if (!empty($produit)) {
                 $output = CatalogueService::modalUpdateProduit($produit, $categorie, $mark, $unite);
@@ -147,6 +147,7 @@ class ProduitController extends MainController
 
     public function aUpdateProduit()
     {
+        // echo json_encode("domps");return;
 
         $_POST = sanitizePostData($_POST);
         $msg['code'] = 400;
@@ -165,11 +166,23 @@ class ProduitController extends MainController
                 if (empty($produit) || ($code == $produit['code_produit'])) {
 
                     $data_produit = [
-                        'libelle_produit' => strtoupper($libelle_produit),
-                        'description_produit' => ucfirst($description_produit),
-                    ];
+                    'libelle_produit'     => strtoupper(trim($libelle_produit)),
+                    'description_produit' => !empty($description_produit) ? ucfirst(trim($description_produit)) : null,
 
-                    $rest = $fc->update("produits", 'code_produit', $code, $data_produit);
+                    'code_bar'            => !empty($code_bar) ? $code_bar : null,
+                    'categorie_code'      => !empty($categorie_code) ? $categorie_code : null,
+                    'mark_code'           => !empty($mark_code) ? $mark_code : null,
+                    'unite_code'          => !empty($unite_code) ? $unite_code : null,
+
+                    'prix_achat'          => ($prix_achat !== '') ? $prix_achat : null,
+                    'prix_vente'          => ($prix_vente !== '') ? $prix_vente : null,
+
+                    'garantie_produit'    => ($garantie_produit !== '') ? $garantie_produit : null,
+                    'stock_produit'       => ($stock_produit !== '') ? $stock_produit : null,
+                ];
+
+
+                    $rest = $fc->update(TABLES::PRODUITS, 'code_produit', $code, $data_produit);
 
                     if ($rest) {
                         $msg['code'] = 200;
@@ -188,18 +201,17 @@ class ProduitController extends MainController
             $msg['message'] = "Erreur de donnée, vueillez ressayer plus tard. ";
         }
 
-        echo json_encode($msg);
-        return;
+        echo json_encode($msg);return;
     }
 
     public function aModalAddProduits()
     {
         $output = "";
-        $categorie = $this->model->aGetCatalogueByFields('categories', 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-        $mark = $this->model->aGetCatalogueByFields("marks", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-        $unite = $this->model->aGetCatalogueByFields("unites", 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-        // echo json_encode(['cat' => $categorie, 'mark' => $mark,"unite"=>$unite]);return;
-        $output = CatalogueService::aModalAddProduit($categorie, $mark, $unite);
+        $categories = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        $marks = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        $unites = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        // echo json_encode([$categories]);return;
+        $output = CatalogueService::aModalAddProduit($categories,$marks,$unites);
 
         echo json_encode(['data' => $output, 'code' => 200]);return;
     }
@@ -218,17 +230,30 @@ class ProduitController extends MainController
 
             if (!$fc->verif("produits", "libelle_produit", $libelle_produit)) {
                 $code = $fc->generateCode("produits", "code_produit", "CAT-", 8);
-                $description = !empty($description_produit) ?
-                    ucfirst($description_produit) : null;
-                $data_produit = [
-                    'libelle_produit' => strtoupper($libelle_produit),
-                    'code_produit' => $code,
-                    'compte_code' => COMPTE_CODE,
-                    'boutique_code' => BOUTIQUE_CODE,
-                    'description_produit' => $description
-                ];
+                    
+               $data_produit = [
+                'code_produit'        => $code,               // ex: PRD_0001
+                'code_bar'            => !empty($code_bar) ? $code_bar : null,
 
-                if ($fc->create('produits', $data_produit)) {
+                'boutique_code'       => BOUTIQUE_CODE,
+                'compte_code'         => COMPTE_CODE,
+
+                'categorie_code'      => !empty($categorie_code) ? $categorie_code : null,
+                'mark_code'           => !empty($mark_code) ? $mark_code : null,
+                'unite_code'          => !empty($unite_code) ? $unite_code : null,
+
+                'libelle_produit'     => strtoupper(trim($libelle_produit)),
+                'description_produit' => !empty($description) ? ucfirst($description) : null,
+
+                'prix_achat'          => !empty($prix_achat) ? $prix_achat : null,
+                'prix_vente'          => !empty($prix_vente) ? $prix_vente : null,
+
+                'garantie_produit'    => !empty($garantie_produit) ? $garantie_produit : null,
+                'stock_produit'       => !empty($stock_produit) ? $stock_produit : 0
+
+            ];
+
+                if ($fc->create(TABLES::PRODUITS, $data_produit)) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "produit enregistré avec succes";
