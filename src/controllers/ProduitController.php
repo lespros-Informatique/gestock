@@ -8,6 +8,7 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
+use TABLES;
 
 class ProduitController extends MainController
 {
@@ -41,6 +42,50 @@ class ProduitController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+       public function aGetListeProduit()
+    {
+
+        extract($_POST);
+        $output = "";
+        $produit = new Catalogue();
+
+        $likeParams = [];
+        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_produit' => ETAT_ACTIF];
+        $orderBy = ["libelle_produit" => "ASC","stock_produit" => "ASC"];
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search']['value'] ?? '';
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['libelle_produit' => $search,'stock_produit' => $search,'prix_achat' => $search,'prix_vente' => $search];
+        }
+
+        // 🔢 Total
+        $total = $produit->dataTbleCountTotalRow(TABLES::PRODUITS, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $produit->dataTbleCountTotalRow(TABLES::PRODUITS, $whereParams, $likeParams);
+        // 📄 Données
+
+        $produitList = $produit->DataTableFetchAllListe(TABLES::PRODUITS, $whereParams, $likeParams, $orderBy, $start, $limit);
+
+        $data = [];
+
+
+        $data = CatalogueService::produitDataService($produitList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $data
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
 
     public function aDeleteProduit()
     {

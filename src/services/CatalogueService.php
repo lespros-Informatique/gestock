@@ -50,6 +50,123 @@ public static function categorieDataService($categories)
 
         return $data;
     }
+    
+public static function markDataService($marks)
+    {
+        $data = [];
+
+        $i = 0;
+        foreach ($marks as $mark) :
+            $i++;
+            $data[] = [
+                $i,
+                $mark['libelle_mark'],
+                '
+                <div class="table_button">
+
+                <button
+            id="frmModifiermark'. $i .'"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierMark"
+            data-mark="'. ($mark['code_mark']) .'">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="markDeleteMark'. $i .'"
+            type="button"
+            class="btn btn-danger btn-sm markDeleteMark"
+            data-mark="'.$mark['code_mark'] .'">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+
+                </div>
+               '
+            ];
+
+        endforeach;
+
+        return $data;
+    }
+
+public static function uniteDataService($unites)
+    {
+        $data = [];
+
+        $i = 0;
+        foreach ($unites as $unite) :
+            $i++;
+            $data[] = [
+                $i,
+                $unite['libelle_unite'],
+                '
+                <div class="table_button">
+
+                <button
+            id="frmModifierUnite'. $i .'"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierUnite"
+            data-unite="'. ($unite['code_unite']) .'">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="uniteDeleteUnite'. $i .'"
+            type="button"
+            class="btn btn-danger btn-sm uniteDeleteUnite"
+            data-unite="'.$unite['code_unite'] .'">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+
+                </div>
+               '
+            ];
+
+        endforeach;
+
+        return $data;
+    }
+
+public static function produitDataService($produits)
+    {
+        $data = [];
+
+        $i = 0;
+        foreach ($produits as $produit) :
+            $i++;
+            $data[] = [
+                $i,
+                $produit['libelle_produit'],
+                $produit['prix_achat'],
+                $produit['prix_vente'],
+                $produit['stock_produit'],
+                '
+                <div class="table_button">
+
+                <button
+            id="frmModifierProduit'. $i .'"
+            type="button"
+            class="btn btn-primary btn-sm mr-2 frmModifierProduit"
+            data-produit="'. ($produit['code_produit']) .'">
+            <i class="fa fa-edit"></i> Modifier
+          </button>
+
+          <button
+            id="produitDeleteProduit'. $i .'"
+            type="button"
+            class="btn btn-danger btn-sm produitDeleteProduit"
+            data-produit="'.$produit['code_produit'] .'">
+            <i class="fa fa-trash"></i> Supprimer
+          </button>
+
+                </div>
+               '
+            ];
+
+        endforeach;
+
+        return $data;
+    }
 
 
     public static function aModalAddCategorie()
@@ -167,7 +284,6 @@ public static function categorieDataService($categories)
     {
         // $cl = (new Factory())->verifyParam("fournisseurs","etat_fournieur",);
         //  $categorie = (new Catalogue())->aGetCatalogueByFields('categories', 'compte_code', 'categorie_code', COMPTE_CODE, categorie_CODE);
-var_dump($categories);return;
        
     }
 

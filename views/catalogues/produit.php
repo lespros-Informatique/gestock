@@ -12,7 +12,7 @@
   <div class="card-body">
     <div class="table-responsive table-responsive-md" id="section_produit">
 
-      <table class="table table-striped table-bordered table-hover table-sm table-data">
+      <table id="data-table-produit" class="table table-striped table-bordered table-hover table-sm table-data">
         <thead>
           <tr>
             <th class="text-center" width="2px">#</th>
@@ -24,10 +24,6 @@
           </tr>
         </thead>
 
-        <tbody>
-          <?= aChargerListeProduits() ?>
-        </tbody>
-
       </table>
     </div>
   </div>
@@ -38,7 +34,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content ">
       <div class="modal-header">
-        <h5 class="modal-title text-dark" id="produitModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">produit</span>  </h5>
+        <h5 class="modal-title text-dark" id="produitModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">Espace Produit</span>  </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -46,7 +42,9 @@
       <div class="modal-body">
         <div class="row ">
             <div class="col-md-12 data-modal">
-              
+              <form action="" method="post">
+                
+              </form>
             </div>
         </div>
       </div>

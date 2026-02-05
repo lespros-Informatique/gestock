@@ -7,6 +7,7 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
+use TABLES;
 
 class UniteController extends MainController
 {
@@ -40,6 +41,50 @@ class UniteController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+         public function aGetListeUnite()
+    {
+
+        extract($_POST);
+        $output = "";
+        $unite = new Catalogue();
+
+        $likeParams = [];
+        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_unite' => ETAT_ACTIF];
+        $orderBy = ["libelle_unite" => "ASC"];
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search']['value'] ?? '';
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['libelle_unite' => $search];
+        }
+
+        // 🔢 Total
+        $total = $unite->dataTbleCountTotalRow(TABLES::UNITES, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $unite->dataTbleCountTotalRow(TABLES::UNITES, $whereParams, $likeParams);
+        // 📄 Données
+
+        $uniteList = $unite->DataTableFetchAllListe(TABLES::UNITES, $whereParams, $likeParams, $orderBy, $start, $limit);
+
+        $data = [];
+
+
+        $data = CatalogueService::uniteDataService($uniteList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $data
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
     
     public function aDeleteUnite()
     {

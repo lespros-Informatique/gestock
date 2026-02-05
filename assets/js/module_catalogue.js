@@ -1,7 +1,7 @@
-loadDataTable('data-table-categorie', '#data-table-categorie', 'bcharger_data_categories');
-loadDataTable('data-table-mark', '#data-table-mark', 'bcharger_data_marks');
-loadDataTable('data-table-unite', '#data-table-unite', 'bcharger_data_unites');
-loadDataTable('data-table-produit', '#data-table-produit', 'bcharger_data_produits');
+loadDataTable('data-table-categorie', '#data-table-categorie', 'aCharger_data_categories');
+loadDataTable('data-table-mark', '#data-table-mark', 'aCharger_data_marks');
+loadDataTable('data-table-unite', '#data-table-unite', 'aCharger_data_unites');
+loadDataTable('data-table-produit', '#data-table-produit', 'aCharger_data_produits');
 
 aSupprimer_categorie();
 
@@ -615,7 +615,7 @@ function aOpenModalAddProduit() {
             data: {
                 action: 'btn_showmodal_produit'
             },
-            // dataType: "JSON",
+            dataType: "JSON",
             beforeSend: function() {                
                 $(".loader_backdrop2").css('display', "block");
                 btnReq("#produitAddModal", "Traitement...");

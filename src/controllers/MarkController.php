@@ -7,6 +7,7 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
+use TABLES;
 
 class MarkController extends MainController
 {
@@ -40,6 +41,50 @@ class MarkController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+          public function aGetListeMark()
+    {
+
+        extract($_POST);
+        $output = "";
+        $mark = new Catalogue();
+
+        $likeParams = [];
+        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_mark' => ETAT_ACTIF];
+        $orderBy = ["libelle_mark" => "ASC"];
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search']['value'] ?? '';
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['libelle_mark' => $search];
+        }
+
+        // 🔢 Total
+        $total = $mark->dataTbleCountTotalRow(TABLES::MARKS, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $mark->dataTbleCountTotalRow(TABLES::MARKS, $whereParams, $likeParams);
+        // 📄 Données
+
+        $markList = $mark->DataTableFetchAllListe(TABLES::MARKS, $whereParams, $likeParams, $orderBy, $start, $limit);
+
+        $data = [];
+
+
+        $data = CatalogueService::markDataService($markList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $data
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
     
     public function aDeleteMark()
     {
