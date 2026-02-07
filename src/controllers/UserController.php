@@ -52,7 +52,7 @@ class UserController extends MainController
 
     public function userListe()
     {
-        $this->view('admins/user', ['title' => "Liste des utilisateurs"]);
+        $this->view('users/liste', ['title' => "Liste des utilisateurs"]);
     }
     public function profileEmploye($code)
     {
