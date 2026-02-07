@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Middlewares;
 
 use App\Core\Auth;
@@ -7,11 +8,11 @@ use Groupes;
 class RouteMiddleWare
 {
 
-    
+
     public static function requireAuth(): void
     {
         if (!Auth::check()) {
-             Auth::saveCurrentUrl();
+            Auth::saveCurrentUrl();
             self::redirect('login');
             // exit();
         }
@@ -30,7 +31,7 @@ class RouteMiddleWare
 
         if (!Auth::hasGroupe(Groupes::COMPTABLE)) {
             //self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [".Groupes::COMPTABLE."]");
-             self::redirectBack();
+            self::redirectBack();
         }
 
         Auth::saveCurrentUrl();
@@ -41,10 +42,10 @@ class RouteMiddleWare
         self::requireAuth();
 
         if (!Auth::hasGroupe(Groupes::RECEPTION)) {
-            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [".Groupes::RECEPTION."]");
+            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [" . Groupes::RECEPTION . "]");
             self::redirectBack();
         }
-        
+
         Auth::saveCurrentUrl();
     }
 
@@ -53,10 +54,10 @@ class RouteMiddleWare
         self::requireAuth();
 
         if (!Auth::hasGroupe(Groupes::HOTEL)) {
-            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [".Groupes::HOTEL."]");
+            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [" . Groupes::HOTEL . "]");
             self::redirectBack();
         }
-        
+
         Auth::saveCurrentUrl();
     }
 
@@ -65,24 +66,24 @@ class RouteMiddleWare
         self::requireAuth();
 
         if (!Auth::hasGroupe(Groupes::PARAMETRE)) {
-            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [".Groupes::PARAMETRE."]");
+            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [" . Groupes::PARAMETRE . "]");
             self::redirectBack();
         }
-        
+
         Auth::saveCurrentUrl();
     }
 
     public static function requireAdmin(): void
     {
-            self::requireAuth();
+        self::requireAuth();
 
         if (!Auth::hasGroupe(Groupes::ADMIN)) {
-            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [".Groupes::ADMIN."]");
+            self::flash(" 🚫 Accès refusé : vous n'avez pas le groupe [" . Groupes::ADMIN . "]");
             self::redirectBack();
             // self::redirect('');
             // exit();
         }
-        
+
         Auth::saveCurrentUrl();
     }
 
@@ -110,13 +111,13 @@ class RouteMiddleWare
         }
     }
 
-    public static function redirect(string $url=''): void
+    public static function redirect(string $url = ''): void
     {
-        if($url === '') {
+        if ($url === '') {
             $url = '/';
         }
 
-        header('Location: '.LINK . $url);
+        header('Location: ' . LINK . $url);
         exit();
     }
     public static function redirectTo(string $url): void
@@ -126,16 +127,18 @@ class RouteMiddleWare
 
     public static function redirectBack()
     {
-        $redirect = Auth::flashUrl('url') ?? '/';
+        $redirect = Auth::flashUrl('url') ?? '';
         self::redirect($redirect);
+        // header('Location: ' . );
+        // exit();
     }
 
     public static function flash(string $message, string $fallback = '/'): void
     {
-        Auth::updateFlash('message',$message);
+        Auth::updateFlash('message', $message);
 
         // $redirect = Auth::user("old_url") ?? $fallback;
-        
+
 
         // header("Location: $redirect");
         // exit;

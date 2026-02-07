@@ -21,11 +21,8 @@ use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
 use App\Controllers\Controller;
-use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerException;
-use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerMailer;
-use App\Controllers\ControllerPrinter;
 use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
@@ -52,9 +49,9 @@ $router = new Router();
  */
 
 /* filter  for all routes*/
-// $router->filter('auth', [RouteMiddleWare::class, 'requireAuth']);
+$router->filter('auth', [RouteMiddleWare::class, 'requireAuth']);
 
-// $router->filter('guest', [RouteMiddleWare::class, 'isLogged']);
+$router->filter('guest', [RouteMiddleWare::class, 'isLogged']);
 // $router->filter('setting', [RouteMiddleWare::class, 'requireSetting']);
 // $router->filter('ghotel', [RouteMiddleWare::class, 'requireGesHotel']);
 // $router->filter('comptable', [RouteMiddleWare::class, 'requireComptable']);
@@ -69,18 +66,18 @@ $router = new Router();
 
 $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
+    $router->get('/login', [UserController::class, 'login'], ['before' => 'guest'])->name('login');
+
+    $router->get('/categorie', [CategorieController::class, 'categorie']);
+
+    $router->get('/mark', [MarkController::class, 'mark']);
+
+    $router->get('/unite', [UniteController::class, 'unite']);
+    $router->get('/produit', [ProduitController::class, 'produit']);
+
     $router->get('/', [HomeController::class, 'acueil']);
 
-    $router->get('/login',[UserController::class, 'login']);
-    
-    $router->get('/categorie',[CategorieController::class, 'categorie']);
-
-    $router->get('/mark',[MarkController::class, 'mark']);
-
-    $router->get('/unite',[UniteController::class, 'unite']);
-    $router->get('/produit',[ProduitController::class, 'produit']);
-
-    $router->get('/client/liste', [ClientController::class, 'client']);
+    $router->get('/client/liste', [ClientController::class, 'client'], ['before' => 'auth']);
     $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
     $router->get('/user/liste', [UserController::class, 'user']);
     $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);

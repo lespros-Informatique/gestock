@@ -9,7 +9,7 @@ use App\Models\Factory;
 use App\Services\Service;
 use Roles;
 
-class UserController extends MainController
+class UserControllerumm extends MainController
 {
 
     /**
@@ -29,7 +29,7 @@ class UserController extends MainController
         // $end = "2025-10-010 23:59:59";
         // $img =  Gqr::qrcode();
         // echo "<img src='.$img.' >";
-          $fc = new Factory();
+        $fc = new Factory();
         //   $data = $fc->select("type_depense")->all();
 
         //   foreach ($data as $k ) {
@@ -45,7 +45,7 @@ class UserController extends MainController
         // $result = Gqr::qrReserve(1, "Hicham", "101", "2022-01-01", "2022-01-02");
 
         // return;
-       
+
         return $this->view('welcome', ["result" => $result, "title", 'title' => "Mon espace"]);
     }
 
@@ -56,26 +56,26 @@ class UserController extends MainController
     public function profileEmploye($code)
     {
         $code = decrypter($code);
-        if(!$code) exit(http_response_code(500)); 
+        if (!$code) exit(http_response_code(500));
 
         $fc = new Factory();
         $user = $fc->getUserByCodeWithFoction($code);
         $fonctions = $fc->getAllFonctions();
         $activities = $fc->getAllDetailesVersementReservationsForUser($code);
 
-        $this->view('admins/profile', ["user" => $user, "activities" => $activities, "fonctions" => $fonctions,'title' => "Profile employe"]);
-    }       
+        $this->view('admins/profile', ["user" => $user, "activities" => $activities, "fonctions" => $fonctions, 'title' => "Profile employe"]);
+    }
 
-     public function myProfile($code)
+    public function myProfile($code)
     {
-        
-        if(!$code || empty($code)) exit(http_response_code(500)); 
+
+        if (!$code || empty($code)) exit(http_response_code(500));
 
         $fc = new Factory();
         $user = $fc->getUserByCodeWithFoction($code);
 
-        $this->view('auth/my_profile', ["user" => $user,'title' => "Mon Profile"]);
-    } 
+        $this->view('auth/my_profile', ["user" => $user, 'title' => "Mon Profile"]);
+    }
 
     public  function home()
     {
@@ -185,7 +185,7 @@ class UserController extends MainController
 
         // var_dump($file,$fileName,$fileTmp,$fileSize,$fileError);
         // return;
-       
+
         if (isset($file) && $fileError === 0 && $fileSize > 0) {
 
             if (verifyExt($fileName)) {
@@ -303,7 +303,7 @@ class UserController extends MainController
                                     "hotel_name" => $hotel['libelle_hotel'],
                                     "email" => $email,
                                     "password" => $passwrod,
-                                    "nom" => strtoupper($nom." ".$prenom),
+                                    "nom" => strtoupper($nom . " " . $prenom),
                                     "lienActivation" => HOME . "/activation/{$token}"
                                 ];
 
@@ -337,14 +337,14 @@ class UserController extends MainController
         return;
     }
 
-    public function enableUser() 
+    public function enableUser()
     {
 
         $msg['code'] = 400;
         extract($_POST);
 
         $code = decrypter($id_user);
-        
+
         $fn = new Factory();
         $res = $fn->update('users', 'code_user', $code, ['etat_user' => 1]);
         if ($res || $res == 0) {
@@ -401,21 +401,21 @@ class UserController extends MainController
             'password_user' => password_hash($password, PASSWORD_BCRYPT)
         ];
 
-        $name = $user['nom'] .' '.$user['prenom'];
+        $name = $user['nom'] . ' ' . $user['prenom'];
         $hotel = $fc->getInfoHotel(Auth::user('hotel_id'));
 
         $data_mail = [
-        "appName" => $_ENV["APP_NAME"],
-        "hotel_name" => $hotel["libelle_hotel"],
-        "email" => $user['email'],
-        "password" => $password,
-        "nom" => strtoupper($name),
-        "lienActivation" => HOME . "/activation/{$token}"
-    ];
+            "appName" => $_ENV["APP_NAME"],
+            "hotel_name" => $hotel["libelle_hotel"],
+            "email" => $user['email'],
+            "password" => $password,
+            "nom" => strtoupper($name),
+            "lienActivation" => HOME . "/activation/{$token}"
+        ];
 
-        $resultat= $fc->update("users", "code_user", $code, $data_user);
-      
-        $res =$this->SendMail($user['email'], "Création de compte", "activation", $data_mail);
+        $resultat = $fc->update("users", "code_user", $code, $data_user);
+
+        $res = $this->SendMail($user['email'], "Création de compte", "activation", $data_mail);
 
 
         if ($resultat && $res) {
@@ -556,7 +556,7 @@ class UserController extends MainController
 
                     if (!empty($rolesuser)) {
                         foreach ($rolesuser as $role) {
-                            
+
                             $roles[$role['code_role']] = [
                                 'create' => (bool) $role['create_permission'],
                                 'edit'   => (bool) $role['edit_permission'],
@@ -629,7 +629,7 @@ class UserController extends MainController
                                 'etat_hotel' => 0,
                                 'created_hotel' => date('Y-m-d H:i:s')
                             ];
-                            
+
 
                             $data_user = [
                                 'nom' => strtoupper($nom),
@@ -656,7 +656,7 @@ class UserController extends MainController
                             if ($create) {
                                 $hotel =   $user->getInfoHotel($code);
 
-                                 $data_mail = [
+                                $data_mail = [
                                     "appName" => $_ENV["APP_NAME"],
                                     "hotel_name" => $hotel["libelle_hotel"],
                                     "email" => $email,
@@ -794,69 +794,69 @@ class UserController extends MainController
         }
     }
 
-    public function updateUser(){
+    public function updateUser()
+    {
         $msg['code'] = 400;
         $msg['type'] = "warning";
         $_POST = sanitizePostData($_POST);
-        if($_POST['code']){ 
+        if ($_POST['code']) {
 
-          if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['fonction']) && !empty($_POST['genre'])) {
-            extract($_POST);
-            $telephone = removeSpace($telephone);
-            $telephone = str_replace('(+225)', '', $telephone);
+            if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['fonction']) && !empty($_POST['genre'])) {
+                extract($_POST);
+                $telephone = removeSpace($telephone);
+                $telephone = str_replace('(+225)', '', $telephone);
 
-            // if (isValidPhoneNumber($telephone)) {
-            if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
+                // if (isValidPhoneNumber($telephone)) {
+                if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
 
-                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $user = new Factory();
-                    $userphone = $user->find("users", "telephone", $telephone);
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $user = new Factory();
+                        $userphone = $user->find("users", "telephone", $telephone);
 
-                    if (empty($userphone) || $userphone['code_user'] == $code) {
+                        if (empty($userphone) || $userphone['code_user'] == $code) {
 
-                        $userEmail = $user->find("users", "email", $email);
+                            $userEmail = $user->find("users", "email", $email);
 
-                        if (empty($userEmail) || $userEmail['code_user'] == $code) {
-                            
-                            $data_user = [
-                                'nom' => strtoupper($nom),
-                                'prenom' => strtoupper($prenom),
-                                'telephone' => $telephone,
-                                'email' => $email,
-                                'sexe' => $genre,
-                                'fonction_id' => $fonction,
-                            ];
+                            if (empty($userEmail) || $userEmail['code_user'] == $code) {
 
-                            $res = $user->update('users','code_user',$code,$data_user);
+                                $data_user = [
+                                    'nom' => strtoupper($nom),
+                                    'prenom' => strtoupper($prenom),
+                                    'telephone' => $telephone,
+                                    'email' => $email,
+                                    'sexe' => $genre,
+                                    'fonction_id' => $fonction,
+                                ];
 
-                            if ($res || $res == 0) {
-                            
-                                $msg['code'] = 200;
-                                $msg['type'] = "success";
-                                $msg['message'] = "Modification effectuée avec succès!";
+                                $res = $user->update('users', 'code_user', $code, $data_user);
+
+                                if ($res || $res == 0) {
+
+                                    $msg['code'] = 200;
+                                    $msg['type'] = "success";
+                                    $msg['message'] = "Modification effectuée avec succès!";
+                                } else {
+                                    $msg['message'] = "Echec d'operation!";
+                                }
                             } else {
-                                $msg['message'] = "Echec d'operation!";
+                                $msg['message'] = "Desolé! Cette adresse email existe déjà. ";
                             }
                         } else {
-                            $msg['message'] = "Desolé! Cette adresse email existe déjà. ";
+                            $msg['message'] = "Desolé! Ce numero de telephone existe déjà. ";
                         }
                     } else {
-                        $msg['message'] = "Desolé! Ce numero de telephone existe déjà. ";
+                        $msg['message'] = "Adresse email invalide. ";
                     }
                 } else {
-                    $msg['message'] = "Adresse email invalide. ";
+
+                    $msg['message'] = "Numero de telephone invalide. ";
                 }
             } else {
-
-                $msg['message'] = "Numero de telephone invalide. ";
+                $msg['message'] = "Veuillez remplire tous les champs. ";
             }
         } else {
-            $msg['message'] = "Veuillez remplire tous les champs. ";
-        }
-    }else{
             $msg['message'] = "Echec de verification des données ";
-
-    }
+        }
         echo json_encode($msg);
         return;
     }
@@ -920,30 +920,27 @@ class UserController extends MainController
         $_POST = sanitizePostData($_POST);
 
         if (!empty($_POST['confirm_password']) && !empty($_POST['password'])) {
-            if($_POST['confirm_password'] == $_POST['password']){
+            if ($_POST['confirm_password'] == $_POST['password']) {
                 $fc = new Factory();
                 $res = $fc->update('users', 'code_user', Auth::user('id'), ['password_user' => password_hash($_POST['password'], PASSWORD_BCRYPT)]);
-                if($res){
+                if ($res) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "Mot de passe modifié avec succes";
-                }else{
+                } else {
                     $msg['message'] = "Echec de modification!";
                 }
-
-            }else{
-            $msg['message'] = "Mot de passe de confirmation incorrect";
-
-        }
-        }else{
+            } else {
+                $msg['message'] = "Mot de passe de confirmation incorrect";
+            }
+        } else {
             $msg['message'] = "Veuillez remplire tous les champs. ";
-
         }
         echo json_encode($msg);
         return;
     }
 
-    
+
 
 
     public function deconnexion()
