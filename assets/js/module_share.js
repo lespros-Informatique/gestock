@@ -61,6 +61,7 @@ function loadDataTable(tableId,selector,action) {
 
 
     if ($(selector + ':visible').length) {
+// console.log(selector,tableId,action);
 
         // testDatable(action, selector);
 
