@@ -1,19 +1,19 @@
-<?php  
+<?php
 
-define('root',$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST']);
-define('ASSETS',root.'/gestock/assets/');
-define('LINK',root.'/gestock/');
-define('HOME',root.'/gestock');
-define('APP_NAME','G-STOCK');
-define('TWO_PIP','/../../');
-define('THREE_PIP','/../../'); 
+define('root', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']);
+define('ASSETS', root . '/gestock/assets/');
+define('LINK', root . '/gestock/');
+define('HOME', root . '/gestock');
+define('APP_NAME', 'G-STOCK');
+define('TWO_PIP', '/../../');
+define('THREE_PIP', '/../../');
 
 // const etat and status
-define('ETAT_INACTIF',0); 
-define('ETAT_ACTIF',1); 
-define('ETAT_ATTENTE',2); 
-define('BOUTIQUE_CODE',"BTQ_001"); 
-define('COMPTE_CODE',"CMP_001"); 
+define('ETAT_INACTIF', 0);
+define('ETAT_ACTIF', 1);
+define('ETAT_ATTENTE', 2);
+define('BOUTIQUE_CODE', "BTQ_001");
+define('COMPTE_CODE', "CMP_001");
 
 
 class TABLES
@@ -28,11 +28,13 @@ class TABLES
     // Boutiques & organisation
     public const BOUTIQUES             = 'boutiques';
     public const CAISSES               = 'caisses';
+    public const VERSEMENTS            = 'versement_ventes';
 
     // Utilisateurs & rôles
     public const USERS                 = 'users';
     public const ROLES                 = 'roles';
-    public const ROLE_USERS            = 'role_users';
+    public const USER_ROLES            = 'user_roles';
+    public const FONCTIONS             = 'fonctions';
 
     // Produits & catalogues
     public const PRODUITS              = 'produits';
@@ -58,14 +60,16 @@ class TABLES
     public const TYPE_DEPENSES         = 'type_depenses';
 }
 
-class Permissionsss {
+class Permissionsss
+{
     const CREATE = 'create_permission';
     const EDIT = 'edit_permission';
     const VIEW = 'show_permission';
     const DELETE = 'delete_permission';
-    }
+}
 
-class Rolesss {
+class Rolesss
+{
     const ADMIN = 'ga';
     const DIRECTEUR = 'g1ad1';
     const ENSEIGNANT = 'g2pe2';
@@ -79,7 +83,8 @@ class Rolesss {
     const PARENT = 'parent';
 }
 
-class Groupesss {
+class Groupesss
+{
     const SUPER = 'ga';
     const ADMIN = 'g1';
     const PEDAGOGIE = 'g2';
@@ -89,24 +94,33 @@ class Groupesss {
 // $sideBarData = [
 //                 'test' =>[]
 //             ];
-            
-CONST STATUT_CHAMBRE = ['Libre','Occupee','En nettoyage','Maintenance'];
-CONST STATUT_RESERVATION = ['En cour','Confirmee','Annulee','Checkout'];
-CONST PAIEMENT = ['Especes','Carte','Mobile money'];
-CONST SEXEP = ['Mr','Mlle','Mme'];
-const PIECES_DATA = ["CNI"=>"CNI","PASSEPORT" =>"PASSEPORT","CMU" =>"CMU","PERMIS" =>"PERMIS","CARTE CONSLAIRE" =>"CARTE CONSLAIRE","AUTRES" =>"AUTRES"];
 
-CONST EXTENSION = ["jpg","png","jpeg","jfif","webp","svg","gif","bmp","ico","heic","heif"];
+const STATUT_CHAMBRE = ['Libre', 'Occupee', 'En nettoyage', 'Maintenance'];
+const STATUT_RESERVATION = ['En cour', 'Confirmee', 'Annulee', 'Checkout'];
+const PAIEMENT = ['Especes', 'Carte', 'Mobile money'];
+const SEXEP = ['Mr', 'Mlle', 'Mme'];
+const PIECES_DATA = ["CNI" => "CNI", "PASSEPORT" => "PASSEPORT", "CMU" => "CMU", "PERMIS" => "PERMIS", "CARTE CONSLAIRE" => "CARTE CONSLAIRE", "AUTRES" => "AUTRES"];
+
+const EXTENSION = ["jpg", "png", "jpeg", "jfif", "webp", "svg", "gif", "bmp", "ico", "heic", "heif"];
 const PERIODE = "periode";
 const RESERVATION = "reservation";
 const OLD_URL = "old_url";
 // CONST SEXE = ['G','F'];
 
-CONST DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
 
-CONST MONTHS = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+const MONTHS = [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
 ];
-

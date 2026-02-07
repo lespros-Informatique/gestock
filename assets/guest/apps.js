@@ -9,7 +9,7 @@ let dataCheck = [];
 
 
 // ## SEXION CONNEXION
-btnLoginUser();
+// btnLoginUser();
 
 function btnLoginUser() {
     $("body").delegate("#frmLogin", "submit", function (e) {

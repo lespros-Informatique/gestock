@@ -7,6 +7,7 @@ use App\Models\Catalogue;
 use App\Models\Factory;
 use App\Services\CatalogueService;
 use Groupes;
+use TABLES;
 
 class UniteController extends MainController
 {
@@ -40,6 +41,50 @@ class UniteController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+         public function aGetListeUnite()
+    {
+
+        extract($_POST);
+        $output = "";
+        $unite = new Catalogue();
+
+        $likeParams = [];
+        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_unite' => ETAT_ACTIF];
+        $orderBy = ["libelle_unite" => "ASC"];
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search']['value'] ?? '';
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['libelle_unite' => $search];
+        }
+
+        // 🔢 Total
+        $total = $unite->dataTbleCountTotalRow(TABLES::UNITES, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $unite->dataTbleCountTotalRow(TABLES::UNITES, $whereParams, $likeParams);
+        // 📄 Données
+
+        $uniteList = $unite->DataTableFetchAllListe(TABLES::UNITES, $whereParams, $likeParams, $orderBy, $start, $limit);
+
+        $data = [];
+
+
+        $data = CatalogueService::uniteDataService($uniteList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $data
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
     
     public function aDeleteUnite()
     {
@@ -53,7 +98,7 @@ class UniteController extends MainController
             $data_unite = [
                 'etat_unite' => ETAT_INACTIF
             ];
-            $rest = (new Factory())->update("unites", 'code_unite', $code_unite, $data_unite);
+            $rest = (new Factory())->update(TABLES::UNITES, 'code_unite', $code_unite, $data_unite);
             if ($rest) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -119,7 +164,7 @@ public function aModalUpdateUnite()
                         'libelle_unite' => strtoupper($libelle_unite),
                     ];
 
-                    $rest = $fc->update("unites", 'code_unite', $code, $data_unite);
+                    $rest = $fc->update(TABLES::UNITES, 'code_unite', $code, $data_unite);
 
                     if ($rest) {
                         $msg['code'] = 200;
@@ -163,15 +208,15 @@ public function aModalUpdateUnite()
             $fc = new Factory();
 
 
-            if (!$fc->verif("unites","libelle_unite",$libelle_unite)) {
-                $code = $fc->generateCode("unites", "code_unite","CAT-",8);
+            if (!$fc->verif(TABLES::UNITES,"libelle_unite",$libelle_unite)) {
+                $code = $fc->generateCode(TABLES::UNITES, "code_unite","CAT-",8);
                 $data_unite = [
                     'libelle_unite' => strtoupper($libelle_unite),
                     'code_unite' => $code,
                     'compte_code' => COMPTE_CODE,
                     'boutique_code' => BOUTIQUE_CODE
                 ];
-                if ($fc->create('unites', $data_unite)) {
+                if ($fc->create(TABLES::UNITES, $data_unite)) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "unite enregistré avec succes";

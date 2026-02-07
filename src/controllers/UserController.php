@@ -2,12 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
+use Roles;
 use App\Core\Gqr;
-use App\Core\MainController;
+use App\Core\Auth;
 use App\Models\Factory;
 use App\Services\Service;
-use Roles;
+use App\Core\MainController;
+use App\Models\User;
 
 class UserController extends MainController
 {
@@ -124,116 +125,6 @@ class UserController extends MainController
      * --------------------------------------------------------------------------
      */
 
-    public function updateHotel()
-    {
-        $_POST = sanitizePostData($_POST);
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
-
-        if (!empty($_POST["libelle_hotel"]) && !empty($_POST["telephone_hotel"])) {
-            extract($_POST);
-            if (ctype_digit($telephone_hotel) && mb_strlen($telephone_hotel) == 10) {
-
-                $fc = new Factory();
-                $statut_filigramme = isset($statut_filigramme) ? 1 : 0;
-
-                $data_hotel = [
-                    'libelle_hotel' => $libelle_hotel,
-                    'adresse_hotel' => $adresse_hotel,
-                    'telephone_hotel' => $telephone_hotel,
-                    'telephone_hotel2' => $telephone_hotel2,
-                    'email_hotel' => $email_hotel,
-                    'filigramme' => $filigramme,
-                    'statut_filigramme' => $statut_filigramme,
-                ];
-
-                $res = $fc->update('hotels', "code_hotel", Auth::user("hotel_id"), $data_hotel);
-
-                if ($res || $res == 0) {
-
-                    $msg['code'] = 200;
-                    $msg['type'] = "success";
-                    $msg['message'] = "Informations mises à jour avec succes";
-                } else {
-                    $msg['message'] = "Echec de mise à jour!";
-                }
-            } else {
-                $msg["message"] = "Le numero de telephone doit etre un numero de telephone valide!";
-            }
-        } else {
-
-            $msg["message"] = "Veuillez renseigner tous les champs!";
-        }
-
-        echo json_encode($msg);
-        return;
-    }
-
-    public function updateLogo()
-    {
-        // $_POST = sanitizePostData($_POST);
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
-
-        header('Content-Type: application/json');
-
-        $file      = $_FILES['image_logo'];
-        $fileName  = $file['name'];
-        $fileTmp = $file['tmp_name'];
-        $fileSize  = $file['size'];
-        $fileError = $file['error'];
-
-        // var_dump($file,$fileName,$fileTmp,$fileSize,$fileError);
-        // return;
-
-        if (isset($file) && $fileError === 0 && $fileSize > 0) {
-
-            if (verifyExt($fileName)) {
-                if ($fileSize <= 2000000) {
-
-                    $cheminDossier = __DIR__ . THREE_PIP . 'assets/';
-                    $url =  'img/' . Auth::user("hotel_id") . '/logo/';
-                    $uploadDir = $cheminDossier . $url; // dossier où enregistrer les fichiers
-
-                    if (creerDossierSiNonExistant($uploadDir)) {
-
-                        $dataFileName = Auth::user("hotel_id") . '.' . getExt($fileName);
-                        $filePath = $uploadDir . $dataFileName;
-
-                        if (move_uploaded_file($fileTmp, $filePath)) {
-                            $fc = new Factory();
-                            $res = $fc->update('hotels', "code_hotel", Auth::user("hotel_id"), ['logo_hotel' => $url . $dataFileName]);
-                            if ($res || $res == 0) {
-
-                                $msg['code'] = 200;
-                                $msg['type'] = "success";
-                                $msg['message'] = "Logo enregistré avec succès !";
-                            } else {
-
-                                $msg['message'] = "Erreur lors de l'enregistrement de l'image.";
-                            }
-                        } else {
-
-                            $msg['message'] = "Erreur lors du telechargement du fichier.";
-                        }
-                    } else {
-                        $msg['message'] = "désolé, Impossible de telecharger le fichier.";
-                    }
-                } else {
-                    $msg['message'] = "désolé, la taille maximum du fichier est de 2Mo.";
-                }
-            } else {
-                $msg['message'] = "Le fichier n'est pas une image valide.";
-            }
-        } else {
-
-            $msg['message'] = "désolé, une erreur est survenue lors de l'envoi.";
-        }
-
-
-        echo json_encode($msg);
-        return;
-    }
 
     public function modalAddUser()
     {
@@ -527,18 +418,17 @@ class UserController extends MainController
         } elseif (empty($password)) {
             $result['msg'] = "Veuillez renseigner votre mot de passe.";
         } else {
-            $fc = new Factory();
+            $fc = new User();
             // $fc->setKey('code_user');
             $user = [];
 
-            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email', $login) : $fc->getUserDataForLogin('telephone', $login);
-
+            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email_user', $login) : $fc->getUserDataForLogin('telephone_user', $login);
             if (!empty($user) && password_verify($password, $user['password_user'])) {
                 $groupes = [];
                 $roles = [];
 
                 // Vérifier si le compte est actif
-                if (($user['etat_hotel'] == 1) || ($user['code_user'] == $user['hotel_id'])) {
+                if (($user['etat_boutique'] == ETAT_ACTIF) || ($user['code_user'] == $user['boutique_code'])) {
 
                     // Récupérer les rôles de l'utilisateur
                     $rolesuser = $fc->getUserRoles($user['code_user']);
@@ -567,13 +457,13 @@ class UserController extends MainController
                     }
 
 
-                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['hotel_id']);
+                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['boutique_code']);
                     if (!empty($caisse) && $caisse['cloture'] == null) {
                         $etatCaise = $caisse['code_versement'];
                     }
 
                     Auth::login($user, $groupes, $roles, $etatCaise);
-                    $result['activityYear'] = $fc->getYearActivityStart($user['hotel_id']);
+                    $result['activityYear'] = $fc->getYearActivityStart($user['boutique_code']);
                     $result['msg'] = "Connexion réussie !";
                     $result['code'] = 200;
                 } else {
