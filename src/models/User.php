@@ -13,6 +13,14 @@ class User extends Model
     protected string $table = "users";
     public string $id = 'code_user';
 
+    public function getUser($field, $value)
+    {
+        $sql = "SELECT * FROM " . TABLES::USERS . " WHERE " . $field . " = :field LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(["fiels" => $field]);
+        return $stmt->fetch() ?: null;
+    }
+
     // get all fonction
     public function getAllFonctions(): array
     {
@@ -27,6 +35,8 @@ class User extends Model
         }
         return $data;
     }
+
+
 
     public function getUserGroups(string $userCode): array
     {
@@ -99,12 +109,12 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_id AND etat_fonction = :etat 
-            WHERE us.hotel_id = :hotel_id  ORDER BY etat_user DESC, us.nom";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM " . TABLES::USERS . " AS us JOIN " . TABLES::FONCTIONS . " fn ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat 
+            WHERE us.boutique_code = :boutique_code  ORDER BY us.etat_user DESC, us.nom_user";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 'etat' => $etat,
-                'hotel_id' => Auth::user('hotel_id')
+                'boutique_code' => Auth::user('boutique_code')
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
@@ -205,11 +215,11 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us 
-            JOIN fonctions fn ON fn.code_fonction = us.fonction_id
-            WHERE us.hotel_id = :hotel_id ORDER BY us.nom";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM " . TABLES::USERS . " AS us 
+            JOIN " . TABLES::FONCTIONS . " fn ON fn.code_fonction = us.fonction_code
+            WHERE us.boutique_code = :boutique_code ORDER BY us.nom_user";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel_id' => Auth::user('hotel_id')]);
+            $stmt->execute(['boutique_code' => Auth::user('boutique_code')]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -242,9 +252,9 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT * FROM roles r WHERE r.etat_role = 1 GROUP BY r.groupe";
+            $sql = "SELECT * FROM roles r WHERE r.etat_role = :etat GROUP BY r.groupe";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute();
+            $stmt->execute(["etat" => ETAT_ACTIF]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());

@@ -424,7 +424,7 @@ switch ($action) {
         $ajx->ajouterPermissionRole();
         break;
     case 'frm_modal_add_permission':
-        $ajx = new Controller();
+        $ajx = new UserController();
         $ajx->modalAddPermission();
         break;
     // ajouter utlisateur

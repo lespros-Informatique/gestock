@@ -85,6 +85,9 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
 
     $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
+
+
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => ''])->name('admin.role');
 });
 
 /**
