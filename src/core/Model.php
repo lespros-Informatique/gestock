@@ -418,6 +418,22 @@ abstract class Model
         return $data;
     }
 
+    public function getInfoBoutique($boutiqueCode)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT * FROM " . TABLES::BOUTIQUES . " bt WHERE bt.code_boutique = :boutique_code LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['boutique_code' => $boutiqueCode]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetch();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
+    }
+
     public function transaction(callable $callback)
     {
         try {

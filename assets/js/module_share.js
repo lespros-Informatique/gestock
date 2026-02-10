@@ -30,14 +30,39 @@ function btnRes(selector, message = 'Ajouter', icon = "fa-plus-circle") {
 }
 
 
-function testDatable(action, selector) {
+function testDatable(action, selector,search = "") {
+    // var se = $(selector).DataTable().search().value;
     $.ajax({
         method: "POST",
         url: URL_AJAX,
         data: {
             action: action,
-            length: 2,
-            start: 2,
+            length: 20,
+            start: 1,
+            search: search,
+            draw: 1
+        },
+        // dataType: "JSON",
+        beforeSend: function () {
+            // $(".loader_backdrop2").css('display', "block");
+            // btnReq("#" + id, "Traitement...");
+        },
+        success: function (data) {
+            console.log("test", data);
+
+        }
+    });
+}
+
+function testData55ble(action, selector,search) {
+    
+    $.ajax({
+        method: "POST",
+        url: URL_AJAX,
+        data: {
+            action: action,
+            length: 210,
+            start: 0,
             search: $(selector).DataTable().search().value,
             draw: 1
         },
@@ -47,7 +72,7 @@ function testDatable(action, selector) {
             // btnReq("#" + id, "Traitement...");
         },
         success: function (data) {
-            console.log(data);
+            console.log("test", data);
 
         }
     });
@@ -56,14 +81,13 @@ function testDatable(action, selector) {
 
 
 
-
 function loadDataTable(tableId,selector,action) {
 
 
     if ($(selector + ':visible').length) {
-// console.log(selector,tableId,action);
+console.log(selector,tableId,action);
 
-        // testDatable(action, selector);
+        testDatable(action, selector);
 
         // return;
         
@@ -75,6 +99,9 @@ function loadDataTable(tableId,selector,action) {
             "type": "POST",
             "data": {
                 action: action
+            },
+            success: function (data) {
+                console.log(data);
             }
         }
     });

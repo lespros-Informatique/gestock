@@ -58,7 +58,7 @@
             </div>
             <!-- .modal-footer -->
             <div class="modal-footer">
-                <button type="submit" form="frmAddUser" id="btn_add_user" class="btn btn-primary w-25"> <i class="fa fa-check-circle"></i> &nbsp; Enregistrer</button>
+
             </div><!-- /.modal-footer -->
         </div>
     </div>

@@ -1,4 +1,4 @@
-alert("Hello world!");
+// alert("Hello world!");
 // ## SEXION CONNEXION
 btnLoginUser();
 
@@ -14,19 +14,12 @@ function btnLoginUser() {
             dataType: 'JSON',
             
             beforeSend: function () {
-                $("#btn_login").html(
-                    '<i class="fa fa-refresh fa-spin fa-2x"></i> &nbsp; Connexion...'
-                );
-                $("#btn_login").attr("disabled", "disabled");
+                btnReq("#btnSubmitForm", "Connexion...");
             },
             success: function (data) {
                 
                 console.log(data);
-                
-                $("#btn_login").html(
-                    '<i class="fa fa-check-circle"></i> &nbsp; Connexion'
-                );
-                $("#btn_login").attr("disabled", false);
+                btnRes("#btnSubmitForm", "Connexion",'fa-log-in');
 
                 if (data.code === 200) {
                     // setAcademicYear();
@@ -45,8 +38,22 @@ function btnLoginUser() {
     });
 }
 
-loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_user');
+// loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
 
+
+
+searchUser();
+function searchUser() {
+    $("body").delegate($('#data-table-user').DataTable().search(), "keyup", function(e) {
+        e.preventDefault();
+        var search = $('input[type="search"]').val();
+       
+        testDatable('bcharger_data_users','#data-table-user',search)
+        // loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
+    });
+}
+
+searchUser();
 
 // EMPLOYE
 // Show modal add USER
@@ -55,9 +62,7 @@ modalAddUser();
 function modalAddUser() {
     $("body").delegate(".btn_modal_user", "click", function(e) {
         e.preventDefault();
-        console.log('tes');
-        
-
+      
         $.ajax({
             url: URL_AJAX,
             method: 'POST',
@@ -65,14 +70,18 @@ function modalAddUser() {
                 action: "frm_modal_user"
             },
             dataType: 'JSON',
+            beforeSend: function() {
+                $(".loader_backdrop2").css('display', "block");
+            },
             success: function(data) {
                 console.log(data);
+                $(".loader_backdrop2").css('display', "none");
                 if (data.code == 200) {
                     $('.data-modal').html(data.data);
                     $("#user-modal").modal("show");
+                }else{
+                    $.notify(data.message, "error");
                 }
-                //    else{
-                //    }
             }
         });
 
@@ -91,21 +100,19 @@ function btnAddUser() {
             url: URL_AJAX,
             data: data,
             dataType: "JSON",
-            beforeSend: function() {
-                btnReq("#btn_add_user", "Enregistrement...");
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                btnReq(".modal_footer", "Enregistrement...");
             },
-            success: function(data) {
-
-                ;
-                btnRes("#btn_add_user", "Enregistrer");
+            success: function (data) {
+                console.log(data);
+                $(".loader_backdrop2").css('display', "none");
+                btnRes(".modal_footer", "Enregistrer", "fa-save");
+                // return
                 if (data.code == 200) {
-                    // resetDataTable();
                     $.notify(data.message, "success");
+                    tables['data-table-user'].ajax.reload(null, false);
                     $("#user-modal").modal("hide");
-                    $("#sexion_user").load(" #sexion_user > *");
-                    // setTimeout(initDataTable, 120);
-
-
                 } else {
                     $.notify(data.message, "error");
                 }

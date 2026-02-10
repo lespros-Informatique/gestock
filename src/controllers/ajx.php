@@ -389,7 +389,6 @@ switch ($action) {
 
 
     case 'btnLogin':
-
         $ajx = new UserController();
         $ajx->loginUser();
         break;
@@ -414,6 +413,58 @@ switch ($action) {
         $ajx = new UserController();
         $ajx->changePasswordUser();
         break;
+
+    // Debut Actions pour les utilisateurs
+    case 'btn_load_data_role':
+        $ajx = new Controller();
+        $ajx->loadDataRole();
+        break;
+    case 'btn_add_permission':
+        $ajx = new Controller();
+        $ajx->ajouterPermissionRole();
+        break;
+    case 'frm_modal_add_permission':
+        $ajx = new Controller();
+        $ajx->modalAddPermission();
+        break;
+    // ajouter utlisateur
+    case 'bcharger_data_users':
+        $ajx = new UserController();
+        $ajx->bGetListeUser();
+        break;
+    case 'frm_modal_user':
+        $ajx = new UserController();
+        $ajx->modalAddUser();
+        break;
+    case 'btn_add_user':
+        $ajx = new UserController();
+        $ajx->addUser();
+        break;
+
+    case 'btn_disable_user':
+        $ajx = new UserController();
+        $ajx->disableUser();
+        break;
+
+    case 'btn_enable_user':
+        $ajx = new UserController();
+        $ajx->enableUser();
+        break;
+    case 'btn_send_mail_activation':
+        $ajx = new UserController();
+        $ajx->sendMailActivation();
+        break;
+
+    case 'btn_ouvrir_caisse';
+        $ajx = new UserController();
+        $ajx->openCaisse();
+        break;
+    case 'btn_fermer_caisse':
+        $ajx = new UserController();
+        $ajx->closeCaisse();
+        break;
+
+    //end Actions pour les utilisateurs
 
 
 

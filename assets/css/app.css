@@ -249,7 +249,7 @@
 }
 
 .modal-content{
-    min-height: 600px; 
+    /* min-height: 600px;  */
     position: relative;
 }
 .dashbord-sidebar {

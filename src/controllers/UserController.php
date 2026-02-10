@@ -5,10 +5,12 @@ namespace App\Controllers;
 use Roles;
 use App\Core\Gqr;
 use App\Core\Auth;
+use App\Models\User;
 use App\Models\Factory;
 use App\Services\Service;
 use App\Core\MainController;
-use App\Models\User;
+use App\Services\UserService;
+use TABLES;
 
 class UserController extends MainController
 {
@@ -54,6 +56,7 @@ class UserController extends MainController
     {
         $this->view('users/liste', ['title' => "Liste des utilisateurs"]);
     }
+
     public function profileEmploye($code)
     {
         $code = decrypter($code);
@@ -125,16 +128,73 @@ class UserController extends MainController
      * --------------------------------------------------------------------------
      */
 
+    public function bGetListeUser()
+    {
+
+        extract($_POST);
+        $output = "";
+        $user = new User();
+
+        $likeParams = [];
+        $whereParams = ['boutique_code' => Auth::user('boutique_code'), 'etat_user' => ETAT_ACTIF];
+
+
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        $search = $_POST['search'] ?? '';
+        // $search = $_POST['search']['value'] ?? '';
+
+
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['nom_user' => $search, 'prenom_user' => $search, 'email_user' => $search, 'telephone_user' => $search, 'matricule_user' => $search, 'sexe_user' => $search, 'fonction_code' => $search, 'user_created_at' => $search];
+
+            $likeParams2 = [
+                'nom_user' => $search,
+                'prenom_user' => $search,
+                // 'email_user' => $search, 
+                // 'telephone_user' => $search, 
+                // 'matricule_user' => $search, 
+                // 'sexe_user' => $search, 
+                // 'fonction_code' => $search, 
+                // 'user_created_at' => $search
+            ];
+        }
+
+        // 🔢 Total
+        $total = $user->dataTbleCountTotalRow(TABLES::USERS, $whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $user->dataTbleCountTotalRow(TABLES::USERS, $whereParams, $likeParams2);
+        // 📄 Données
+
+        $userList = $user->DataTableFetchUsersListe($likeParams2, $start, $limit);
+
+        $data = [];
+
+
+        // $data = UserService::userDataService($userList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            // "data"            => $data
+            "data"            => $userList
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
 
     public function modalAddUser()
     {
 
-
         // $users = getAllusers();
-        $fonctions = (new Factory())->getAllFonctions();
+        $fonctions = (new User())->getAllFonctions();
         // $services = getAllServices();
 
-        $output = Service::userAddModalService($fonctions);
+        $output = UserService::userAddModalService($fonctions);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
@@ -142,64 +202,67 @@ class UserController extends MainController
 
     public function addUser()
     {
+
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
         $_POST = sanitizePostData($_POST);
-        $user = new Factory();
-
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['sexe']) && !empty($_POST['fonction']) && !empty($_POST['matricule'])) {
+        $user = new User();
+        // var_dump($_POST);
+        // return;
+        if (!empty($_POST['nom_user']) && !empty($_POST['prenom_user']) && !empty($_POST['telephone_user']) && !empty($_POST['email_user']) && !empty($_POST['sexe_user']) && !empty($_POST['fonction_user']) && !empty($_POST['matricule_user'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone);
+            $telephone = removeSpace($telephone_user);
             $telephone = str_replace('(+225)', '', $telephone);
 
             // if (isValidPhoneNumber($telephone)) {
             if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
-                $userTel = $user->find('users', 'telephone', $telephone);
+                $userTel = $user->find(TABLES::USERS, 'telephone_user', $telephone);
 
                 if (empty($userTel)) {
 
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $userEmail = $user->find('users', 'email', $email);
+                    if (filter_var($email_user, FILTER_VALIDATE_EMAIL)) {
+                        $userEmail = $user->find(TABLES::USERS, 'email_user', $email_user);
 
                         if (empty($userEmail)) {
 
                             $passwrod = generetor(5);
-                            $code = $user->generatorCode('users', 'code_user');
+                            $code = $user->generatorCode(TABLES::USERS, 'code_user');
                             $token = generetor(random_int(50, 70));
 
                             $data_user = [
-                                'nom' => strtoupper($nom),
-                                'prenom' => strtoupper($prenom),
-                                'telephone' => $telephone,
+                                'nom_user' => strtoupper($nom_user),
+                                'prenom_user' => strtoupper($prenom_user),
+                                'telephone_user' => $telephone_user,
                                 'code_user' => $code,
-                                'email' => $email,
-                                'matricule' => strtoupper($matricule),
-                                'sexe' => $sexe,
-                                'fonction_id' => $fonction,
-                                'hotel_id' => Auth::user('hotel_id'),
-                                'etat_user' => 0,
+                                'email_user' => $email_user,
+                                'matricule_user' => strtoupper($matricule_user),
+                                'sexe_user' => $sexe_user,
+                                'fonction_code' => $fonction_user,
+                                'boutique_code' => Auth::user('boutique_code'),
+                                'compte_code' => Auth::user('compte_code'),
+                                'etat_user' => ETAT_INACTIF,
                                 'password_user' => password_hash($passwrod, PASSWORD_BCRYPT),
                                 'token' => $token,
                                 'created_user' => date('Y-m-d'),
                                 'lastime' => date('Y-m-d')
                             ];
 
-                            if ($user->create("users", $data_user)) {
+                            if ($user->create(TABLES::USERS, $data_user)) {
 
-                                $hotel =   $user->getInfoHotel(Auth::user('hotel_id'));
+                                $boutique =   $user->getInfoBoutique(Auth::user('boutique_code'));
 
                                 $data_mail = [
                                     "appName" => $_ENV["APP_NAME"],
-                                    "hotel_name" => $hotel['libelle_hotel'],
-                                    "email" => $email,
+                                    "libelle_structure" => $boutique['libelle_boutique'],
+                                    "email" => $email_user,
                                     "password" => $passwrod,
-                                    "nom" => strtoupper($nom . " " . $prenom),
+                                    "nom" => strtoupper($nom_user . " " . $prenom_user),
                                     "lienActivation" => HOME . "/activation/{$token}"
                                 ];
 
 
-                                $this->SendMail($email, "Création de compte", "activation", $data_mail);
+                                // $this->SendMail($email_user, "Création de compte", "activation", $data_mail);
 
 
                                 $msg['code'] = 200;

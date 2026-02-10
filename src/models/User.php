@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Core\Auth;
 use App\Core\Model;
 use Exception;
+use PDO;
 use TABLES;
 
 class User extends Model
@@ -17,9 +18,9 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT * FROM fonctions AS fn WHERE fn.hotel_id = :hotel AND etat_fonction = 1 ORDER BY libelle_fonction";
+            $sql = "SELECT * FROM " . TABLES::FONCTIONS . " AS fn WHERE fn.boutique_code = :boutique_code AND etat_fonction = 1 ORDER BY libelle_fonction";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel' => Auth::user('hotel_id')]);
+            $stmt->execute(['boutique_code' => Auth::user('boutique_code')]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -61,7 +62,7 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT bt.etat_boutique, code_user,password_user,nom_user,prenom_user ,f.libelle_fonction, f.code_fonction, u.boutique_code  FROM " . TABLES::USERS . " AS u
+            $sql = "SELECT bt.etat_boutique, code_user,password_user,nom_user,prenom_user ,f.libelle_fonction, f.code_fonction, u.boutique_code, u.compte_code  FROM " . TABLES::USERS . " AS u
             JOIN " . TABLES::FONCTIONS . " AS f ON f.code_fonction = u.fonction_code
             JOIN " . TABLES::BOUTIQUES . " AS bt ON bt.code_boutique = u.boutique_code 
         WHERE {$login} = :login AND etat_user = 1  LIMIT 1";
@@ -110,6 +111,118 @@ class User extends Model
             die($e->getMessage());
         }
         return $data;
+    }
+
+    function DataTableFetchUsersListe($likeParams = [], int $start = 0, int $limit = 10)
+    {
+
+
+        // $where = "WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user";
+        // $where = "WHERE us.etat_user = :etat_user";
+        // if (!empty($likeParams)) {
+        //     $likes = [];
+        //     foreach ($likeParams as $field => $search) {
+        //         $likes[] = "us.$field LIKE :$field";
+        //         $likeParams[$field] = "%$search%";
+        //     }
+        //     $where .= " AND (" . implode(' OR ', $likes) . ")";
+        // }
+        // return $likeParams['nom_user'];
+
+
+        // $sql = "SELECT us.*, fn.* 
+        //     FROM " . TABLES::USERS . " us JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction $where ORDER BY nom_user ASC, prenom_user ASC";
+        // // LIMIT :start, :limit";
+
+        // $stmt = $this->db->prepare($sql);
+
+        // $stmt->bindValue(":etat_fonction", ETAT_ACTIF);
+        // $stmt->bindValue(":boutique_code", "BTQ_001");
+        // $stmt->bindValue(":boutique_code", Auth::user('boutique_code'));
+
+        // $stmt->bindValue(":etat_user", ETAT_ACTIF);
+        // $tt = [];
+
+        // if (!empty($likeParams)) {
+
+        //     foreach ($likeParams as $key => $value) {
+        //         $tt[] = "$key => $value";
+        //         $stmt->bindValue(":$key", $value, PDO::PARAM_STR);
+        //     }
+        // }
+        // return $tt;
+
+        // ✅ Bind LIMIT params correctement
+        // $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        // $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+
+        // return $sql;
+
+        if (empty($likeParams)) {
+
+            $sql2 = "SELECT us.* FROM " . TABLES::USERS . " us 
+            JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction
+                WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user  ORDER BY nom_user ASC, prenom_user ASC LIMIT :start, :limit";
+            $stmt2 = $this->db->prepare($sql2);
+
+            // $stmt2->bindValue(":telephone_user", $likeParams['telephone_user'], PDO::PARAM_STR);
+            // $stmt2->bindValue(":email_user", $likeParams['email_user'], PDO::PARAM_STR);
+            // $stmt2->bindValue(":sexe_user", $likeParams['sexe_user'], PDO::PARAM_STR);
+            $stmt2->bindValue(":boutique_code", Auth::user('boutique_code'));
+            $stmt2->bindValue(":etat_user", ETAT_ACTIF);
+            $stmt2->bindValue(":etat_fonction", ETAT_ACTIF);
+            // ✅ Bind LIMIT params correctement
+            $stmt2->bindValue(':start', $start, PDO::PARAM_INT);
+            $stmt2->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt2->execute();
+        } else {
+
+            $where = "";
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                $likes[] = "us.$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            $where .= " AND (" . implode(' OR ', $likes) . ")";
+
+
+
+            $sql2 = "SELECT us.* FROM " . TABLES::USERS . " us 
+            JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction
+                WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user $where  ORDER BY nom_user ASC, prenom_user ASC LIMIT :start, :limit";
+            $stmt2 = $this->db->prepare($sql2);
+
+            foreach ($likeParams as $key => $value) {
+                $like[] = "$key => $value";
+                $stmt2->bindValue(":$key", $value, PDO::PARAM_STR);
+            }
+
+            $stmt2->bindValue(":boutique_code", Auth::user('boutique_code'));
+            $stmt2->bindValue(":etat_user", ETAT_ACTIF);
+            $stmt2->bindValue(":etat_fonction", ETAT_ACTIF);
+            // ✅ Bind LIMIT params correctement
+            $stmt2->bindValue(':start', $start, PDO::PARAM_INT);
+            $stmt2->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt2->execute();
+        }
+
+        // $sql2 = "SELECT us.*, fn.* FROM " . TABLES::USERS . " us 
+        //         JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction 
+        //         WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user AND ( us.nom_user LIKE :nom_user OR us.prenom_user LIKE :nom_user OR us.telephone_user LIKE :telephone_user OR us.email_user LIKE :email_user OR us.sexe_user LIKE :sexe_user ) ORDER BY nom_user ASC, prenom_user ASC";
+        // LIMIT :start, :limit";
+
+
+        // $stmt2->bindValue(":nom_user", $likeParams['nom_user'], PDO::PARAM_STR);
+        // $stmt2->bindValue(":telephone_user", $likeParams['telephone_user'], PDO::PARAM_STR);
+        // $stmt2->bindValue(":email_user", $likeParams['email_user'], PDO::PARAM_STR);
+        // $stmt2->bindValue(":sexe_user", $likeParams['sexe_user'], PDO::PARAM_STR);
+        // $stmt2->bindValue(":boutique_code", Auth::user('boutique_code'));
+        // $stmt2->bindValue(":etat_user", ETAT_ACTIF);
+        // $stmt2->bindValue(":etat_fonction", ETAT_ACTIF);
+
+        // $stmt2->execute();
+        return $stmt2->fetchAll();
     }
 
     public function getSupUserWithFoction(): ?array

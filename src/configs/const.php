@@ -9,9 +9,9 @@ define('TWO_PIP', '/../../');
 define('THREE_PIP', '/../../');
 
 // const etat and status
-define('ETAT_INACTIF', 0);
-define('ETAT_ACTIF', 1);
-define('ETAT_ATTENTE', 2);
+define('ETAT_INACTIF', "0");
+define('ETAT_ACTIF', "1");
+define('ETAT_ATTENTE', "2");
 define('BOUTIQUE_CODE', "BTQ_001");
 define('COMPTE_CODE', "CMP_001");
 
