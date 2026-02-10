@@ -38,11 +38,11 @@ function btnLoginUser() {
     });
 }
 
-// loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
+loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
 
 
 
-searchUser();
+// searchUser();
 function searchUser() {
     $("body").delegate($('#data-table-user').DataTable().search(), "keyup", function(e) {
         e.preventDefault();

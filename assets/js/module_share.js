@@ -54,31 +54,6 @@ function testDatable(action, selector,search = "") {
     });
 }
 
-function testData55ble(action, selector,search) {
-    
-    $.ajax({
-        method: "POST",
-        url: URL_AJAX,
-        data: {
-            action: action,
-            length: 210,
-            start: 0,
-            search: $(selector).DataTable().search().value,
-            draw: 1
-        },
-        // dataType: "JSON",
-        beforeSend: function () {
-            // $(".loader_backdrop2").css('display', "block");
-            // btnReq("#" + id, "Traitement...");
-        },
-        success: function (data) {
-            console.log("test", data);
-
-        }
-    });
-}
-
-
 
 
 function loadDataTable(tableId,selector,action) {
@@ -87,7 +62,7 @@ function loadDataTable(tableId,selector,action) {
     if ($(selector + ':visible').length) {
 console.log(selector,tableId,action);
 
-        testDatable(action, selector);
+        // testDatable(action, selector);
 
         // return;
         
@@ -99,9 +74,6 @@ console.log(selector,tableId,action);
             "type": "POST",
             "data": {
                 action: action
-            },
-            success: function (data) {
-                console.log(data);
             }
         }
     });

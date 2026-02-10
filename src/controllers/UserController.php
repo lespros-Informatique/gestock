@@ -141,8 +141,8 @@ class UserController extends MainController
 
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
-        $search = $_POST['search'] ?? '';
-        // $search = $_POST['search']['value'] ?? '';
+        // $search = $_POST['search'] ?? '';
+        $search = $_POST['search']['value'] ?? '';
 
 
 
@@ -150,38 +150,27 @@ class UserController extends MainController
         // 🔎 Recherche
         if (!empty($search)) {
             $likeParams = ['nom_user' => $search, 'prenom_user' => $search, 'email_user' => $search, 'telephone_user' => $search, 'matricule_user' => $search, 'sexe_user' => $search, 'fonction_code' => $search, 'user_created_at' => $search];
-
-            $likeParams2 = [
-                'nom_user' => $search,
-                'prenom_user' => $search,
-                // 'email_user' => $search, 
-                // 'telephone_user' => $search, 
-                // 'matricule_user' => $search, 
-                // 'sexe_user' => $search, 
-                // 'fonction_code' => $search, 
-                // 'user_created_at' => $search
-            ];
         }
 
         // 🔢 Total
-        $total = $user->dataTbleCountTotalRow(TABLES::USERS, $whereParams);
+        $total = $user->dataTbleCountTotalUsersRow($whereParams);
         // 🔢 Total filtré
 
-        $totalFiltered = $user->dataTbleCountTotalRow(TABLES::USERS, $whereParams, $likeParams2);
+        $totalFiltered = $user->dataTbleCountTotalUsersRow($whereParams, $likeParams);
         // 📄 Données
 
-        $userList = $user->DataTableFetchUsersListe($likeParams2, $start, $limit);
+        $userList = $user->DataTableFetchUsersListe($likeParams, $start, $limit);
 
         $data = [];
 
 
-        // $data = UserService::userDataService($userList);
+        $data = UserService::userDataService($userList);
         echo json_encode([
             "draw"            => intval($_POST['draw']),
             "recordsTotal"    => $total,
             "recordsFiltered" => $totalFiltered,
-            // "data"            => $data
-            "data"            => $userList
+            "data"            => $data
+            // "data"            => $userList
         ]);
         // echo json_encode(['data' => $total, 'code' => 200]);
         return;
