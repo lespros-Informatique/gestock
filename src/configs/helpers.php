@@ -731,50 +731,50 @@ function getUrl(): string
 
 function dashlink($role)
 {
-    $url = match ($role) {
-        Roles::SUPER => url('teggdd'),
-        Roles::PARAMETRE  => url('setting/home'),
-        Roles::ADMIN_H  => url('admin/liste-employes'),
-        Roles::DASHBOARD_H  => url('admin/role'),
-        Roles::COMPTATBLE_H  => url('comptabilite/caisse'),
-        Roles::SALAIRE_H  => url('salaires'),
-        Roles::MANAGER_H  => url('chambres'),
-        Roles::DEPENSE_H  => url('depenses'),
-        Roles::RECEPTION_H  => url('reservation'),
-        default   => url(''),
-    };
-    return $url;
+    // $url = match ($role) {
+    //     Roles::SUPER => url('teggdd'),
+    //     Roles::PARAMETRE  => url('setting/home'),
+    //     Roles::ADMIN_H  => url('admin/liste-employes'),
+    //     Roles::DASHBOARD_H  => url('admin/role'),
+    //     Roles::COMPTATBLE_H  => url('comptabilite/caisse'),
+    //     Roles::SALAIRE_H  => url('salaires'),
+    //     Roles::MANAGER_H  => url('chambres'),
+    //     Roles::DEPENSE_H  => url('depenses'),
+    //     Roles::RECEPTION_H  => url('reservation'),
+    //     default   => url(''),
+    // };
+    // return $url;
 }
 
 function dashlinkLabel($role)
 {
-    $url = match ($role) {
-        Roles::PARAMETRE  => 'Parametre du conpte',
-        Roles::ADMIN_H  => 'Liste des employes',
-        Roles::DASHBOARD_H  => 'Gestion des roles',
-        Roles::COMPTATBLE_H  => 'Gestion des caisses',
-        Roles::SALAIRE_H  => 'Gestion des salaires',
-        Roles::MANAGER_H  => 'Gestion des chambres',
-        Roles::DEPENSE_H  => 'Gestion des depenses',
-        Roles::RECEPTION_H  => 'Gestion des reservations',
-        default   => '',
-    };
-    return $url;
+    // $url = match ($role) {
+    //     Roles::PARAMETRE  => 'Parametre du conpte',
+    //     Roles::ADMIN_H  => 'Liste des employes',
+    //     Roles::DASHBOARD_H  => 'Gestion des roles',
+    //     Roles::COMPTATBLE_H  => 'Gestion des caisses',
+    //     Roles::SALAIRE_H  => 'Gestion des salaires',
+    //     Roles::MANAGER_H  => 'Gestion des chambres',
+    //     Roles::DEPENSE_H  => 'Gestion des depenses',
+    //     Roles::RECEPTION_H  => 'Gestion des reservations',
+    //     default   => '',
+    // };
+    // return $url;
 }
 
 function dashlabel($groupe)
 {
-    $url = match ($groupe) {
-        Groupes::SUPER => '😃 Super Admin',
-        Groupes::PARAMETRE  => '🔄 Paramétrage',
-        Groupes::ADMIN  => '👨 Admin',
-        Groupes::COMPTABLE  => '💰 Comptabilité',
-        Groupes::RECEPTION  => '💻 Reception',
-        Groupes::HOTEL  => '🏨 Gestion Hotel',
+    // $url = match ($groupe) {
+    //     Groupes::SUPER => '😃 Super Admin',
+    //     Groupes::PARAMETRE  => '🔄 Paramétrage',
+    //     Groupes::ADMIN  => '👨 Admin',
+    //     Groupes::COMPTABLE  => '💰 Comptabilité',
+    //     Groupes::RECEPTION  => '💻 Reception',
+    //     Groupes::HOTEL  => '🏨 Gestion Hotel',
 
-        default   => '',
-    };
-    return $url;
+    //     default   => '',
+    // };
+    // return $url;
 }
 
 
