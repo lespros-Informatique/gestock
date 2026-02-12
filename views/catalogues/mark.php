@@ -9,7 +9,7 @@
     <div class="card-body">
       <div class="table-responsive table-responsive-md" id="sexion_mark">
      
-      <table class="table table-striped table-bordered  table-hover table-sm table-data">
+      <table id="data-table-mark" class="table table-striped table-bordered  table-hover table-sm table-data">
           <thead class="">
           <tr>
               <th class="text-center" width="2px" >#</th>
@@ -17,9 +17,7 @@
               <th class="text-center" width="25px" >Options</th>
             </tr>
           </thead>
-          <tbody>
-                <?= aChargerListeMark() ?>
-          </tbody>
+       
         </table>
       </div>
     </div>

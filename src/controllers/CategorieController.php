@@ -99,7 +99,7 @@ class CategorieController extends MainController
             $data_categorie = [
                 'etat_categorie' => ETAT_INACTIF
             ];
-            $rest = (new Factory())->update("categories", 'code_categorie', $code_categorie, $data_categorie);
+            $rest = (new Factory())->update(TABLES::CATEGORIES, 'code_categorie', $code_categorie, $data_categorie);
             if ($rest) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
@@ -166,7 +166,7 @@ public function aModalUpdateCategorie()
                         'description_categorie' => ucfirst($description_categorie),
                     ];
 
-                    $rest = $fc->update("categories", 'code_categorie', $code, $data_categorie);
+                    $rest = $fc->update(TABLES::CATEGORIES, 'code_categorie', $code, $data_categorie);
 
                     if ($rest) {
                         $msg['code'] = 200;
@@ -210,8 +210,8 @@ public function aModalUpdateCategorie()
             $fc = new Factory();
 
 
-            if (!$fc->verif("categories","libelle_categorie",$libelle_categorie)) {
-                $code = $fc->generateCode("categories", "code_categorie","CAT-",8);
+            if (!$fc->verif(TABLES::CATEGORIES,"libelle_categorie",$libelle_categorie)) {
+                $code = $fc->generateCode(TABLES::CATEGORIES, "code_categorie","CAT-",8);
                 $description = !empty($description_categorie) ?
                     ucfirst($description_categorie) : null;
                 $data_categorie = [
@@ -222,7 +222,7 @@ public function aModalUpdateCategorie()
                     'description_categorie' => $description
                 ];
                 
-                if ($fc->create('categories', $data_categorie)) {
+                if ($fc->create(TABLES::CATEGORIES, $data_categorie)) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "Categorie enregistré avec succes";

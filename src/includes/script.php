@@ -46,6 +46,7 @@
 
 <script src="<?= ASSETS ?>js/app.js"></script>
 <script src="<?= ASSETS ?>js/module_share.js"></script>
+<script src="<?= ASSETS ?>guest/module_user.js"></script>
 <script src="<?= ASSETS ?>js/module_boutique.js"></script>
 <script src="<?= ASSETS ?>js/module_personne.js"></script>
 <script src="<?= ASSETS ?>js/module_catalogue.js"></script>

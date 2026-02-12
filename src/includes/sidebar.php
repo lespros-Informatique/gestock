@@ -99,7 +99,7 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= route('admin.role') ?>">
+                                <a class="item-link" href="<?= url('admin/role') ?>">
                                     <span class="sub-item">Permissions</span>
                                 </a>
                             </li>
@@ -316,20 +316,17 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  url('mark')?>">
-                                <a class="item-link" href="<?= route('catalogue.depense') ?>">
+                                <a class="item-link" href="<?= url('mark') ?>">
                                     <span class="sub-item">Marque</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  url('unite')?>">
-                                <a class="item-link" href="<?= route('catalogue.versement') ?>">
+                                <a class="item-link" href="<?= url('unite') ?>">
                                     <span class="sub-item">Unité</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?=  url('produit')?>">
-                                <a class="item-link" href="<?= route('catalogue.versement') ?>">
+                                <a class="item-link" href="<?= url('produit') ?>">
                                     <span class="sub-item">Produit</span>
                                 </a>
                             </li>

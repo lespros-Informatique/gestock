@@ -9,116 +9,8 @@ use Roles;
 
 class Service
 {
-    public static function userAddModalService($fonctions)
-    {
-        $output = "";
-        $output .= '
-             <form action="#" method="post" id="frmAddUser">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="hidden" value="btn_add_user" name="action">
-    
-                    <label for="nom" class="form-label">Nom <strong class="text-danger">*</strong></label>
-                    <input type="text" class="form-control" id="nom" name="nom" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="nom" class="form-label">Prénoms <strong class="text-danger">*</strong></label>
-                    <input type="text" class="form-control" id="nom" name="prenom" required>
-                </div>
-    
-            </div>
-    
-             <hr>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="telephone" class="form-label">Téléphone <strong class="text-danger">*</strong></label>
-                    <input type="text" class="form-control telephone" name="telephone" id="telephone" value="(+225)" required >
-                </div> 
-    
-                <div class="col-md-4">
-                    <label for="email" class="form-label">Adresse email <strong class="text-danger">*</strong></label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="matricule" class="form-label">Matricule <strong class="text-danger">*</strong></label>
-                    <input type="text" class="form-control" name="matricule" id="matricule"  required>
-    
-                </div> 
-            </div>
-    
-             <hr>
-            <div class="row mb-3">
-    
-                <div class="col-md-6">
-                    <label for="sexe" class="form-label">Civilé <strong class="text-danger">*</strong></label>
-                    <select name="sexe" class="form-control" id="sexe" required>
-                    <option value="">--- CHOISIR ---</option>
-                    ';
 
-        foreach (SEXEP as $sx) {
-            $output .= '<option value="' . $sx . '">' . $sx . '</option>';
-        }
 
-        $output .= '</select>
-                </div> 
-                 <div class="col-md-6">
-                    <label for="fonction" class="form-label">Fonction <strong class="text-danger">*</strong></label>
-                    <select name="fonction" class="form-control" id="fonction" required>
-                    <option value="">--- CHOISIR ---</option>
-                    ';
-
-        foreach ($fonctions as $fn) {
-            $output .= '<option value="' . $fn['code_fonction'] . '">' . $fn['libelle_fonction'] . '</option>';
-        }
-
-        $output .= '</select>
-                </div>
-               
-                </div> 
-
-            </div>
-    
-    
-        </form> ';
-        return $output;
-    }
-
-    public static function rolesDataGroupes($groupes, $code)
-    {
-        $output = '';
-        foreach ($groupes as $data) {
-            $output .= ' 
-            <div class="role-container">
-                    <div class="d-flex">
-                    <div class="">
-                    <input data-user="' . $code . '" data-groupe="' . $data['groupe'] . '" data-role="' . $data['code_role'] . '" type="checkbox" class="form-check-input me-2 toggle-role" id="r' . $data['code_role'] . '"> &nbsp;
-                    <label for="r' . $data['code_role'] . '" class="role-title">' .  strtoupper($data['module']) . '</label>
-                    </div>
-                        <div class="">
-                        </div>
-
-                    </div>
-
-                    <div class="permissions mt-3" id="permissions-r' . $data['code_role'] . '">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="45%">MODULES</th>
-                                    <th>➕ AJOUTER</th>
-                                    <th>👁️ VOIR</th>
-                                    <th>✏️ MODIFIER</th>
-                                    <th>❌ SUPPRIMER</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sexion-r' . $data['code_role'] . '">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            ';
-        }
-        return $output;
-    }
 
     public static function dataSearchReservation($data, $nberDay)
     {
@@ -484,7 +376,7 @@ class Service
         return $output;
     }
 
-     public static function reservationsActive($reservation)
+    public static function reservationsActive($reservation)
     {
         $output = "";
 
@@ -497,14 +389,14 @@ class Service
                 $data['date_sortie']
             );
             $montantchambre = $data['prix_reservation'] * $nbjr;
-            $lookFor = $i == 2 ? '<div style="height: 100%; width: 100%;" class="bg-danger">' . $i .'</div>' : $i;
+            $lookFor = $i == 2 ? '<div style="height: 100%; width: 100%;" class="bg-danger">' . $i . '</div>' : $i;
 
 
 
             $output .= '
 
     <tr>
-      <th scope="row">   '.$lookFor .'</th>
+      <th scope="row">   ' . $lookFor . '</th>
       <td>' . date_formater($data['created_reservation']) . '</td>
       <td>' . checkEtatCh($state) . '</td>
       <td>
@@ -514,7 +406,7 @@ class Service
 
       <td>' . $data['telephone_client'] . '</td>
       <td>' . $data['chambre'] . '</td>
-      <td data-titles="'. date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) .'">' .$nbjr . '</td>
+      <td data-titles="' . date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) . '">' . $nbjr . '</td>
       <td>' . money($montantchambre) . '</td>
       <td class="table_button">
       <span hidden >' . $data['code_client'] . ' </span>
@@ -554,7 +446,7 @@ class Service
         return $output;
     }
 
-     public static function reservationsArrive($reservation)
+    public static function reservationsArrive($reservation)
     {
         $output = "";
 
@@ -567,14 +459,14 @@ class Service
                 $data['date_sortie']
             );
             $montantchambre = $data['prix_reservation'] * $nbjr;
-            $lookFor = $i == 2 ? '<div style="height: 100%; width: 100%;" class="bg-danger">' . $i .'</div>' : $i;
+            $lookFor = $i == 2 ? '<div style="height: 100%; width: 100%;" class="bg-danger">' . $i . '</div>' : $i;
 
 
 
             $output .= '
 
     <tr>
-      <th scope="row">   '.$lookFor .'</th>
+      <th scope="row">   ' . $lookFor . '</th>
       <td>' . date_formater($data['created_reservation']) . '</td>
       <td>' . checkEtatCh($state) . '</td>
       <td>
@@ -584,7 +476,7 @@ class Service
 
       <td>' . $data['telephone_client'] . '</td>
       <td>' . $data['chambre'] . '</td>
-      <td data-titles="'. date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) .'">' .$nbjr . '</td>
+      <td data-titles="' . date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) . '">' . $nbjr . '</td>
       <td>' . money($montantchambre) . '</td>
       <td class="table_button">
       <span hidden >' . $data['code_client'] . ' </span>
@@ -649,8 +541,8 @@ class Service
           ' . $data['nom_client'] . '</a>
       </td>
 
-      <td>' .$data['libelle_typechambre']. ' / ' .$data['libelle_chambre'].'</td>
-      <td>' .date_formater($data['date_entree']). ' AU ' .date_formater($data['date_sortie']) . '</td>
+      <td>' . $data['libelle_typechambre'] . ' / ' . $data['libelle_chambre'] . '</td>
+      <td>' . date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) . '</td>
       <td class="bg-dark text-white">' . money($montantchambre) . '</td>
       <td class="table_button">
       <span hidden >' . date_formater($data['date_entree']) . ' ' . date_formater($data['date_sortie']) . ' </span>
@@ -664,19 +556,19 @@ class Service
             <a class="dropdown-item" href="' . url('reservation/details', ['code' => $data['code_reservation']]) . '"> <i
                 class="fa fa-eye text-dark"> </i> &nbsp; Detail</a>';
 
-         
 
-                $output .= ' <button class="dropdown-item btn_modal_modifier" data-code="' . $data['code_reservation'] . '"> <i
+
+            $output .= ' <button class="dropdown-item btn_modal_modifier" data-code="' . $data['code_reservation'] . '"> <i
                 class="fa fa-edit text-primary"> </i> &nbsp; Modifier</button>
                 <button class="dropdown-item btn_annuler_reservation" data-reservation="' . crypter($data['code_reservation']) . '"> <i class="fa fa-times text-danger"> </i> &nbsp; Ennuler</button>';
 
 
-                $output .= '                   
+            $output .= '                   
              <button class="dropdown-item btn_modal_confirme" data-reservation="' . crypter($data['code_reservation']) . '">
                 <i class="fa fa-check text-success"> </i> &nbsp; Regler facture</button>
                 <a class="dropdown-item" target="_blank" href="' . url('print/facture', ['code' => $data['code_reservation']]) . '">
                   <i class="fa fa-print text-dark"> </i> &nbsp; IMPRIMER</a>';
-         
+
 
             $output .= '
           </div>
@@ -688,7 +580,7 @@ class Service
         return $output;
     }
 
-     public static function checkForReservationOut($reservation)
+    public static function checkForReservationOut($reservation)
     {
         $output = "";
 
@@ -713,8 +605,8 @@ class Service
           ' . $data['nom_client'] . '</a>
       </td>
 
-      <td>' .$data['libelle_typechambre']. ' / ' .$data['libelle_chambre'].'</td>
-      <td>' .date_formater($data['date_entree']). ' AU ' .date_formater($data['date_sortie']) . '</td>
+      <td>' . $data['libelle_typechambre'] . ' / ' . $data['libelle_chambre'] . '</td>
+      <td>' . date_formater($data['date_entree']) . ' AU ' . date_formater($data['date_sortie']) . '</td>
       <td class="bg-dark text-white">' . money($montantchambre) . '</td>
       <td class="table_button">
       <span hidden >' . date_formater($data['date_entree']) . ' ' . date_formater($data['date_sortie']) . ' </span>
@@ -743,7 +635,7 @@ class Service
               <i class="fa fa-check text-success"> </i> &nbsp; Confirmer</button>';
             endif;
 
-            
+
             if ($state != STATUT_RESERVATION[2]) :
 
 
@@ -763,7 +655,7 @@ class Service
 
         return $output;
     }
-     public static function reservationRecaptData($reservation)
+    public static function reservationRecaptData($reservation)
     {
         $output = "";
 
@@ -891,7 +783,7 @@ class Service
         return $output;
     }
 
-     public static function clientRecaptData($clients)
+    public static function clientRecaptData($clients)
     {
         $output = "";
 
@@ -1468,7 +1360,7 @@ class Service
         return $output;
     }
 
-     public static function depenseRecaptData($depenses)
+    public static function depenseRecaptData($depenses)
     {
         $output = "";
 
