@@ -46,7 +46,7 @@
 
                         <div class="mb-3 mt-4">
                             <input type="hidden" value="btnLogin" name="action">
-                            <button type="submit" id="btn_login" class="btn btn-warning w-100">
+                            <button type="submit" id="btnSubmitForm" class="btn btn-warning w-100">
                                 Connexion <i class="fa fa-log-in"></i>
                             </button>
                         </div>

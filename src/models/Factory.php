@@ -15,21 +15,7 @@ class Factory extends Model
 
 
 
-    public function getInfoHotel($hotel_id)
-    {
-        $data = [];
-        try {
-            $sql = "SELECT * FROM hotels h WHERE h.code_hotel = :hotel LIMIT 1";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel' => $hotel_id]);
-            if ($stmt->rowCount() > 0) {
-                $data = $stmt->fetch();
-            }
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
-        return $data;
-    }
+
 
 
 

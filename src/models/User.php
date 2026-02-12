@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Core\Auth;
 use App\Core\Model;
 use Exception;
+use PDO;
 use TABLES;
 
 class User extends Model
@@ -12,20 +13,47 @@ class User extends Model
     protected string $table = "users";
     public string $id = 'code_user';
 
+    public function getUser($field, $value)
+    {
+        $sql = "SELECT * FROM " . TABLES::USERS . " WHERE " . $field . " = :field LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(["field" => $value]);
+
+        return $stmt->fetch() ?: null;
+    }
+
+    public function getRolesByGroupe($groupe)
+    {
+        $result = [];
+        try {
+            $sql = "SELECT * FROM " . TABLES::ROLES . " WHERE groupe = :groupe";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(["groupe" => $groupe]);
+            if ($stmt->rowCount() > 0)
+                $result = $stmt->fetchAll();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $result;
+    }
+
     // get all fonction
     public function getAllFonctions(): array
     {
         $data = [];
         try {
-            $sql = "SELECT * FROM fonctions AS fn WHERE fn.hotel_id = :hotel AND etat_fonction = 1 ORDER BY libelle_fonction";
+            $sql = "SELECT * FROM " . TABLES::FONCTIONS . " AS fn WHERE fn.boutique_code = :boutique_code AND etat_fonction = 1 ORDER BY libelle_fonction";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel' => Auth::user('hotel_id')]);
+            $stmt->execute(['boutique_code' => Auth::user('boutique_code')]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
         }
         return $data;
     }
+
+
 
     public function getUserGroups(string $userCode): array
     {
@@ -61,7 +89,7 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT bt.etat_boutique, code_user,password_user,nom_user,prenom_user ,f.libelle_fonction, f.code_fonction, u.boutique_code  FROM " . TABLES::USERS . " AS u
+            $sql = "SELECT bt.etat_boutique, code_user,password_user,nom_user,prenom_user ,f.libelle_fonction, f.code_fonction, u.boutique_code, u.compte_code  FROM " . TABLES::USERS . " AS u
             JOIN " . TABLES::FONCTIONS . " AS f ON f.code_fonction = u.fonction_code
             JOIN " . TABLES::BOUTIQUES . " AS bt ON bt.code_boutique = u.boutique_code 
         WHERE {$login} = :login AND etat_user = 1  LIMIT 1";
@@ -98,12 +126,12 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_id AND etat_fonction = :etat 
-            WHERE us.hotel_id = :hotel_id  ORDER BY etat_user DESC, us.nom";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM " . TABLES::USERS . " AS us JOIN " . TABLES::FONCTIONS . " fn ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat 
+            WHERE us.boutique_code = :boutique_code  ORDER BY us.etat_user DESC, us.nom_user";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 'etat' => $etat,
-                'hotel_id' => Auth::user('hotel_id')
+                'boutique_code' => Auth::user('boutique_code')
             ]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
@@ -112,15 +140,103 @@ class User extends Model
         return $data;
     }
 
+    function dataTbleCountTotalUsersRow(array $whereParams, $likeParams = [])
+    {
+
+
+
+        // if (!empty($whereParams)) {
+        //     $where = 'WHERE ';
+        //     $where .=  implode(
+        //         ' AND ',
+        //         array_map(fn($f) => "$f = :$f ", array_keys($whereParams))
+        //     );
+        // }
+
+        $where = "WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user";
+        if (!empty($likeParams)) {
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                $likes[] = "us.$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            $where .= " AND (" . implode(' OR ', $likes) . ")";
+        }
+
+        // if (!empty($likeParams)) {
+        //     $where .= empty($where) ? ' WHERE ' : ' AND ';
+        //     $likes = [];
+        //     foreach ($likeParams as $field => $search) {
+        //         // $key = "$field";
+        //         $likes[] = "$field LIKE :$field";
+        //         $likeParams[$field] = "%$search%";
+        //     }
+        //     // return $likeParams;
+        //     $where .= '(' . implode(' OR ', $likes) . ')';
+        // }
+
+        $sql = "SELECT us.*, fn.* 
+            FROM " . TABLES::USERS . " us JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction $where";
+        $stmt = $this->db->prepare($sql);
+
+        // return $sql;
+        $stmt->execute(array_merge($whereParams, $likeParams, ['etat_fonction' => ETAT_ACTIF]));
+        return (int) $stmt->fetchColumn();
+    }
+
+
+    function DataTableFetchUsersListe($likeParams = [], int $start = 0, int $limit = 10)
+    {
+
+
+        $where = "WHERE us.boutique_code = :boutique_code AND us.etat_user = :etat_user";
+
+        if (!empty($likeParams)) {
+            $likes = [];
+            foreach ($likeParams as $field => $search) {
+                $likes[] = "us.$field LIKE :$field";
+                $likeParams[$field] = "%$search%";
+            }
+            $where .= " AND (" . implode(' OR ', $likes) . ")";
+        }
+
+
+        $sql = "SELECT us.*, fn.* 
+            FROM " . TABLES::USERS . " us JOIN " . TABLES::FONCTIONS . " fn  ON fn.code_fonction = us.fonction_code AND fn.etat_fonction = :etat_fonction $where ORDER BY nom_user ASC, prenom_user ASC LIMIT :start, :limit";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->bindValue(":etat_fonction", ETAT_ACTIF);
+        $stmt->bindValue(":boutique_code", Auth::user('boutique_code'));
+        $stmt->bindValue(":etat_user", ETAT_ACTIF);
+
+        // Bind les parametreslike
+        $like = [];
+        if (!empty($likeParams)) {
+
+            foreach ($likeParams as $key => $value) {
+                $like[] = "$key => $value";
+                $stmt->bindValue(":$key", $value, PDO::PARAM_STR);
+            }
+        }
+
+        // ✅ Bind LIMIT params correctement
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getSupUserWithFoction(): ?array
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us 
-            JOIN fonctions fn ON fn.code_fonction = us.fonction_id
-            WHERE us.hotel_id = :hotel_id ORDER BY us.nom";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM " . TABLES::USERS . " AS us 
+            JOIN " . TABLES::FONCTIONS . " fn ON fn.code_fonction = us.fonction_code
+            WHERE us.boutique_code = :boutique_code ORDER BY us.nom_user";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel_id' => Auth::user('hotel_id')]);
+            $stmt->execute(['boutique_code' => Auth::user('boutique_code')]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -153,9 +269,9 @@ class User extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT * FROM roles r WHERE r.etat_role = 1 GROUP BY r.groupe";
+            $sql = "SELECT * FROM roles r WHERE r.etat_role = :etat GROUP BY r.groupe";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute();
+            $stmt->execute(["etat" => ETAT_ACTIF]);
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -198,12 +314,12 @@ class User extends Model
         }
         return $data;
     }
-    public function getAllPermissionForUser(string $userId)
+    public function getAllPermissionForUser(string $userCode)
     {
         $data = [];
-        $sql = "SELECT * FROM  user_roles ur WHERE ur.user_id =:user_id ";
+        $sql = "SELECT * FROM  " . TABLES::USER_ROLES . " ur WHERE ur.user_code =:user_code ";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(['user_id' => $userId]);
+        $stmt->execute(['user_code' => $userCode]);
         $data =  $stmt->fetchAll();
         return $data;
     }

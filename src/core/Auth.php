@@ -57,6 +57,7 @@ class Auth
             'nom'  => $user['nom_user'] . '' . $user['prenom_user'],
             'fonction' => $user['libelle_fonction'],
             "boutique_code" => $user['boutique_code'],
+            "compte_code" => $user['compte_code'],
             "caisse" => $etatCaisse,
             "is_logged" => true,
             'groupes' => $groupes,

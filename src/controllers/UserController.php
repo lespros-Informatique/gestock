@@ -5,10 +5,13 @@ namespace App\Controllers;
 use Roles;
 use App\Core\Gqr;
 use App\Core\Auth;
+use App\Models\User;
 use App\Models\Factory;
 use App\Services\Service;
 use App\Core\MainController;
-use App\Models\User;
+use App\Services\UserService;
+use Groupes;
+use TABLES;
 
 class UserController extends MainController
 {
@@ -21,6 +24,28 @@ class UserController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+    public function role()
+    {
+        $users = [];
+        $fc = new User();
+        $users = Auth::hasGroupe(Groupes::SUPER) ?
+            $fc->getSupUserWithFoction() :
+            $fc->getUserWithFoction();
+
+        // if (Auth::hasGroupe(Groupes::SUPER)) {
+        //     $user = $fc->getSupUserWithFoction();
+
+        //     $this->view('admins/role', ["users" => $user, 'title' => 'Gestion des roles']);
+
+        //     return;
+        // }
+
+        // $user = $fc->getUserWithFoction();
+
+        return $this->view('admins/role', ["users" => $users, 'title' => 'Gestion des roles']);
+    }
+
 
     public function acueil()
     {
@@ -52,8 +77,9 @@ class UserController extends MainController
 
     public function userListe()
     {
-        $this->view('admins/user', ['title' => "Liste des utilisateurs"]);
+        $this->view('users/liste', ['title' => "Liste des utilisateurs"]);
     }
+
     public function profileEmploye($code)
     {
         $code = decrypter($code);
@@ -126,15 +152,63 @@ class UserController extends MainController
      */
 
 
+
+    public function bGetListeUser()
+    {
+
+        extract($_POST);
+        $output = "";
+        $user = new User();
+
+        $likeParams = [];
+        $whereParams = ['boutique_code' => Auth::user('boutique_code'), 'etat_user' => ETAT_ACTIF];
+
+
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        // $search = $_POST['search'] ?? '';
+        $search = $_POST['search']['value'] ?? '';
+
+
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['nom_user' => $search, 'prenom_user' => $search, 'email_user' => $search, 'telephone_user' => $search, 'matricule_user' => $search, 'sexe_user' => $search, 'fonction_code' => $search, 'user_created_at' => $search];
+        }
+
+        // 🔢 Total
+        $total = $user->dataTbleCountTotalUsersRow($whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $user->dataTbleCountTotalUsersRow($whereParams, $likeParams);
+        // 📄 Données
+
+        $userList = $user->DataTableFetchUsersListe($likeParams, $start, $limit);
+
+        $data = [];
+
+
+        $data = UserService::userDataService($userList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $userList
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
+
     public function modalAddUser()
     {
 
-
         // $users = getAllusers();
-        $fonctions = (new Factory())->getAllFonctions();
+        $fonctions = (new User())->getAllFonctions();
         // $services = getAllServices();
 
-        $output = Service::userAddModalService($fonctions);
+        $output = UserService::userAddModalService($fonctions);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
@@ -142,64 +216,67 @@ class UserController extends MainController
 
     public function addUser()
     {
+
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
         $_POST = sanitizePostData($_POST);
-        $user = new Factory();
-
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['sexe']) && !empty($_POST['fonction']) && !empty($_POST['matricule'])) {
+        $user = new User();
+        // var_dump($_POST);
+        // return;
+        if (!empty($_POST['nom_user']) && !empty($_POST['prenom_user']) && !empty($_POST['telephone_user']) && !empty($_POST['email_user']) && !empty($_POST['sexe_user']) && !empty($_POST['fonction_user']) && !empty($_POST['matricule_user'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone);
+            $telephone = removeSpace($telephone_user);
             $telephone = str_replace('(+225)', '', $telephone);
 
             // if (isValidPhoneNumber($telephone)) {
             if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
-                $userTel = $user->find('users', 'telephone', $telephone);
+                $userTel = $user->find(TABLES::USERS, 'telephone_user', $telephone);
 
                 if (empty($userTel)) {
 
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $userEmail = $user->find('users', 'email', $email);
+                    if (filter_var($email_user, FILTER_VALIDATE_EMAIL)) {
+                        $userEmail = $user->find(TABLES::USERS, 'email_user', $email_user);
 
                         if (empty($userEmail)) {
 
                             $passwrod = generetor(5);
-                            $code = $user->generatorCode('users', 'code_user');
+                            $code = $user->generatorCode(TABLES::USERS, 'code_user');
                             $token = generetor(random_int(50, 70));
 
                             $data_user = [
-                                'nom' => strtoupper($nom),
-                                'prenom' => strtoupper($prenom),
-                                'telephone' => $telephone,
+                                'nom_user' => strtoupper($nom_user),
+                                'prenom_user' => strtoupper($prenom_user),
+                                'telephone_user' => $telephone_user,
                                 'code_user' => $code,
-                                'email' => $email,
-                                'matricule' => strtoupper($matricule),
-                                'sexe' => $sexe,
-                                'fonction_id' => $fonction,
-                                'hotel_id' => Auth::user('hotel_id'),
-                                'etat_user' => 0,
+                                'email_user' => $email_user,
+                                'matricule_user' => strtoupper($matricule_user),
+                                'sexe_user' => $sexe_user,
+                                'fonction_code' => $fonction_user,
+                                'boutique_code' => Auth::user('boutique_code'),
+                                'compte_code' => Auth::user('compte_code'),
+                                'etat_user' => ETAT_INACTIF,
                                 'password_user' => password_hash($passwrod, PASSWORD_BCRYPT),
                                 'token' => $token,
                                 'created_user' => date('Y-m-d'),
                                 'lastime' => date('Y-m-d')
                             ];
 
-                            if ($user->create("users", $data_user)) {
+                            if ($user->create(TABLES::USERS, $data_user)) {
 
-                                $hotel =   $user->getInfoHotel(Auth::user('hotel_id'));
+                                $boutique =   $user->getInfoBoutique(Auth::user('boutique_code'));
 
                                 $data_mail = [
                                     "appName" => $_ENV["APP_NAME"],
-                                    "hotel_name" => $hotel['libelle_hotel'],
-                                    "email" => $email,
+                                    "libelle_structure" => $boutique['libelle_boutique'],
+                                    "email" => $email_user,
                                     "password" => $passwrod,
-                                    "nom" => strtoupper($nom . " " . $prenom),
+                                    "nom" => strtoupper($nom_user . " " . $prenom_user),
                                     "lienActivation" => HOME . "/activation/{$token}"
                                 ];
 
 
-                                $this->SendMail($email, "Création de compte", "activation", $data_mail);
+                                // $this->SendMail($email_user, "Création de compte", "activation", $data_mail);
 
 
                                 $msg['code'] = 200;
@@ -977,5 +1054,148 @@ class UserController extends MainController
 
         echo json_encode($msg);
         return;
+    }
+
+
+
+    public function loadDataRole()
+    {
+
+        $output = "";
+        $_POST = sanitizePostData($_POST);
+        $code_role = $_POST['code_role'];
+        $code_user = $_POST['code_user'];
+
+        $fc = new User();
+
+
+        $roles = $fc->getRolesByGroupe($code_role);
+        var_dump($roles, $_POST);
+        return;
+        $userPermissions = $fc->getAllPermissionForUser($code_user);
+
+        $userRolesPermissions = $this->resolveTablePermission($userPermissions);
+        // $output = $userRolesPermissions;
+
+        if ($roles) {
+
+            foreach ($roles as $data) {
+                $equal = $this->checkIfExistRole($userRolesPermissions, $data);
+
+                $c = $equal['create'] ? 'checked' : '';
+                $s = $equal['show'] ? 'checked' : '';
+                $e = $equal['edit'] ? 'checked' : '';
+                $d = $equal['delete'] ? 'checked' : '';
+
+                $output .= '
+                <tr data-id="' . $data['code_role'] . '" >
+                    <td> &nbsp; &nbsp;' . $data['name'] . '</td>
+                    <td><input id="create' . $data['code_role'] . '" ' . $c . ' class="perm" data-type="create" type="checkbox"></td>
+                    <td><input id="show' . $data['code_role'] . '" ' . $s . ' class="perm" data-type="show" type="checkbox"></td>
+                    <td><input id="edit' . $data['code_role'] . '" ' . $e . ' class="perm" data-type="edit" type="checkbox"></td>
+                    <td><input id="delete' . $data['code_role'] . '" ' . $d . ' class="perm" data-type="delete" type="checkbox"></td>
+                </tr>
+                ';
+            }
+        }
+
+        // echo json_encode(['data' => $userRolesPermissions,'code' => 200]);
+        echo json_encode(['data' => $output, 'code' => 200]);
+        return;
+    }
+
+
+    public function ajouterPermissionRole()
+    {
+
+        $output = "";
+        $msg['code'] = 400;
+        $userCode = $_POST['codeuser'];
+
+        $rolesData = json_decode($_POST["roles"], true);
+
+        if ($rolesData) {
+
+
+            foreach ($rolesData as $role) {
+
+                if ($role["create"] || $role["show"] || $role["edit"] || $role["delete"]) {
+                    $dataPermissions = [
+                        ':user_id' => $userCode,
+                        ':role_id' => $role["role"],
+                        ':create_permission' => $role["create"],
+                        ':show_permission' => $role["show"],
+                        ':edit_permission' => $role["edit"],
+                        ':delete_permission' => $role["delete"]
+                    ];
+                    $role = (new Factory())->createPermission($dataPermissions);
+                } else {
+                    $role = (new Factory())->deletePermission($userCode, $role["role"]);
+                }
+            }
+
+
+            $msg['type'] = "success";
+            $msg['code'] = 200;
+            $msg['message'] = "Operation effectuée avec succes. ";
+        } else {
+
+            $msg['type'] = "warning";
+            $msg['message'] = "Erreur de validation. ";
+        }
+
+        echo json_encode($msg);
+
+        return;
+    }
+
+
+    public function modalAddPermission()
+    {
+
+        $code = $_POST['code_user'];
+        $html = "";
+        $fc = new User();
+
+        $user = $fc->getUser('code_user', $code);
+
+
+
+        $fullName = $user['nom_user'] . ' ' . $user['prenom_user'];
+        $groupes = $fc->groupes();
+
+        if (!empty($groupes)) {
+            $html = UserService::rolesDataGroupes($groupes, $code);
+        }
+
+        echo json_encode(['user' => $fullName, 'data' => $html, 'code' => 200]);
+        return;
+    }
+
+
+
+    public function resolveTablePermission($UserPermission)
+    {
+
+        $permissions = [];
+
+        if (empty($UserPermission)) return [];
+
+        foreach ($UserPermission as $key => $value) {
+
+            $permissions[$value['role_id']] = [
+                'create' => $value['create_permission'],
+                'edit'   => $value['edit_permission'],
+                'show'   => $value['show_permission'],
+                'delete' => $value['delete_permission'],
+            ];
+        }
+
+        return $permissions;
+    }
+
+    public function checkIfExistRole($user_permissions, $role)
+    {
+        return $user_permissions[$role['code_role']] ?? ['create' => 0, 'show' => 0, 'edit' => 0, 'delete' => 0];
     }
 }

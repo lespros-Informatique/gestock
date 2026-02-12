@@ -77,10 +77,17 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
     $router->get('/', [HomeController::class, 'acueil']);
 
+
     $router->get('/client/liste', [ClientController::class, 'client'], ['before' => 'auth']);
     $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
-    $router->get('/user/liste', [UserController::class, 'user']);
+    $router->get('/register', [UserController::class, 'register'], ['before' => 'guest']);
+    $router->get('/user/liste', [UserController::class, 'userListe'], ['before' => 'auth'])->name('home');
+
+
     $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
+
+
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => ''])->name('admin.role');
 });
 
 /**

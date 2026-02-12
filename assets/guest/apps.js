@@ -1,7 +1,7 @@
 const ORIGIN = window.location.origin;
 /** obtenir cette structure http://localhost/hotel/ */
 // const ORIGIN = (window.location.protocol + '//' + window.location.host);
-const URL_HOME =ORIGIN +"/hotel/";
+const URL_HOME =ORIGIN +"/gestock/";
 const URL_AJAX = URL_HOME + "src/controllers/ajx.php";
 
 let rolesPermissions = [];
@@ -54,7 +54,7 @@ function btnLoginUser() {
     });
 }
 
-btnRegisterUser();
+// btnRegisterUser();
 function btnRegisterUser() {
     $("body").delegate("#frmRegister", "submit", function (e) {
         e.preventDefault();

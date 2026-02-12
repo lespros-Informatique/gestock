@@ -36,7 +36,7 @@ $action = $_POST['action'] ?? null;
 
 switch ($action) {
 
-case 'aCharger_data_categories':
+    case 'aCharger_data_categories':
         $ajx = new CategorieController();
         $ajx->aGetListeCategorie();
         break;
@@ -74,7 +74,7 @@ case 'aCharger_data_categories':
     case 'aCharger_data_produits':
         $ajx = new ProduitController();
         $ajx->aGetListeProduit();
-    break;
+        break;
     case 'btn_showmodal_produit':
         $ajx = new ProduitController();
         $ajx->aModalAddProduits();
@@ -112,7 +112,7 @@ case 'aCharger_data_categories':
     case 'aCharger_data_marks':
         $ajx = new MarkController();
         $ajx->aGetListeMark();
-    break;
+        break;
     case 'btn_showmodal_mark':
         $ajx = new MarkController();
         $ajx->aModalAddMark();
@@ -140,7 +140,7 @@ case 'aCharger_data_categories':
     case 'aCharger_data_unites':
         $ajx = new UniteController();
         $ajx->aGetListeUnite();
-    break;
+        break;
     case 'btn_showmodal_unite':
         $ajx = new UniteController();
         $ajx->aModalAddUnite();
@@ -163,6 +163,93 @@ case 'aCharger_data_categories':
         $ajx = new UniteController();
         $ajx->aDeleteUnite();
         break;
+
+    // client
+    case 'btn_recapt_liste_clients':
+        $ajx = new ControllerHotel();
+        $ajx->listeClientsRecapt();
+        break;
+    case 'btn_liste_clients':
+        $ajx = new ControllerHotel();
+        $ajx->listeClients();
+        break;
+    case 'btn_update_client':
+        $ajx = new ControllerHotel();
+        $ajx->updateClient();
+        break;
+    case 'bcharger_data_clients':
+        // sleep(2);
+        $ajx = new ClientController();
+        $ajx->bGetListeClients();
+        break;
+    case 'btn_showmodal_client_add':
+        $ajx = new ClientController();
+        $ajx->bModalAddClient();
+        break;
+    case 'btn_add_client_data':
+        $ajx = new ClientController();
+        $ajx->bAddNewClient();
+        break;
+    case 'frm_modal_modifier_client':
+        $ajx = new ClientController();
+        $ajx->bModalUpdateClient();
+        break;
+    case 'btn_modifier_client_data':
+        $ajx = new ClientController();
+        $ajx->bUpdateClient();
+        break;
+    // end client
+    // debut fournisseur
+
+    case 'bcharger_data_fournisseurs':
+        // sleep(2);
+        $ajx = new FournisseurController();
+        $ajx->bGetListeFournisseurs();
+        break;
+    case 'btn_showmodal_fournisseur_add':
+        $ajx = new FournisseurController();
+        $ajx->bModalAddFournisseur();
+        break;
+    case 'btn_add_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bAddNewFournisseur();
+        break;
+    case 'frm_modal_modifier_fournisseur':
+        $ajx = new FournisseurController();
+        $ajx->bModalUpdateFournisseur();
+        break;
+    case 'btn_modifier_fournisseur_data':
+        $ajx = new FournisseurController();
+        $ajx->bUpdateFournisseur();
+        break;
+
+    // end fournisseur
+
+    // debut boutique
+
+    case 'bcharger_data_boutiques':
+        // sleep(2);
+        $ajx = new BoutiqueController();
+        $ajx->bGetListeBoutique();
+        break;
+    case 'btn_showmodal_boutique_add':
+        $ajx = new BoutiqueController();
+        $ajx->bModalAddBoutique();
+        break;
+    case 'btn_add_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bAddNewBoutique();
+        break;
+    case 'frm_modal_modifier_boutique':
+        $ajx = new BoutiqueController();
+        $ajx->bModalUpdateBoutique();
+        break;
+    case 'btn_modifier_boutique_data':
+        $ajx = new BoutiqueController();
+        $ajx->bUpdateBoutique();
+        break;
+
+    // end fournisseur
 
     // ajouter chambre
     // case 'btn_showmodal_chambre':
@@ -270,9 +357,9 @@ case 'aCharger_data_categories':
     //     break;
 
     // Fin Actions pour les utilisateurs
-    /**
-     *  fIN Sexion data configuration
-     */
+        /**
+         *  fIN Sexion data configuration
+         */
 
 
         // SEXION CHART
@@ -302,7 +389,6 @@ case 'aCharger_data_categories':
 
 
     case 'btnLogin':
-
         $ajx = new UserController();
         $ajx->loginUser();
         break;
@@ -327,6 +413,58 @@ case 'aCharger_data_categories':
         $ajx = new UserController();
         $ajx->changePasswordUser();
         break;
+
+    // Debut Actions pour les utilisateurs
+    case 'btn_load_data_role':
+        $ajx = new UserController();
+        $ajx->loadDataRole();
+        break;
+    case 'btn_add_permission':
+        $ajx = new Controller();
+        $ajx->ajouterPermissionRole();
+        break;
+    case 'frm_modal_add_permission':
+        $ajx = new UserController();
+        $ajx->modalAddPermission();
+        break;
+    // ajouter utlisateur
+    case 'bcharger_data_users':
+        $ajx = new UserController();
+        $ajx->bGetListeUser();
+        break;
+    case 'frm_modal_user':
+        $ajx = new UserController();
+        $ajx->modalAddUser();
+        break;
+    case 'btn_add_user':
+        $ajx = new UserController();
+        $ajx->addUser();
+        break;
+
+    case 'btn_disable_user':
+        $ajx = new UserController();
+        $ajx->disableUser();
+        break;
+
+    case 'btn_enable_user':
+        $ajx = new UserController();
+        $ajx->enableUser();
+        break;
+    case 'btn_send_mail_activation':
+        $ajx = new UserController();
+        $ajx->sendMailActivation();
+        break;
+
+    case 'btn_ouvrir_caisse';
+        $ajx = new UserController();
+        $ajx->openCaisse();
+        break;
+    case 'btn_fermer_caisse':
+        $ajx = new UserController();
+        $ajx->closeCaisse();
+        break;
+
+    //end Actions pour les utilisateurs
 
 
 
