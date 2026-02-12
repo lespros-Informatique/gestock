@@ -357,9 +357,10 @@ function loadDataRole(user, groupe, code, permissionsDiv) {
             code_user: user,
             code_role: groupe
         },
-        dataType: 'JSON',
-        success: function(data) {
-
+        // dataType: 'JSON',
+        success: function (data) {
+            console.log(data);
+            
 
             if (data.code == 200) {
                 $("#sexion-r" + code).html(data.data);
@@ -432,7 +433,7 @@ function modalRoleUser() {
     $("body").delegate(".modal_permission_user", "click", function(e) {
         e.preventDefault();
         var code = $(this).data("code");
-        // userCode = code;
+        
         $.ajax({
             url: URL_AJAX,
             method: 'POST',
@@ -441,12 +442,14 @@ function modalRoleUser() {
                 code_user: code
             },
             dataType: 'JSON',
-            beforeSend: function() {
-                // $("#spinner").addClass("show");
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
             },
             success: function(data) {
 
-                // $("#spinner").removeClass("show");
+                console.log(data);
+                $(".loader_backdrop2").css('display', "none");
+                
                 if (data.code == 200) {
 
                     $('.data-modal-permission').html(data.data);

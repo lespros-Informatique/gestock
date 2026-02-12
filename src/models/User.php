@@ -17,8 +17,25 @@ class User extends Model
     {
         $sql = "SELECT * FROM " . TABLES::USERS . " WHERE " . $field . " = :field LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(["fiels" => $field]);
+        $stmt->execute(["field" => $value]);
+
         return $stmt->fetch() ?: null;
+    }
+
+    public function getRolesByGroupe($groupe)
+    {
+        $result = [];
+        try {
+            $sql = "SELECT * FROM " . TABLES::ROLES . " WHERE groupe = :groupe";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(["groupe" => $groupe]);
+            if ($stmt->rowCount() > 0)
+                $result = $stmt->fetchAll();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $result;
     }
 
     // get all fonction
@@ -297,12 +314,12 @@ class User extends Model
         }
         return $data;
     }
-    public function getAllPermissionForUser(string $userId)
+    public function getAllPermissionForUser(string $userCode)
     {
         $data = [];
-        $sql = "SELECT * FROM  user_roles ur WHERE ur.user_id =:user_id ";
+        $sql = "SELECT * FROM  " . TABLES::USER_ROLES . " ur WHERE ur.user_code =:user_code ";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(['user_id' => $userId]);
+        $stmt->execute(['user_code' => $userCode]);
         $data =  $stmt->fetchAll();
         return $data;
     }

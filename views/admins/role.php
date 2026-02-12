@@ -64,10 +64,10 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content bg_light">
       <div class="modal-header">
-        <h6 class="modal-title" id="userModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-danger" id="user-info"></span> </h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="userModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-primary" id="user-info"></span> </h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
       </div>
       <div class="modal-body">
         <div class="row ">

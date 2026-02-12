@@ -1066,11 +1066,13 @@ class UserController extends MainController
         $code_role = $_POST['code_role'];
         $code_user = $_POST['code_user'];
 
-        $factory = new Factory();
+        $fc = new User();
 
 
-        $roles = $factory->select('roles')->where('groupe', $code_role)->all();
-        $userPermissions = $factory->getAllPermissionForUser($code_user);
+        $roles = $fc->getRolesByGroupe($code_role);
+        var_dump($roles, $_POST);
+        return;
+        $userPermissions = $fc->getAllPermissionForUser($code_user);
 
         $userRolesPermissions = $this->resolveTablePermission($userPermissions);
         // $output = $userRolesPermissions;

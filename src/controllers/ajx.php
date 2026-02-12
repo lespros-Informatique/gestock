@@ -416,7 +416,7 @@ switch ($action) {
 
     // Debut Actions pour les utilisateurs
     case 'btn_load_data_role':
-        $ajx = new Controller();
+        $ajx = new UserController();
         $ajx->loadDataRole();
         break;
     case 'btn_add_permission':
