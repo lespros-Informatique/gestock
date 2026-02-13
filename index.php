@@ -1,6 +1,6 @@
 <?php
 // if (session_status() === PHP_SESSION_NONE) {
-session_name("APP15464655_SESSION");
+session_name("APP6846534_SESSION");
 session_start();
 include __DIR__ . '/src/Core/security.php';
 
@@ -31,6 +31,7 @@ use App\Controllers\UniteController;
 use App\Controllers\ProduitController;
 use App\Core\Router;
 use App\Middlewares\RouteMiddleWare;
+use App\Models\User;
 use Phroute\Phroute\Dispatcher;
 
 
@@ -79,15 +80,19 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
 
     $router->get('/client/liste', [ClientController::class, 'client'], ['before' => 'auth']);
-    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
+    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur'], ['before' => 'auth']);
     $router->get('/register', [UserController::class, 'register'], ['before' => 'guest']);
     $router->get('/user/liste', [UserController::class, 'userListe'], ['before' => 'auth'])->name('home');
 
 
-    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
+    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique'], ['before' => 'auth']);
 
 
-    $router->get('/admin/role', [UserController::class, 'role'], ['before' => ''])->name('admin.role');
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => 'auth'])->name('admin.role');
+});
+
+$router->group(['before' => '', 'prefix' => 'gestock/test'], function ($router) {
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => 'auth'])->name('admin.role');
 });
 
 /**
@@ -97,10 +102,10 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
  */
 
 
-$router->group(['before' => '', 'prefix' => 'hotel/email'], function ($router) {
+// $router->group(['before' => 'auth', 'prefix' => 'gestocks/t'], function ($router) {
 
-    // $router->get('/',[ControllerMailer::class, 'acueil'],['before' => 'auth']);
-});
+//     $router->get('/testd', [UserController::class, 'acueil']);
+// });
 
 /**
  * ************************************************
@@ -175,3 +180,9 @@ $dispatcher = new Dispatcher($router->getData());
 $response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);
 
 echo $response;
+
+
+
+// session_destroy();
+
+var_dump($_SESSION);

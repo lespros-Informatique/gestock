@@ -6,17 +6,16 @@
             <div class="user">
                 <div class="avatar-sm float-left mr-2">
                     <div class="name-user">
-                        <span style="font-size: 16px; font-weight: bold;" class=""><?php //shortName(auth()->user('nom')) 
-                                                                                    ?></span>
+                        <span style="font-size: 16px; font-weight: bold;" class=""><?= shortName(auth()->user('nom')) ?></span>
                     </div>
                 </div>
 
                 <div class="info">
                     <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                         <span>
-                            <?php //(string) auth()->user("nom")
+                            <?= (string) auth()->user("nom")
                             ?>
-                            <span class="user-level text-success"><?php //(string) auth()->user("fonction")
+                            <span class="user-level text-success"><?= (string) auth()->user("fonction")
                                                                     ?></span>
                             <span class="caret"></span>
                         </span>
@@ -26,9 +25,7 @@
                     <div class="collapse in" id="collapseExample">
                         <ul class="nav">
                             <li>
-                                <a class="item-link" href="<?php
-                                                            //  route('user.profile',['code' => auth()->user('id')])
-                                                            ?>">
+                                <a class="item-link" href="<?= route('user.profile', ['code' => auth()->user('id')]) ?>">
                                     <span class="link-collapse">Profile</span>
                                 </a>
                             </li>

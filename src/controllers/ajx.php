@@ -1,6 +1,6 @@
 
 <?php
-session_name("APP15464655_SESSION");
+session_name("APP6846534_SESSION");
 
 
 session_start();
@@ -420,7 +420,7 @@ switch ($action) {
         $ajx->loadDataRole();
         break;
     case 'btn_add_permission':
-        $ajx = new Controller();
+        $ajx = new UserController();
         $ajx->ajouterPermissionRole();
         break;
     case 'frm_modal_add_permission':

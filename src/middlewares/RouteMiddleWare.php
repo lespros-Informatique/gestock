@@ -12,8 +12,10 @@ class RouteMiddleWare
     public static function requireAuth(): void
     {
         if (!Auth::check()) {
-            Auth::saveCurrentUrl();
-            self::redirect('login');
+            header('Location: ' . LINK . 'login');
+            exit();
+            // Auth::saveCurrentUrl();
+            // self::redirect('login');
             // exit();
         }
     }
