@@ -58,6 +58,7 @@ class Auth
             'fonction' => $user['libelle_fonction'],
             "boutique_code" => $user['boutique_code'],
             "compte_code" => $user['compte_code'],
+            "etat_compte" => $user['etat_compte'],
             "caisse" => $etatCaisse,
             "is_logged" => true,
             'groupes' => $groupes,

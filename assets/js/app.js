@@ -2172,78 +2172,7 @@ function supprimer_salaire() {
 // FIN Depense
 
 //END FONCTION
-//employer  
 
-
-modifier_employe();
-
-function modifier_employe() {
-    $('#frm_update_employe').submit(function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
-        // 
-        // return;
-        $.ajax({
-            method: "POST",
-            url: URL_AJAX,
-            data: data,
-            dataType: "json",
-            beforeSend: function () {
-                $(".loader_backdrop2").css('display', "block");
-                $("#btn_update_user").prop('disabled', true);
-            },
-            success: function(data) {
-                $(".loader_backdrop2").css('display', "none");
-                
-                if (data.code == 200) {
-                    $.notify(data.message, 'success')
-                } else {
-                    $("#btn_update_user").prop('disabled', false);
-                    $.notify(data.message)
-                }
-            }
-        })
-    });
-}
-
-openModalResetPassword();
-
-function openModalResetPassword() {
-    $('#btn_reset_password').click(function(e) {
-        e.preventDefault();
-        $("#password-modal").modal("show");
-    });
-}
-
-ResetPassword();
-
-function ResetPassword() {
-    $("body").delegate("#frmChangePassword", "submit", function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
-
-        $.ajax({
-            method: "POST",
-            url: URL_AJAX,
-            data: data,
-            dataType: "JSON",
-            beforeSend: function() {
-                btnReq("#btn_change_password", "Traitement...");
-            },
-            success: function(data) {
-                
-
-                btnRes("#btn_change_password",'Enregistrer','fa-save');
-                if (data.code == 200) {
-                    $.notify(data.message, "success");
-                    $("#password-modal").modal("hide");
-                } else {
-                    $.notify(data.message);
-                }
-            }
-        })
-    });
-}
 
 showAndHidePassword();
 
@@ -2264,35 +2193,6 @@ function showAndHidePassword() {
 
 
 
-deconnecter();
-
-function deconnecter() {
-    $('.btn_deconnect').click(function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: URL_AJAX,
-            method: 'POST',
-            dataType: "JSON",
-            data: {
-                action: "btn_user_Deconnect"
-            },
-            beforeSend: function() {
-                $(".loader_backdrop2").css('display', "block");
-                // $("#spinner").addClass("show");
-                // $("#btn_add_user").html(
-                //     '<i class="fa fa-refresh fa-spin fa-2x"></i> &nbsp; Enregistrement...'
-                // );
-                // $("#btn_add_user").attr("disabled", "disabled");
-            },
-            success: function(data) {
-                $("#spinner").removeClass("show");
-                if (data.code == 200) {
-                    history.go(0);
-                }
-            }
-        })
-    });
-}
 
 // FIN EMPLOYE
 
