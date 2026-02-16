@@ -3,6 +3,7 @@ const URL_HOME = URLS + "/gestock/";
 const URL_AJAX = URL_HOME + "src/controllers/ajx.php";
 // const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 let tables = {};
+let schopIdentity = "";
 
 // Configuration globale pour inclure le token CSRF dans les en-têtes AJAX
 
@@ -78,4 +79,117 @@ console.log(selector,tableId,action);
         }
     });
     }
+}
+
+
+
+    getShopIdentity()
+
+function getShopIdentity() {
+    shopIdentity = localStorage.getItem("data-shop");
+    $("#shopIdentity").text(shopIdentity);
+
+}
+
+function setShopIdentity() {
+
+    $.ajax({
+        url: URL_AJAX,
+        method: 'POST',
+        data: {
+            action: 'get_shop_identity'
+        },
+        dataType: 'JSON',
+        success: function (data) {
+            console.log(data)
+
+            if (data.code === 200) {
+                shopIdentity = data.data;
+                localStorage.setItem("data-shop", data.data);
+                $("#shopIdentity").text(shopIdentity);
+            }
+        }
+    });
+}
+
+activeStatutAnnee();
+
+function activeStatutAnnee() {
+    $("body").delegate(".btn_active_annee", "click", function (e) {
+        e.preventDefault();
+
+        var code = $(this).data("code");
+        
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'btn_active_annee',
+                code_annee: code
+            },
+            dataType: "JSON",
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                // btnReq("#ClientAddModal", "Traitement...");
+
+            },
+            success: function (data) {
+                // btnRes("#ClientAddModal", 'Ajouter un client', 'fa-plus');
+                // ;
+                console.log(data);
+                
+
+                $(".loader_backdrop2").css('display', "none");
+                if (data.code == 200) {
+                     setSchopIdentity();
+                    sAlert("Notification", data.data, "success");
+
+
+                }
+
+            }
+        });
+
+    });
+}
+
+desactiveStatutAnnee();
+
+function desactiveStatutAnnee() {
+    $("body").delegate(".btn_desactive_annee", "click", function (e) {
+        e.preventDefault();
+
+        var code = $(this).data("code");
+
+         $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: {
+                action: 'btn_desactive_annee',
+                code_annee: code
+            },
+            dataType: "JSON",
+            beforeSend: function () {
+                $(".loader_backdrop2").css('display', "block");
+                // btnReq("#ClientAddModal", "Traitement...");
+
+            },
+            success: function (data) {
+                // btnRes("#ClientAddModal", 'Ajouter un client', 'fa-plus');
+                // ;
+                console.log(data);
+                
+
+                $(".loader_backdrop2").css('display', "none");
+                if (data.code == 200) {
+                     setSchopIdentity();
+                    sAlert("Notification", data.data, "success");
+
+
+                }
+
+            }
+        });
+
+    });
 }

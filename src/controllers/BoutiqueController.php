@@ -39,6 +39,7 @@ class BoutiqueController extends MainController
      */
 
 
+
     public function bGetListeBoutique()
     {
 
@@ -48,7 +49,7 @@ class BoutiqueController extends MainController
         $columns = ['libelle_boutique', 'email_boutique', 'telephone_boutique', 'telephone2_boutique', 'adresse_boutique', 'boutique_created_at'];
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE, 'etat_boutique' => ETAT_ACTIF  ];
+        $whereParams = ['compte_code' => COMPTE_CODE, 'etat_boutique' => ETAT_ACTIF];
         $orderBy = ["libelle_boutique" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -208,6 +209,46 @@ class BoutiqueController extends MainController
         } else {
             $msg['message'] = "Veuillez renseigner tous les champs.";
         }
+
+        echo json_encode($msg);
+        return;
+    }
+
+
+
+    function ActiveAnnee()
+    {
+
+        if (isset($_POST['btn_active_annee'])) {
+            $code = $_POST['code_annee'];
+            $msg['code'] = 400;
+            $msg['data'] = "";
+
+            UpdateAllAnnee();
+            if (UpdateAnneeByCode(1, $code)) {
+                $_SESSION[KEY_AUTH]['annee'] = $_POST['code_annee'];
+                $msg['code'] = 200;
+                $msg['data'] = 'Operation effectuée avec succes';
+            }
+
+            echo json_encode($msg);
+            return;
+        }
+    }
+
+
+    function changeBoutique()
+    {
+        $code = $_POST['code_annee'];
+        $msg['code'] = 400;
+        $msg['data'] = "";
+
+        UpdateAllAnnee();
+        $_SESSION[KEY_AUTH]['annee']  = getAnneeActive()['code_annee'];
+        // if ( UpdateAnneeByCode(0,$code)) {
+        $msg['code'] = 200;
+        $msg['data'] = 'Operation effectuée avec succes';
+        // }
 
         echo json_encode($msg);
         return;

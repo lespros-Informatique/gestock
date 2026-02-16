@@ -22,8 +22,8 @@ function btnLoginUser() {
                 btnRes("#btnSubmitForm", "Connexion",'fa-log-in');
 
                 if (data.code === 200) {
-                    // setAcademicYear();
-                    localStorage.setItem('data-year',data.activityYear);
+                    // setSchopIdentity();
+                    localStorage.setItem('data-shop',data.activityYear);
 
 
                     swal("Notification", data.msg,"success").then(() => {

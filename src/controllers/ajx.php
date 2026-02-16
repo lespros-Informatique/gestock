@@ -227,10 +227,15 @@ switch ($action) {
 
     // debut boutique
 
-    case 'bcharger_data_boutiques':
+    case 'get_schop_identity':
         // sleep(2);
         $ajx = new BoutiqueController();
         $ajx->bGetListeBoutique();
+        break;
+    case 'bcharger_boutiques':
+        // sleep(2);
+        $ajx = new BoutiqueController();
+        $ajx->changeBoutique();
         break;
     case 'btn_showmodal_boutique_add':
         $ajx = new BoutiqueController();
