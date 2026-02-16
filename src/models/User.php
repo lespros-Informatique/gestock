@@ -89,6 +89,24 @@ class User extends Model
     {
         $data = [];
         try {
+            $sql = "SELECT fn.libelle_fonction, cpt.etat_compte, u.* FROM " . TABLES::USERS . " AS u
+            JOIN " . TABLES::COMPTES . " AS cpt ON cpt.code_compte = u.compte_code 
+            JOIN " . TABLES::FONCTIONS . " AS fn ON fn.code_fonction = u.fonction_code 
+        WHERE {$login} = :login AND etat_user = :etat_user  LIMIT 1";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['login' => $value, 'etat_user' => ETAT_ACTIF]);
+            $data = $stmt->fetch();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
+    }
+
+    public function defaultgetUserDataForLogin(string $login, $value)
+    {
+        $data = [];
+        try {
             $sql = "SELECT bt.etat_boutique, code_user,password_user,nom_user,prenom_user ,f.libelle_fonction, f.code_fonction, u.boutique_code, u.compte_code  FROM " . TABLES::USERS . " AS u
             JOIN " . TABLES::FONCTIONS . " AS f ON f.code_fonction = u.fonction_code
             JOIN " . TABLES::BOUTIQUES . " AS bt ON bt.code_boutique = u.boutique_code 

@@ -13,8 +13,8 @@
   <link rel="icon" href="<?= ASSETS ?>img/icon.ico" type="image/x-icon" />
 
   <!-- CSS only -->
-  <link rel="stylesheet" href="<?= ASSETS ?>guest/bootstrap.min.css">
-  <link rel="stylesheet" href="<?= ASSETS ?>guest/style.css">
+  <link rel="stylesheet" href="<?= ASSETS ?>user/bootstrap.min.css">
+  <link rel="stylesheet" href="<?= ASSETS ?>user/style.css">
 
 </head>
 
@@ -28,16 +28,16 @@
 
 
 
-  <script src="<?= ASSETS ?>guest/jquery.js"></script>
-  <script src="<?= ASSETS ?>guest/bootstrap.min.js"></script>
-  <script src="<?= ASSETS ?>guest/bootstrap.bundle.js"></script>
+  <script src="<?= ASSETS ?>user/jquery.js"></script>
+  <script src="<?= ASSETS ?>user/bootstrap.min.js"></script>
+  <script src="<?= ASSETS ?>user/bootstrap.bundle.js"></script>
   <script src="<?= ASSETS ?>js/plugin/sweetalert/sweetalert.min.js"></script>
   <script src="<?= ASSETS ?>js/notify.js"></script>
 
-  <!-- <script src="<?= ASSETS ?>guest/apps.js"></script> -->
+  <!-- <script src="<?= ASSETS ?>user/apps.js"></script> -->
 
   <script src="<?= ASSETS ?>js/module_share.js"></script>
-  <script src="<?= ASSETS ?>guest/module_user.js"></script>
+  <script src="<?= ASSETS ?>user/module_user.js"></script>
 
 
 
