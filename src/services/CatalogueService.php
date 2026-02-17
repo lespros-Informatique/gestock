@@ -244,6 +244,7 @@ class CatalogueService
             </form>
         ';
     }
+    
     public static function aModalAddUnite()
     {
         return '

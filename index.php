@@ -76,7 +76,7 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
     $router->get('/unite', [UniteController::class, 'unite']);
     $router->get('/produit', [ProduitController::class, 'produit']);
 
-    $router->get('/', [HomeController::class, 'acueil']);
+    $router->get('/', [HomeController::class, 'acueil'], ['before' => 'auth']);
 
 
     $router->get('/client/liste', [ClientController::class, 'client'], ['before' => 'auth']);

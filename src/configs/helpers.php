@@ -117,6 +117,7 @@ function loadDataBilanCaisseComptable($detailsReservation, $service, $reservatio
         'countServiceEnnuler' => $countServiceEnnuler
     ];
 }
+
 function loadDataBilanCaisseComptableTest($detailsReservation, $service, $reservationNonRegler, $serviceNonRegler, $reservationEnnuler, $serviceEnnuler)
 {
 
@@ -188,6 +189,7 @@ function loadDataBilanCaisseComptableTest($detailsReservation, $service, $reserv
         'countServiceEnnuler' => $countServiceEnnuler
     ];
 }
+
 function urlVerify($data)
 {
     $result = false;
@@ -447,6 +449,7 @@ function checkEtatCh($etat)
 
     return $result;
 }
+
 function recaptCheckState($etat, $data = STATUT_RESERVATION)
 {
     $result = "";
@@ -556,7 +559,10 @@ function filterCheckBox($name)
         return 0;
     }
 }
-
+function getDataEnv(string $key): ?string
+{
+    return $_ENV[$key] ?? null;
+}
 
 
 function loadEnv()
