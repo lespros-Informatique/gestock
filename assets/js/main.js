@@ -30,19 +30,20 @@
     }
 
 
+    sidebarToggler();
     function sidebarToggler() {
         // Sidebar Toggler
-
+alert('sidebarToggler');
         $('.sidebar-toggler').click(function () {
             $('.sidebar, .content').toggleClass("open");
             return false;
         });
 
-        // $('.sidebar-toggler').on('click', function () {
-        //     $('body').toggleClass('sidebar-expanded');
-        //     $('.sidebar-toggler i').toggleClass('fa-times fa-bars');
-        // }
-        // );
+        $('.sidebar-toggler').on('click', function () {
+            $('body').toggleClass('sidebar-expanded');
+            $('.sidebar-toggler i').toggleClass('fa-times fa-bars');
+        }
+        );
     }
 
 

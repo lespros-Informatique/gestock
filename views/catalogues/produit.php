@@ -28,7 +28,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="produit-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="produitModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content ">
       <div class="modal-header">
         <h5 class="modal-title text-dark" id="produitModalLabel"><i class="fa fa-user-circle"></i> &nbsp; <span class="text-uppercase">Espace Produit</span>  </h5>
