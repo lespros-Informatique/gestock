@@ -7,7 +7,7 @@ use DateTime;
 use IntlDateFormatter;
 use Roles;
 
-class CatalogueService
+class dCatalogueService
 {
     public static function aModalAddCategorie()
     {
@@ -173,28 +173,32 @@ class CatalogueService
         return '
     <form action="" id="frmUpdateProduit" method="POST">
 
-        <div class="form-group">
+        <div class="row">
+        <input type="hidden" name="csrf_token" value="' . csrfToken()::token() . '">
+        <div class="col-md-6 form-group">
             <label>Libellé produit</label>
             <input type="text" name="libelle_produit" value="' . $produit['libelle_produit'] . '" class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="col-md-6 form-group">
             <label>Code barre</label>
             <input type="text" name="code_bar" value="' . $produit['code_bar'] . '" class="form-control">
         </div>
+        </div>
+        <div class="row">
 
-        <div class="form-group">
+        <div class="col-md-4 form-group">
             <label>Catégorie</label>
             <select name="categorie_code" class="form-control">';
         foreach ($categories as $cat) {
-            $selected = ($cat['code_categorie'] == $produit['categorie_code']) ? 'selected' : '';
+
             $form .= '<option value="' . $cat['code_categorie'] . '" ' . $selected . '>' . $cat['libelle_categorie'] . '</option>';
         }
         $form .= '
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="col-md-4 form-group">
             <label>Marque</label>
             <select name="mark_code" class="form-control">';
         foreach ($marks as $mark) {
@@ -205,7 +209,7 @@ class CatalogueService
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="col-md-4 form-group">
             <label>Unité</label>
             <select name="unite_code" class="form-control">';
         foreach ($unites as $unite) {
@@ -215,25 +219,30 @@ class CatalogueService
         $form .= '
             </select>
         </div>
+        </div>
 
-        <div class="form-group">
+        <div class="row">
+        <div class="col-md-6 form-group">
             <label>Prix achat</label>
             <input type="number" step="0.01" name="prix_achat" value="' . $produit['prix_achat'] . '" class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="col-md-6 form-group">
             <label>Prix vente</label>
             <input type="number" step="0.01" name="prix_vente" value="' . $produit['prix_vente'] . '" class="form-control">
         </div>
+        </div>
 
-        <div class="form-group">
+        <div class="row">
+        <div class="col-md-6 form-group">
             <label>Garantie (mois)</label>
             <input type="number" name="garantie_produit" value="' . $produit['garantie_produit'] . '" class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="col-md-6 form-group">
             <label>Stock</label>
             <input type="number" name="stock_produit" value="' . $produit['stock_produit'] . '" class="form-control">
+        </div>
         </div>
 
         <input type="hidden" name="code_produit" value="' . $produit['code_produit'] . '">

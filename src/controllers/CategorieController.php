@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Core\Auth;
@@ -12,7 +13,7 @@ use TABLES;
 class CategorieController extends MainController
 {
 
-     /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES VUES
@@ -21,19 +22,19 @@ class CategorieController extends MainController
      * --------------------------------------------------------------------------
      */
 
-     private $model;
-     public function __construct()
-     {
+    private $model;
+    public function __construct()
+    {
         $this->model = new Catalogue();
-     }
+    }
 
-       public function categorie()
-     {
-          return $this->view('catalogues/categorie', ['title' => 'Catégorie']);
-     }
+    public function categorie()
+    {
+        return $this->view('catalogues/categorie', ['title' => 'Catégorie']);
+    }
 
 
-      /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES REQUESTS AJAX
@@ -42,7 +43,7 @@ class CategorieController extends MainController
      * --------------------------------------------------------------------------
      */
 
-          public function aGetListeCategorie()
+    public function aGetListeCategorie()
     {
 
         extract($_POST);
@@ -50,7 +51,7 @@ class CategorieController extends MainController
         $categorie = new Catalogue();
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_categorie' => ETAT_ACTIF];
+        $whereParams = ['compte_code' => Auth::user("compte_code"), 'boutique_code' => Auth::user("boutique_code"), 'etat_categorie' => ETAT_ACTIF];
         $orderBy = ["libelle_categorie" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -86,15 +87,15 @@ class CategorieController extends MainController
         return;
     }
 
-    
+
     public function aDeleteCategorie()
     {
 
         $_POST = sanitizePostData($_POST);
-        $code_categorie = $_POST['code_categorie']?? null;
+        $code_categorie = $_POST['code_categorie'] ?? null;
         $msg['code'] = 400;
         $msg['type'] = "warning";
-        if ( $code_categorie != null) {
+        if ($code_categorie != null) {
 
             $data_categorie = [
                 'etat_categorie' => ETAT_INACTIF
@@ -114,7 +115,7 @@ class CategorieController extends MainController
         return;
     }
 
-public function aModalUpdateCategorie()
+    public function aModalUpdateCategorie()
     {
 
         $_POST = sanitizePostData($_POST);
@@ -124,24 +125,23 @@ public function aModalUpdateCategorie()
         $output = "";
         if ($code) {
             $fc = new Factory();
-            $categorie = $this->model->aGetCategorieByField("code_categorie",$code);
+            $categorie = $this->model->aGetCategorieByField("code_categorie", $code);
             if (!empty($categorie)) {
                 $output = CatalogueService::modalUpdateCategorie($categorie);
                 $result['data'] = $output;
                 $result['code'] = 200;
-             }else{
-            $result['data'] = "Erreur lors de la recuperation!";
-            $result['code'] = 400;
-        }
-
-            
-        }else{
+            } else {
+                $result['data'] = "Erreur lors de la recuperation!";
+                $result['code'] = 400;
+            }
+        } else {
             $result['data'] = "Categorie introuvable!";
             $result['code'] = 400;
         }
-        echo json_encode($result);return;
+        echo json_encode($result);
+        return;
     }
- 
+
     public function aUpdateCategorie()
     {
 
@@ -157,7 +157,7 @@ public function aModalUpdateCategorie()
                 extract($_POST);
                 $fc = new Factory();
 
-                $categorie = $this->model->aGetCategorieByField("libelle_categorie",$libelle_categorie);
+                $categorie = $this->model->aGetCategorieByField("libelle_categorie", $libelle_categorie);
 
                 if (empty($categorie) || ($code == $categorie['code_categorie'])) {
 
@@ -168,7 +168,7 @@ public function aModalUpdateCategorie()
 
                     $rest = $fc->update(TABLES::CATEGORIES, 'code_categorie', $code, $data_categorie);
 
-                    if ($rest) {
+                    if ($rest || $rest == 0) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
                         $msg['message'] = "Categorie categorie modifiée avec succes";
@@ -189,7 +189,7 @@ public function aModalUpdateCategorie()
         return;
     }
 
-        public function amodalAddCategorie()
+    public function amodalAddCategorie()
     {
         $output = "";
 
@@ -199,7 +199,7 @@ public function aModalUpdateCategorie()
     }
 
 
-        public function aAjouterCategorie()
+    public function aAjouterCategorie()
     {
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
@@ -210,19 +210,20 @@ public function aModalUpdateCategorie()
             $fc = new Factory();
 
 
-            if (!$fc->verif(TABLES::CATEGORIES,"libelle_categorie",$libelle_categorie)) {
-                $code = $fc->generateCode(TABLES::CATEGORIES, "code_categorie","CAT-",8);
+            if (!$fc->verif(TABLES::CATEGORIES, "libelle_categorie", $libelle_categorie)) {
+                $code = $fc->generateCode(TABLES::CATEGORIES, "code_categorie", "CAT-", 8);
                 $description = !empty($description_categorie) ?
                     ucfirst($description_categorie) : null;
                 $data_categorie = [
                     'libelle_categorie' => strtoupper($libelle_categorie),
                     'code_categorie' => $code,
-                    'compte_code' => COMPTE_CODE,
-                    'boutique_code' => BOUTIQUE_CODE,
+                    'compte_code' => Auth::user("compte_code"),
+                    'boutique_code' => Auth::user("boutique_code"),
                     'description_categorie' => $description
                 ];
-                
-                if ($fc->create(TABLES::CATEGORIES, $data_categorie)) {
+                $rest = $fc->create(TABLES::CATEGORIES, $data_categorie);
+
+                if ($rest || $rest == 0) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "Categorie enregistré avec succes";

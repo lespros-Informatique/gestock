@@ -43,7 +43,7 @@ class ProduitController extends MainController
      * --------------------------------------------------------------------------
      */
 
-       public function aGetListeProduit()
+    public function aGetListeProduit()
     {
 
         extract($_POST);
@@ -51,8 +51,9 @@ class ProduitController extends MainController
         $produit = new Catalogue();
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_produit' => ETAT_ACTIF];
-        $orderBy = ["libelle_produit" => "ASC","stock_produit" => "ASC"];
+        $whereParams = ['compte_code' => Auth::user('compte_code'), 'boutique_code' => Auth::user('boutique_code'), 'etat_produit' => ETAT_ACTIF];
+
+        $orderBy = ["libelle_produit" => "ASC", "stock_produit" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
         $search = $_POST['search']['value'] ?? '';
@@ -60,17 +61,17 @@ class ProduitController extends MainController
 
         // 🔎 Recherche
         if (!empty($search)) {
-            $likeParams = ['libelle_produit' => $search,'stock_produit' => $search,'prix_achat' => $search,'prix_vente' => $search];
+            $likeParams = ['libelle_produit' => $search, 'stock_produit' => $search, 'prix_achat' => $search, 'prix_vente' => $search, 'garantie_produit' => $search, 'code_bar' => $search, 'libelle_categorie' => $search, 'libelle_mark' => $search, 'libelle_unite' => $search];
         }
 
         // 🔢 Total
-        $total = $produit->dataTbleCountTotalRow(TABLES::PRODUITS, $whereParams);
+        $total = $produit->dataTbleCountTotalProduitRow($whereParams);
         // 🔢 Total filtré
 
-        $totalFiltered = $produit->dataTbleCountTotalRow(TABLES::PRODUITS, $whereParams, $likeParams);
-        // 📄 Données
+        $totalFiltered = $produit->dataTbleCountTotalProduitRow($whereParams, $likeParams);
+        // 📄 Données   
 
-        $produitList = $produit->DataTableFetchAllListe(TABLES::PRODUITS, $whereParams, $likeParams, $orderBy, $start, $limit);
+        $produitList = $produit->DataTableFetchProduitsListe($likeParams, $start, $limit);
 
         $data = [];
 
@@ -125,9 +126,9 @@ class ProduitController extends MainController
         if ($code) {
             $fc = new Factory();
             $produit = $this->model->aGetproduitByField("code_produit", $code);
-            $categorie = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-            $mark = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-            $unite = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+            $categorie = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', Auth::user('compte_code'), Auth::user('boutique_code'));
+            $mark = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', Auth::user('compte_code'), Auth::user('boutique_code'));
+            $unite = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', Auth::user('compte_code'), Auth::user('boutique_code'));
 
             if (!empty($produit)) {
                 $output = CatalogueService::modalUpdateProduit($produit, $categorie, $mark, $unite);
@@ -157,7 +158,7 @@ class ProduitController extends MainController
 
         if (!empty($code)) {
 
-            if (!empty($_POST['libelle_produit'])) {
+            if (!empty($_POST['libelle_produit']) && !empty($_POST['mark_code']) && !empty($_POST['unite_code']) && !empty($_POST['categorie_code']) && !empty($_POST['prix_achat']) && !empty($_POST['prix_vente']) && !empty($_POST['stock_produit']) && !empty($_POST['garantie_produit'])) {
                 extract($_POST);
                 $fc = new Factory();
 
@@ -166,25 +167,21 @@ class ProduitController extends MainController
                 if (empty($produit) || ($code == $produit['code_produit'])) {
 
                     $data_produit = [
-                    'libelle_produit'     => strtoupper(trim($libelle_produit)),
-                    'description_produit' => !empty($description_produit) ? ucfirst(trim($description_produit)) : null,
-
-                    'code_bar'            => !empty($code_bar) ? $code_bar : null,
-                    'categorie_code'      => !empty($categorie_code) ? $categorie_code : null,
-                    'mark_code'           => !empty($mark_code) ? $mark_code : null,
-                    'unite_code'          => !empty($unite_code) ? $unite_code : null,
-
-                    'prix_achat'          => ($prix_achat !== '') ? $prix_achat : null,
-                    'prix_vente'          => ($prix_vente !== '') ? $prix_vente : null,
-
-                    'garantie_produit'    => ($garantie_produit !== '') ? $garantie_produit : null,
-                    'stock_produit'       => ($stock_produit !== '') ? $stock_produit : null,
-                ];
+                        'libelle_produit'     => strtoupper($libelle_produit),
+                        'code_bar'            => $code_bar,
+                        'categorie_code'      => $categorie_code,
+                        'mark_code'           => $mark_code,
+                        'unite_code'          => $unite_code,
+                        'prix_achat'          => $prix_achat,
+                        'prix_vente'          => $prix_vente,
+                        'garantie_produit'    => $garantie_produit,
+                        'stock_produit'       => $stock_produit,
+                    ];
 
 
                     $rest = $fc->update(TABLES::PRODUITS, 'code_produit', $code, $data_produit);
 
-                    if ($rest) {
+                    if ($rest || $rest == 0) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
                         $msg['message'] = "produit produit modifiée avec succes";
@@ -195,25 +192,27 @@ class ProduitController extends MainController
                     $msg['message'] = "Desolé! Cette produit existe déjà. ";
                 }
             } else {
-                $msg['message'] = "Veuillez remplire tous les champs. ";
+                $msg['message'] = "Veuillez renseigner tous les champs. ";
             }
         } else {
             $msg['message'] = "Erreur de donnée, vueillez ressayer plus tard. ";
         }
 
-        echo json_encode($msg);return;
+        echo json_encode($msg);
+        return;
     }
 
     public function aModalAddProduits()
     {
         $output = "";
-        $categories = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-        $marks = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
-        $unites = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', COMPTE_CODE, BOUTIQUE_CODE);
+        $categories = $this->model->aGetCatalogueByFields(TABLES::CATEGORIES, 'compte_code', 'boutique_code', Auth::user("compte_code"), Auth::user("boutique_code"));
+        $marks = $this->model->aGetCatalogueByFields(TABLES::MARKS, 'compte_code', 'boutique_code', Auth::user("compte_code"), Auth::user("boutique_code"));
+        $unites = $this->model->aGetCatalogueByFields(TABLES::UNITES, 'compte_code', 'boutique_code', Auth::user("compte_code"), Auth::user("boutique_code"));
         // echo json_encode([$categories]);return;
-        $output = CatalogueService::aModalAddProduit($categories,$marks,$unites);
+        $output = CatalogueService::aModalAddProduit($categories, $marks, $unites);
 
-        echo json_encode(['data' => $output, 'code' => 200]);return;
+        echo json_encode(['data' => $output, 'code' => 200]);
+        return;
     }
 
 
@@ -222,7 +221,7 @@ class ProduitController extends MainController
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
 
-        if (!empty($_POST['libelle_produit'])) {
+        if (!empty($_POST['libelle_produit']) && !empty($_POST['mark_code']) && !empty($_POST['unite_code']) && !empty($_POST['categorie_code']) && !empty($_POST['prix_achat']) && !empty($_POST['prix_vente']) && !empty($_POST['stock_produit']) && !empty($_POST['garantie_produit'])) {
             extract($_POST);
 
             $fc = new Factory();
@@ -230,33 +229,28 @@ class ProduitController extends MainController
 
             if (!$fc->verif("produits", "libelle_produit", $libelle_produit)) {
                 $code = $fc->generateCode("produits", "code_produit", "CAT-", 8);
-                    
-               $data_produit = [
-                'code_produit'        => $code,               // ex: PRD_0001
-                'code_bar'            => !empty($code_bar) ? $code_bar : null,
 
-                'boutique_code'       => BOUTIQUE_CODE,
-                'compte_code'         => COMPTE_CODE,
+                $data_produit = [
+                    'code_produit'        => $code,               // ex: PRD_0001
+                    'code_bar'            => $code_bar,
+                    'boutique_code'       => Auth::user('boutique_code'),
+                    'compte_code'         => Auth::user('compte_code'),
+                    'categorie_code'      => $categorie_code,
+                    'mark_code'           => $mark_code,
+                    'unite_code'          => $unite_code,
+                    'libelle_produit'     => strtoupper($libelle_produit),
+                    'prix_achat'          => $prix_achat,
+                    'prix_vente'          => $prix_vente,
+                    'garantie_produit'    => $garantie_produit,
+                    'stock_produit'       => $stock_produit
 
-                'categorie_code'      => !empty($categorie_code) ? $categorie_code : null,
-                'mark_code'           => !empty($mark_code) ? $mark_code : null,
-                'unite_code'          => !empty($unite_code) ? $unite_code : null,
+                ];
+                $rest = $fc->create(TABLES::PRODUITS, $data_produit);
 
-                'libelle_produit'     => strtoupper(trim($libelle_produit)),
-                'description_produit' => !empty($description) ? ucfirst($description) : null,
-
-                'prix_achat'          => !empty($prix_achat) ? $prix_achat : null,
-                'prix_vente'          => !empty($prix_vente) ? $prix_vente : null,
-
-                'garantie_produit'    => !empty($garantie_produit) ? $garantie_produit : null,
-                'stock_produit'       => !empty($stock_produit) ? $stock_produit : 0
-
-            ];
-
-                if ($fc->create(TABLES::PRODUITS, $data_produit)) {
+                if ($rest || $rest == 0) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
-                    $msg['message'] = "produit enregistré avec succes";
+                    $msg['message'] = "Produit enregistré avec succes";
                 } else {
                     $msg['type'] = "warning";
                     $msg['message'] = "Echec d'enregistrement!";

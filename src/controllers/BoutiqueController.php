@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use TABLES;
 use App\Models\Personne;
 use App\Services\Service;
@@ -49,7 +50,7 @@ class BoutiqueController extends MainController
         $columns = ['libelle_boutique', 'email_boutique', 'telephone_boutique', 'telephone2_boutique', 'adresse_boutique', 'boutique_created_at'];
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE, 'etat_boutique' => ETAT_ACTIF];
+        $whereParams = ['compte_code' => Auth::user("compte_code"), 'etat_boutique' => ETAT_ACTIF];
         $orderBy = ["libelle_boutique" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -122,7 +123,7 @@ class BoutiqueController extends MainController
                         'telephone2_boutique' => $telephone2_boutique,
                         'email_boutique' => $email_boutique,
                         'code_boutique' => $codeBoutique,
-                        'compte_code' => COMPTE_CODE,
+                        'compte_code' => Auth::user("compte_code"),
                         'adresse_boutique' => $adresse_boutique,
                         'boutique_created_at' => $date
                     ];
@@ -155,7 +156,7 @@ class BoutiqueController extends MainController
         $msg['code'] = 400;
         $msg['type'] = "warning";
         $boutique = new Boutique();
-        $resp = $boutique->getFieldsForParams(TABLES::BOUTIQUES, ['compte_code' => COMPTE_CODE, 'code_boutique' => $codeBoutique]);
+        $resp = $boutique->getFieldsForParams(TABLES::BOUTIQUES, ['compte_code' => Auth::user("compte_code"), 'code_boutique' => $codeBoutique]);
 
         $output = BoutiqueService::bBoutiqueUpdateModalService($resp);
 
