@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Core;
 
-class Auth 
+class Auth
 {
 
     /**
@@ -9,8 +10,8 @@ class Auth
      */
     public static function saveCurrentUrl(): void
     {
-        $url = str_replace("/hotel/","", $_SERVER["REQUEST_URI"]);
-        self::create(OLD_URL,['url' =>$url]);
+        $url = str_replace("/gestock/", "", $_SERVER["REQUEST_URI"]);
+        self::create(OLD_URL, ['url' => $url]);
     }
 
 
@@ -21,47 +22,46 @@ class Auth
     public static function getRoles(): ?array
     {
         return self::check() ? self::user("roles") : null;
-
-
     }
 
     public static function getPermissionsRole($role): ?array
     {
         return !empty(self::getRoles()) ? self::getRoles()[$role] : null;
-       
     }
-   
+
 
     public static function create(string $key, array $data)
     {
-        
 
-         Session::set($key , $data);
+
+        Session::set($key, $data);
     }
     public static function update(string $key,  $value)
     {
 
-         Session::setAuth(self::getAuthKey(), $key , $value);
+        Session::setAuth(self::getAuthKey(), $key, $value);
     }
 
     public static function updateFlash(string $key,  $value)
     {
 
-         Session::setAuth(OLD_URL, $key , $value);
+        Session::setAuth(OLD_URL, $key, $value);
     }
 
-    public static function login( array $user , array $groupes = [], array $roles = [], $etatCaisse = null): void
+    public static function login(array $user, array $groupes = [], array $roles = [], $etatCaisse = null): void
     {
         $authKey = "auth_conected";
 
         Session::set($authKey, [
             'id'    => $user['code_user'],
-            'nom'  => $user['nom'].''.$user['prenom'],
+            'nom'  => $user['nom_user'] . '' . $user['prenom_user'],
             'fonction' => $user['libelle_fonction'],
-            "hotel_id" => $user['hotel_id'],
+            "boutique_code" => $user['boutique_code'],
+            "compte_code" => $user['compte_code'],
+            "etat_compte" => $user['etat_compte'],
             "caisse" => $etatCaisse,
             "is_logged" => true,
-            'groupes' => $groupes, 
+            'groupes' => $groupes,
             'roles' => $roles
         ]);
     }
@@ -81,23 +81,23 @@ class Auth
         Session::clear();
     }
 
-    public static function user($key= null)
+    public static function user($key = null)
     {
         // return  null;
-        return ($key !== null ) ? Session::get(self::getAuthKey())[$key] : Session::get(self::getAuthKey());
+        return ($key !== null) ? Session::get(self::getAuthKey())[$key] : Session::get(self::getAuthKey());
     }
 
-    public static function flashUrl($key= null)
+    public static function flashUrl($key = null)
     {
-        return ($key !== null ) ? Session::get(OLD_URL)[$key] : Session::get(OLD_URL);
+        return ($key !== null) ? Session::get(OLD_URL)[$key] : Session::get(OLD_URL);
     }
 
-    public static function getData($key,$field = null)
+    public static function getData($key, $field = null)
     {
-        
-        return !empty($field) ? 
-        Session::get($key)[$field] : 
-        Session::get($key);
+
+        return !empty($field) ?
+            Session::get($key)[$field] :
+            Session::get($key);
     }
 
     public static function getAuthKey()
@@ -107,8 +107,8 @@ class Auth
 
     public static function check(): bool
     {
-        if(!Session::has(self::getAuthKey())) return false;
-        if(!self::user('is_logged')) return false;
+        if (!Session::has(self::getAuthKey())) return false;
+        if (!self::user('is_logged')) return false;
         return true;
     }
 
@@ -122,27 +122,27 @@ class Auth
         return self::check() ? in_array($groupeId, self::getGroupes()) : false;
     }
 
-    public static function hasRole(string $roleId): bool {
-        
+    public static function hasRole(string $roleId): bool
+    {
+
         return array_key_exists($roleId, self::getRoles());
     }
 
     public static function can(string $roleId, string $permission): bool
     {
-       
+
         if (!isset(self::getRoles()[$roleId])) {
             return false;
         }
 
-        return self::getRoles()[$roleId][$permission] ;
+        return self::getRoles()[$roleId][$permission];
     }
 
-/**redirect fonction */
+    /**redirect fonction */
     public static function redirect(string $url): void
     {
-        header("Location:".HOME.$url);
+        header("Location:" . HOME . $url);
         http_response_code(302);
         exit;
     }
-  
 }

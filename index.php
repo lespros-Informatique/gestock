@@ -1,6 +1,6 @@
 <?php
 // if (session_status() === PHP_SESSION_NONE) {
-session_name("APP15464655_SESSION");
+session_name("APP6846534_SESSION");
 session_start();
 include __DIR__ . '/src/Core/security.php';
 
@@ -21,11 +21,8 @@ use App\Controllers\BoutiqueController;
 use App\Controllers\CategorieController;
 use App\Controllers\ClientController;
 use App\Controllers\Controller;
-use App\Controllers\ControllerComptable;
 use App\Controllers\ControllerException;
-use App\Controllers\ControllerHotel;
 use App\Controllers\ControllerMailer;
-use App\Controllers\ControllerPrinter;
 use App\Controllers\FournisseurController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
@@ -34,6 +31,7 @@ use App\Controllers\UniteController;
 use App\Controllers\ProduitController;
 use App\Core\Router;
 use App\Middlewares\RouteMiddleWare;
+use App\Models\User;
 use Phroute\Phroute\Dispatcher;
 
 
@@ -52,9 +50,9 @@ $router = new Router();
  */
 
 /* filter  for all routes*/
-// $router->filter('auth', [RouteMiddleWare::class, 'requireAuth']);
+$router->filter('auth', [RouteMiddleWare::class, 'requireAuth']);
 
-// $router->filter('guest', [RouteMiddleWare::class, 'isLogged']);
+$router->filter('guest', [RouteMiddleWare::class, 'isLogged']);
 // $router->filter('setting', [RouteMiddleWare::class, 'requireSetting']);
 // $router->filter('ghotel', [RouteMiddleWare::class, 'requireGesHotel']);
 // $router->filter('comptable', [RouteMiddleWare::class, 'requireComptable']);
@@ -69,21 +67,32 @@ $router = new Router();
 
 $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
 
-    $router->get('/login',[UserController::class, 'login']);
-    
-    $router->get('/categorie',[CategorieController::class, 'categorie']);
+    $router->get('/login', [UserController::class, 'login'], ['before' => 'guest'])->name('login');
 
-    $router->get('/mark',[MarkController::class, 'mark']);
+    $router->get('/categorie', [CategorieController::class, 'categorie']);
 
-    $router->get('/unite',[UniteController::class, 'unite']);
-    $router->get('/produit',[ProduitController::class, 'produit']);
-    
+    $router->get('/mark', [MarkController::class, 'mark']);
+
+    $router->get('/unite', [UniteController::class, 'unite']);
+    $router->get('/produit', [ProduitController::class, 'produit']);
+
     $router->get('/', [HomeController::class, 'acueil']);
 
-    $router->get('/client/liste', [ClientController::class, 'client']);
-    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur']);
-    $router->get('/user/liste', [UserController::class, 'user']);
-    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique']);
+
+    $router->get('/client/liste', [ClientController::class, 'client'], ['before' => 'auth']);
+    $router->get('/fournisseur/liste', [FournisseurController::class, 'fournisseur'], ['before' => 'auth']);
+    $router->get('/register', [UserController::class, 'register'], ['before' => 'guest']);
+    $router->get('/user/liste', [UserController::class, 'userListe'], ['before' => 'auth'])->name('home');
+
+
+    $router->get('/boutique/liste', [BoutiqueController::class, 'boutique'], ['before' => 'auth']);
+
+
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => 'auth'])->name('admin.role');
+});
+
+$router->group(['before' => '', 'prefix' => 'gestock/test'], function ($router) {
+    $router->get('/admin/role', [UserController::class, 'role'], ['before' => 'auth'])->name('admin.role');
 });
 
 /**
@@ -93,10 +102,10 @@ $router->group(['before' => '', 'prefix' => 'gestock'], function ($router) {
  */
 
 
-$router->group(['before' => '', 'prefix' => 'hotel/email'], function ($router) {
+// $router->group(['before' => 'auth', 'prefix' => 'gestocks/t'], function ($router) {
 
-    // $router->get('/',[ControllerMailer::class, 'acueil'],['before' => 'auth']);
-});
+//     $router->get('/testd', [UserController::class, 'acueil']);
+// });
 
 /**
  * ************************************************
@@ -171,3 +180,9 @@ $dispatcher = new Dispatcher($router->getData());
 $response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $path);
 
 echo $response;
+
+
+
+// session_destroy();
+
+var_dump($_SESSION);

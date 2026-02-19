@@ -4,7 +4,7 @@ namespace App\Core;
 
 use Exception;
 use PDO;
-
+use TABLES;
 
 abstract class Model
 {
@@ -379,6 +379,59 @@ abstract class Model
     {
         $stmt = $this->db->prepare("DELETE FROM {$table} WHERE {$this->id} = ?");
         return $stmt->execute([$id]);
+    }
+
+    public function getEtatCaisseUser($userCode, $boutiqueCode)
+    {
+        $result = [];
+        try {
+            $sql = "SELECT v.* FROM " . TABLES::VERSEMENTS . " v
+            WHERE  v.boutique_code = :boutique_code AND v.user_code = :user_code
+            ORDER BY v.id_versement_vente DESC LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'boutique_code' => $boutiqueCode,
+                'user_code' => $userCode
+            ]);
+            if ($stmt->rowCount() > 0)
+                $result = $stmt->fetch();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $result;
+    }
+
+    public function getYearActivityStart($codeBoutique)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT YEAR(boutique_created_at) AS date_started FROM " . TABLES::BOUTIQUES . " bt WHERE bt.code_boutique = :boutique_code LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['boutique_code' => $codeBoutique]);
+            if ($stmt->rowCount() > 0) {
+                $res = $stmt->fetch();
+                $data = $res['date_started'];
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
+    }
+
+    public function getInfoBoutique($boutiqueCode)
+    {
+        $data = [];
+        try {
+            $sql = "SELECT * FROM " . TABLES::BOUTIQUES . " bt WHERE bt.code_boutique = :boutique_code LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['boutique_code' => $boutiqueCode]);
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetch();
+            }
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+        return $data;
     }
 
     public function transaction(callable $callback)

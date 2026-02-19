@@ -2,12 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
+use Roles;
 use App\Core\Gqr;
-use App\Core\MainController;
+use App\Core\Auth;
+use App\Models\User;
 use App\Models\Factory;
 use App\Services\Service;
-use Roles;
+use App\Core\MainController;
+use App\Services\UserService;
+use Groupes;
+use TABLES;
 
 class UserController extends MainController
 {
@@ -20,6 +24,28 @@ class UserController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+    public function role()
+    {
+        $users = [];
+        $fc = new User();
+        $users = Auth::hasGroupe(Groupes::SUPER) ?
+            $fc->getSupUserWithFoction() :
+            $fc->getUserWithFoction();
+
+        // if (Auth::hasGroupe(Groupes::SUPER)) {
+        //     $user = $fc->getSupUserWithFoction();
+
+        //     $this->view('admins/role', ["users" => $user, 'title' => 'Gestion des roles']);
+
+        //     return;
+        // }
+
+        // $user = $fc->getUserWithFoction();
+
+        return $this->view('admins/role', ["users" => $users, 'title' => 'Gestion des roles']);
+    }
+
 
     public function acueil()
     {
@@ -51,8 +77,9 @@ class UserController extends MainController
 
     public function userListe()
     {
-        $this->view('admins/user', ['title' => "Liste des utilisateurs"]);
+        $this->view('users/liste', ['title' => "Liste des utilisateurs"]);
     }
+
     public function profileEmploye($code)
     {
         $code = decrypter($code);
@@ -124,126 +151,64 @@ class UserController extends MainController
      * --------------------------------------------------------------------------
      */
 
-    public function updateHotel()
+
+
+    public function bGetListeUser()
     {
-        $_POST = sanitizePostData($_POST);
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
 
-        if (!empty($_POST["libelle_hotel"]) && !empty($_POST["telephone_hotel"])) {
-            extract($_POST);
-            if (ctype_digit($telephone_hotel) && mb_strlen($telephone_hotel) == 10) {
+        extract($_POST);
+        $output = "";
+        $user = new User();
 
-                $fc = new Factory();
-                $statut_filigramme = isset($statut_filigramme) ? 1 : 0;
+        $likeParams = [];
+        $whereParams = ['boutique_code' => Auth::user('boutique_code'), 'etat_user' => ETAT_ACTIF];
 
-                $data_hotel = [
-                    'libelle_hotel' => $libelle_hotel,
-                    'adresse_hotel' => $adresse_hotel,
-                    'telephone_hotel' => $telephone_hotel,
-                    'telephone_hotel2' => $telephone_hotel2,
-                    'email_hotel' => $email_hotel,
-                    'filigramme' => $filigramme,
-                    'statut_filigramme' => $statut_filigramme,
-                ];
 
-                $res = $fc->update('hotels', "code_hotel", Auth::user("hotel_id"), $data_hotel);
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        // $search = $_POST['search'] ?? '';
+        $search = $_POST['search']['value'] ?? '';
 
-                if ($res || $res == 0) {
 
-                    $msg['code'] = 200;
-                    $msg['type'] = "success";
-                    $msg['message'] = "Informations mises à jour avec succes";
-                } else {
-                    $msg['message'] = "Echec de mise à jour!";
-                }
-            } else {
-                $msg["message"] = "Le numero de telephone doit etre un numero de telephone valide!";
-            }
-        } else {
 
-            $msg["message"] = "Veuillez renseigner tous les champs!";
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['nom_user' => $search, 'prenom_user' => $search, 'email_user' => $search, 'telephone_user' => $search, 'matricule_user' => $search, 'sexe_user' => $search, 'fonction_code' => $search, 'user_created_at' => $search];
         }
 
-        echo json_encode($msg);
-        return;
-    }
+        // 🔢 Total
+        $total = $user->dataTbleCountTotalUsersRow($whereParams);
+        // 🔢 Total filtré
 
-    public function updateLogo()
-    {
-        // $_POST = sanitizePostData($_POST);
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
+        $totalFiltered = $user->dataTbleCountTotalUsersRow($whereParams, $likeParams);
+        // 📄 Données
 
-        header('Content-Type: application/json');
+        $userList = $user->DataTableFetchUsersListe($likeParams, $start, $limit);
 
-        $file      = $_FILES['image_logo'];
-        $fileName  = $file['name'];
-        $fileTmp = $file['tmp_name'];
-        $fileSize  = $file['size'];
-        $fileError = $file['error'];
-
-        // var_dump($file,$fileName,$fileTmp,$fileSize,$fileError);
-        // return;
-
-        if (isset($file) && $fileError === 0 && $fileSize > 0) {
-
-            if (verifyExt($fileName)) {
-                if ($fileSize <= 2000000) {
-
-                    $cheminDossier = __DIR__ . THREE_PIP . 'assets/';
-                    $url =  'img/' . Auth::user("hotel_id") . '/logo/';
-                    $uploadDir = $cheminDossier . $url; // dossier où enregistrer les fichiers
-
-                    if (creerDossierSiNonExistant($uploadDir)) {
-
-                        $dataFileName = Auth::user("hotel_id") . '.' . getExt($fileName);
-                        $filePath = $uploadDir . $dataFileName;
-
-                        if (move_uploaded_file($fileTmp, $filePath)) {
-                            $fc = new Factory();
-                            $res = $fc->update('hotels', "code_hotel", Auth::user("hotel_id"), ['logo_hotel' => $url . $dataFileName]);
-                            if ($res || $res == 0) {
-
-                                $msg['code'] = 200;
-                                $msg['type'] = "success";
-                                $msg['message'] = "Logo enregistré avec succès !";
-                            } else {
-
-                                $msg['message'] = "Erreur lors de l'enregistrement de l'image.";
-                            }
-                        } else {
-
-                            $msg['message'] = "Erreur lors du telechargement du fichier.";
-                        }
-                    } else {
-                        $msg['message'] = "désolé, Impossible de telecharger le fichier.";
-                    }
-                } else {
-                    $msg['message'] = "désolé, la taille maximum du fichier est de 2Mo.";
-                }
-            } else {
-                $msg['message'] = "Le fichier n'est pas une image valide.";
-            }
-        } else {
-
-            $msg['message'] = "désolé, une erreur est survenue lors de l'envoi.";
-        }
+        $data = [];
 
 
-        echo json_encode($msg);
+        $data = UserService::userDataService($userList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $userList
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
         return;
     }
 
     public function modalAddUser()
     {
 
-
         // $users = getAllusers();
-        $fonctions = (new Factory())->getAllFonctions();
+        $fonctions = (new User())->getAllFonctions();
         // $services = getAllServices();
 
-        $output = Service::userAddModalService($fonctions);
+        $output = UserService::userAddModalService($fonctions);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
@@ -251,64 +216,67 @@ class UserController extends MainController
 
     public function addUser()
     {
+
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
         $_POST = sanitizePostData($_POST);
-        $user = new Factory();
-
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['sexe']) && !empty($_POST['fonction']) && !empty($_POST['matricule'])) {
+        $user = new User();
+        // var_dump($_POST);
+        // return;
+        if (!empty($_POST['nom_user']) && !empty($_POST['prenom_user']) && !empty($_POST['telephone_user']) && !empty($_POST['email_user']) && !empty($_POST['sexe_user']) && !empty($_POST['fonction_user']) && !empty($_POST['matricule_user'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone);
+            $telephone = removeSpace($telephone_user);
             $telephone = str_replace('(+225)', '', $telephone);
 
             // if (isValidPhoneNumber($telephone)) {
             if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
-                $userTel = $user->find('users', 'telephone', $telephone);
+                $userTel = $user->find(TABLES::USERS, 'telephone_user', $telephone);
 
                 if (empty($userTel)) {
 
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $userEmail = $user->find('users', 'email', $email);
+                    if (filter_var($email_user, FILTER_VALIDATE_EMAIL)) {
+                        $userEmail = $user->find(TABLES::USERS, 'email_user', $email_user);
 
                         if (empty($userEmail)) {
 
                             $passwrod = generetor(5);
-                            $code = $user->generatorCode('users', 'code_user');
+                            $code = $user->generatorCode(TABLES::USERS, 'code_user');
                             $token = generetor(random_int(50, 70));
 
                             $data_user = [
-                                'nom' => strtoupper($nom),
-                                'prenom' => strtoupper($prenom),
-                                'telephone' => $telephone,
+                                'nom_user' => strtoupper($nom_user),
+                                'prenom_user' => strtoupper($prenom_user),
+                                'telephone_user' => $telephone_user,
                                 'code_user' => $code,
-                                'email' => $email,
-                                'matricule' => strtoupper($matricule),
-                                'sexe' => $sexe,
-                                'fonction_id' => $fonction,
-                                'hotel_id' => Auth::user('hotel_id'),
-                                'etat_user' => 0,
+                                'email_user' => $email_user,
+                                'matricule_user' => strtoupper($matricule_user),
+                                'sexe_user' => $sexe_user,
+                                'fonction_code' => $fonction_user,
+                                'boutique_code' => Auth::user('boutique_code'),
+                                'compte_code' => Auth::user('compte_code'),
+                                'etat_user' => ETAT_INACTIF,
                                 'password_user' => password_hash($passwrod, PASSWORD_BCRYPT),
                                 'token' => $token,
                                 'created_user' => date('Y-m-d'),
                                 'lastime' => date('Y-m-d')
                             ];
 
-                            if ($user->create("users", $data_user)) {
+                            if ($user->create(TABLES::USERS, $data_user)) {
 
-                                $hotel =   $user->getInfoHotel(Auth::user('hotel_id'));
+                                $boutique =   $user->getInfoBoutique(Auth::user('boutique_code'));
 
                                 $data_mail = [
                                     "appName" => $_ENV["APP_NAME"],
-                                    "hotel_name" => $hotel['libelle_hotel'],
-                                    "email" => $email,
+                                    "libelle_structure" => $boutique['libelle_boutique'],
+                                    "email" => $email_user,
                                     "password" => $passwrod,
-                                    "nom" => strtoupper($nom . " " . $prenom),
+                                    "nom" => strtoupper($nom_user . " " . $prenom_user),
                                     "lienActivation" => HOME . "/activation/{$token}"
                                 ];
 
 
-                                $this->SendMail($email, "Création de compte", "activation", $data_mail);
+                                // $this->SendMail($email_user, "Création de compte", "activation", $data_mail);
 
 
                                 $msg['code'] = 200;
@@ -527,18 +495,94 @@ class UserController extends MainController
         } elseif (empty($password)) {
             $result['msg'] = "Veuillez renseigner votre mot de passe.";
         } else {
-            $fc = new Factory();
+            $fc = new User();
             // $fc->setKey('code_user');
             $user = [];
 
-            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email', $login) : $fc->getUserDataForLogin('telephone', $login);
-
+            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email_user', $login) : $fc->getUserDataForLogin('telephone_user', $login);
             if (!empty($user) && password_verify($password, $user['password_user'])) {
                 $groupes = [];
                 $roles = [];
 
                 // Vérifier si le compte est actif
-                if (($user['etat_hotel'] == 1) || ($user['code_user'] == $user['hotel_id'])) {
+                if (($user['etat_compte'] == ETAT_ACTIF)) {
+
+                    // Récupérer les rôles de l'utilisateur
+                    $rolesuser = $fc->getUserRoles($user['code_user']);
+
+                    $Groupesuser = $fc->getUserGroups($user['code_user']);
+
+                    // Mettre a jour lastime connection
+                    $fc->update("users", "code_user", $user['code_user'], ['lastime' => date('Y-m-d H:i:s')]);
+
+                    if (!empty($Groupesuser)) {
+                        foreach ($Groupesuser as $groupe) {
+                            $groupes[] = $groupe['groupe'];
+                        }
+                    }
+
+                    if (!empty($rolesuser)) {
+                        foreach ($rolesuser as $role) {
+
+                            $roles[$role['code_role']] = [
+                                'create' => (bool) $role['create_permission'],
+                                'edit'   => (bool) $role['edit_permission'],
+                                'show'   => (bool) $role['show_permission'],
+                                'delete' => (bool) $role['delete_permission'],
+                            ];
+                        }
+                    }
+
+
+                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['boutique_code']);
+                    if (!empty($caisse) && $caisse['cloture'] == null) {
+                        $etatCaise = $caisse['code_versement'];
+                    }
+
+                    Auth::login($user, $groupes, $roles, $etatCaise);
+                    $result['activityYear'] = $fc->getYearActivityStart($user['boutique_code']);
+                    $result['msg'] = "Connexion réussie !";
+                    $result['code'] = 200;
+                } else {
+                    $result['msg'] = "Votre abonement a expiré. Veuillez contacter l'administrateur.";
+                }
+            } else {
+                $result['msg'] = "Email/telephone  ou mot de passe incorrect !";
+            }
+        }
+
+        echo json_encode($result);
+        return;
+    }
+
+    public  function DefaultloginUser()
+    {
+
+        $result = [];
+        $result['code'] = 400;
+        $etatCaise = null;
+        $_POST = sanitizePostData($_POST);
+
+        $login = $_POST['login'];
+        $password = $_POST['password'];
+
+
+        if (empty($login)) {
+            $result['msg'] = "Veuillez renseigner votre login.";
+        } elseif (empty($password)) {
+            $result['msg'] = "Veuillez renseigner votre mot de passe.";
+        } else {
+            $fc = new User();
+            // $fc->setKey('code_user');
+            $user = [];
+
+            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email_user', $login) : $fc->getUserDataForLogin('telephone_user', $login);
+            if (!empty($user) && password_verify($password, $user['password_user'])) {
+                $groupes = [];
+                $roles = [];
+
+                // Vérifier si le compte est actif
+                if (($user['etat_boutique'] == ETAT_ACTIF) || ($user['code_user'] == $user['boutique_code'])) {
 
                     // Récupérer les rôles de l'utilisateur
                     $rolesuser = $fc->getUserRoles($user['code_user']);
@@ -567,13 +611,13 @@ class UserController extends MainController
                     }
 
 
-                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['hotel_id']);
+                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['boutique_code']);
                     if (!empty($caisse) && $caisse['cloture'] == null) {
                         $etatCaise = $caisse['code_versement'];
                     }
 
                     Auth::login($user, $groupes, $roles, $etatCaise);
-                    $result['activityYear'] = $fc->getYearActivityStart($user['hotel_id']);
+                    $result['activityYear'] = $fc->getYearActivityStart($user['boutique_code']);
                     $result['msg'] = "Connexion réussie !";
                     $result['code'] = 200;
                 } else {
@@ -945,6 +989,7 @@ class UserController extends MainController
 
     public function deconnexion()
     {
+
         if (Auth::check()) {
             Auth::disconect();
             echo json_encode(['code' => 200, 'message' => 'Déconnexion réussie']);
@@ -1087,5 +1132,148 @@ class UserController extends MainController
 
         echo json_encode($msg);
         return;
+    }
+
+
+
+    public function loadDataRole()
+    {
+
+        $output = "";
+        $_POST = sanitizePostData($_POST);
+        $code_role = $_POST['code_role'];
+        $code_user = $_POST['code_user'];
+
+        $fc = new User();
+
+
+        $roles = $fc->getRolesByGroupe($code_role);
+        var_dump($roles, $_POST);
+        return;
+        $userPermissions = $fc->getAllPermissionForUser($code_user);
+
+        $userRolesPermissions = $this->resolveTablePermission($userPermissions);
+        // $output = $userRolesPermissions;
+
+        if ($roles) {
+
+            foreach ($roles as $data) {
+                $equal = $this->checkIfExistRole($userRolesPermissions, $data);
+
+                $c = $equal['create'] ? 'checked' : '';
+                $s = $equal['show'] ? 'checked' : '';
+                $e = $equal['edit'] ? 'checked' : '';
+                $d = $equal['delete'] ? 'checked' : '';
+
+                $output .= '
+                <tr data-id="' . $data['code_role'] . '" >
+                    <td> &nbsp; &nbsp;' . $data['name'] . '</td>
+                    <td><input id="create' . $data['code_role'] . '" ' . $c . ' class="perm" data-type="create" type="checkbox"></td>
+                    <td><input id="show' . $data['code_role'] . '" ' . $s . ' class="perm" data-type="show" type="checkbox"></td>
+                    <td><input id="edit' . $data['code_role'] . '" ' . $e . ' class="perm" data-type="edit" type="checkbox"></td>
+                    <td><input id="delete' . $data['code_role'] . '" ' . $d . ' class="perm" data-type="delete" type="checkbox"></td>
+                </tr>
+                ';
+            }
+        }
+
+        // echo json_encode(['data' => $userRolesPermissions,'code' => 200]);
+        echo json_encode(['data' => $output, 'code' => 200]);
+        return;
+    }
+
+
+    public function ajouterPermissionRole()
+    {
+
+        $output = "";
+        $msg['code'] = 400;
+        $userCode = $_POST['codeuser'];
+
+        $rolesData = json_decode($_POST["roles"], true);
+
+        if ($rolesData) {
+
+
+            foreach ($rolesData as $role) {
+
+                if ($role["create"] || $role["show"] || $role["edit"] || $role["delete"]) {
+                    $dataPermissions = [
+                        ':user_id' => $userCode,
+                        ':role_id' => $role["role"],
+                        ':create_permission' => $role["create"],
+                        ':show_permission' => $role["show"],
+                        ':edit_permission' => $role["edit"],
+                        ':delete_permission' => $role["delete"]
+                    ];
+                    $role = (new Factory())->createPermission($dataPermissions);
+                } else {
+                    $role = (new Factory())->deletePermission($userCode, $role["role"]);
+                }
+            }
+
+
+            $msg['type'] = "success";
+            $msg['code'] = 200;
+            $msg['message'] = "Operation effectuée avec succes. ";
+        } else {
+
+            $msg['type'] = "warning";
+            $msg['message'] = "Erreur de validation. ";
+        }
+
+        echo json_encode($msg);
+
+        return;
+    }
+
+
+    public function modalAddPermission()
+    {
+
+        $code = $_POST['code_user'];
+        $html = "";
+        $fc = new User();
+
+        $user = $fc->getUser('code_user', $code);
+
+
+
+        $fullName = $user['nom_user'] . ' ' . $user['prenom_user'];
+        $groupes = $fc->groupes();
+
+        if (!empty($groupes)) {
+            $html = UserService::rolesDataGroupes($groupes, $code);
+        }
+
+        echo json_encode(['user' => $fullName, 'data' => $html, 'code' => 200]);
+        return;
+    }
+
+
+
+    public function resolveTablePermission($UserPermission)
+    {
+
+        $permissions = [];
+
+        if (empty($UserPermission)) return [];
+
+        foreach ($UserPermission as $key => $value) {
+
+            $permissions[$value['role_id']] = [
+                'create' => $value['create_permission'],
+                'edit'   => $value['edit_permission'],
+                'show'   => $value['show_permission'],
+                'delete' => $value['delete_permission'],
+            ];
+        }
+
+        return $permissions;
+    }
+
+    public function checkIfExistRole($user_permissions, $role)
+    {
+        return $user_permissions[$role['code_role']] ?? ['create' => 0, 'show' => 0, 'edit' => 0, 'delete' => 0];
     }
 }

@@ -135,38 +135,7 @@ class CatalogueService
             <input type="text" name="code_bar" class="form-control">
         </div>
 
-        <div class="form-group">
-            <label>Catégorie</label>
-            <select name="categorie_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-        foreach ($categories as $cat) {
-            $form .= '<option value="' . $cat['code_categorie'] . '">' . $cat['libelle_categorie'] . '</option>';
-        }
-        $form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Marque</label>
-            <select name="mark_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-        foreach ($marks as $mark) {
-            $form .= '<option value="' . $mark['code_mark'] . '">' . $mark['libelle_mark'] . '</option>';
-        }
-        $form .= '
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Unité</label>
-            <select name="unite_code" class="form-control">
-                <option value="">-- Sélectionner --</option>';
-        foreach ($unites as $unite) {
-            $form .= '<option value="' . $unite['code_unite'] . '">' . $unite['libelle_unite'] . '</option>';
-        }
-        $form .= '
-            </select>
-        </div>
+        
 
         <div class="form-group">
             <label>Prix achat</label>
