@@ -31,6 +31,20 @@ function btnRes(selector, message = 'Ajouter', icon = "fa-plus-circle") {
 }
 
 
+// searchUser();
+function searchTestInput() {
+    $("body").delegate($('#data-table-produit').DataTable().search(), "keyup", function(e) {
+        e.preventDefault();
+        var search = $('input[type="search"]').val();
+       
+        testDatable('aCharger_data_produits','#data-table-produit',search)
+        // loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
+    });
+}
+
+// searchTestInput();
+
+
 function testDatable(action, selector,search = "") {
     // var se = $(selector).DataTable().search().value;
     $.ajax({
@@ -39,7 +53,7 @@ function testDatable(action, selector,search = "") {
         data: {
             action: action,
             length: 20,
-            start: 1,
+            start: 0,
             search: search,
             draw: 1
         },
@@ -256,7 +270,7 @@ function activeMenuLink() {
     sidebarToggler();
     function sidebarToggler() {
         // Sidebar Toggler
-alert('sidebarToggler');
+// alert('sidebarToggler');
         $('.sidebar-toggler').click(function () {
             $('.sidebar, .content').toggleClass("open");
             return false;

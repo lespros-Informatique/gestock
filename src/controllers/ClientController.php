@@ -2,11 +2,12 @@
 
 namespace App\Controllers;
 
-use App\Core\MainController;
-use App\Models\Personne;
-use App\Services\PersonneService;
-use App\Services\Service;
 use TABLES;
+use App\Core\Auth;
+use App\Models\Personne;
+use App\Services\Service;
+use App\Core\MainController;
+use App\Services\PersonneService;
 
 class ClientController extends MainController
 {
@@ -121,8 +122,8 @@ class ClientController extends MainController
                         'nom_client' => strtoupper($nom_client),
                         'telephone_client' => $telephone,
                         'code_client' => $codeCient,
-                        'boutique_code' => BOUTIQUE_CODE,
-                        'compte_code' => COMPTE_CODE,
+                        'boutique_code' => Auth::user("boutique_code"),
+                        'compte_code' => Auth::user("compte_code"),
                         'sexe_client' => $sexe,
                         'client_created_at' => $date
                     ];

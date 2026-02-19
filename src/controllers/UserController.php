@@ -44,7 +44,6 @@ class UserController extends MainController
         // $user = $fc->getUserWithFoction();
 
         return $this->view('admins/role', ["users" => $users, 'title' => 'Gestion des roles']);
-        
     }
 
 
