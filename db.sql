@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : sam. 07 fév. 2026 à 16:21
+-- Généré le : mar. 17 fév. 2026 à 13:57
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -292,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `fonctions` (
   PRIMARY KEY (`id_fonction`),
   UNIQUE KEY `code_fonction` (`code_fonction`),
   KEY `hotel_id` (`boutique_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `fonctions`
@@ -432,6 +432,28 @@ CREATE TABLE IF NOT EXISTS `paiement_abonnements` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `paiement_fournisseurs`
+--
+
+DROP TABLE IF EXISTS `paiement_fournisseurs`;
+CREATE TABLE IF NOT EXISTS `paiement_fournisseurs` (
+  `id_paiement_fournisseur` int NOT NULL AUTO_INCREMENT,
+  `code_paiement_fournisseur` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `fournisseur_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `montant_paiement_fournisseur` decimal(10,2) DEFAULT NULL,
+  `created_at_paienment_fournisseur` datetime DEFAULT NULL,
+  `etat_paiement_fournisseur` int DEFAULT '1',
+  `user_code` varchar(50) NOT NULL,
+  `compte_code` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_paiement_fournisseur`),
+  UNIQUE KEY `code_paiement_abonnement` (`code_paiement_fournisseur`),
+  KEY `compte_code` (`compte_code`),
+  KEY `abonnement_code` (`fournisseur_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `produits`
 --
 
@@ -485,6 +507,41 @@ CREATE TABLE IF NOT EXISTS `roles` (
 --
 
 INSERT INTO `roles` (`id_role`, `libelle_role`, `code_role`, `module`, `groupe`, `etat_role`, `description`) VALUES
+(1, 'ADMIN', 'ga1', 'ADMIN', 'GADMIN', 1, 'SUPPER ADMINISTRATEUR'),
+(3, 'DASHBOARD ', 'ga3', 'ADMIN', 'GADMIN', 1, NULL),
+(5, 'COMPTABLE ', 'gcom1', 'COMPTABLE', 'GCOMPT', 1, NULL),
+(7, 'MANAGER ', 'gh1', 'MANAGER', 'GHOT', 1, NULL),
+(8, 'SALAIRE ', 'gcom2', 'COMPTABLE', 'GCOMPT', 1, NULL),
+(9, 'DEPENSE ', 'gh2', 'DEPENSE', 'GHOT', 1, NULL),
+(12, 'COMMERCIAL ', 'grecp1', 'COMMERCIAL', 'GRECP', 1, NULL),
+(15, 'SUPER', 'SUPER', 'SUPER', 'SUPER', 2, NULL),
+(23, 'PARAMETRE', 'para1', '', 'PARA', 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `roletest`
+--
+
+DROP TABLE IF EXISTS `roletest`;
+CREATE TABLE IF NOT EXISTS `roletest` (
+  `id_role` int NOT NULL AUTO_INCREMENT,
+  `libelle_role` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `code_role` varchar(50) NOT NULL,
+  `module` varchar(50) NOT NULL,
+  `groupe` varchar(50) NOT NULL,
+  `etat_role` int NOT NULL DEFAULT '0',
+  `description` text,
+  PRIMARY KEY (`id_role`),
+  UNIQUE KEY `code_role` (`code_role`),
+  KEY `groupe` (`groupe`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `roletest`
+--
+
+INSERT INTO `roletest` (`id_role`, `libelle_role`, `code_role`, `module`, `groupe`, `etat_role`, `description`) VALUES
 (1, 'ADMIN', 'ga1', 'ADMIN', 'GADMIN', 1, 'SUPPER ADMINISTRATEUR'),
 (3, 'DASHBOARD ', 'ga3', 'ADMIN', 'GADMIN', 1, NULL),
 (5, 'COMPTABLE ', 'gcom1', 'COMPTABLE', 'GCOMPT', 1, NULL),
@@ -570,20 +627,25 @@ CREATE TABLE IF NOT EXISTS `users` (
   `sexe_user` varchar(20) NOT NULL,
   `password_user` varchar(100) NOT NULL,
   `fonction_code` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `created_user` datetime NOT NULL,
+  `user_created_at` datetime NOT NULL,
   `token` text NOT NULL,
   `lastime` datetime NOT NULL,
   `boutique_code` varchar(50) DEFAULT NULL,
   `compte_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`id_user`, `nom_user`, `prenom_user`, `email_user`, `code_user`, `etat_user`, `telephone_user`, `matricule_user`, `sexe_user`, `password_user`, `fonction_code`, `created_user`, `token`, `lastime`, `boutique_code`, `compte_code`) VALUES
-(1, 'REGISTER', 'First', 'a@g.com', '5wBEh2OfI00frxk8ITPf', 1, '0102030405', '5wBEh2OfI00frxk8ITPf', 'F', '$2y$10$pCnWLG5axIrjeLbQm9wxL.gd3Iisw/rf/UHs647.5IWr0tGiiZhsC', '5wBEh2OfI00frxk8ITPf', '2025-09-25 00:00:57', '', '2026-02-07 15:54:39', 'BTQ_001', 'CMP_001');
+INSERT INTO `users` (`id_user`, `nom_user`, `prenom_user`, `email_user`, `code_user`, `etat_user`, `telephone_user`, `matricule_user`, `sexe_user`, `password_user`, `fonction_code`, `user_created_at`, `token`, `lastime`, `boutique_code`, `compte_code`) VALUES
+(1, 'REGISTER', 'First', 'a@g.com', '5wBEh2OfI00frxk8ITPf', 1, '0102030405', '5wBEh2OfI00frxk8ITPf', 'F', '$2y$10$pCnWLG5axIrjeLbQm9wxL.gd3Iisw/rf/UHs647.5IWr0tGiiZhsC', '5wBEh2OfI00frxk8ITPf', '2025-09-25 00:00:57', '', '2026-02-13 20:18:14', 'BTQ_001', 'CMP_001'),
+(2, 'ELIGENDI REGISTER  EXPEDITA SI', 'FACILIS ET QUI TEMPO', 'a1@g.com', 'TRTlf4csv6ffDa3cLvPeb7wxBaDv', 1, '(+225) 01 43 91 71 9', 'RERUM SIT SIT REPRE', 'Mlle', '$2y$10$pCnWLG5axIrjeLbQm9wxL.gd3Iisw/rf/UHs647.5IWr0tGiiZhsC', 'qkmDBGDnL63BhvauhZTNPI', '2026-02-08 00:00:00', '5V9Mb4Cf8GX6qikaMcysU2ZonGfT6OuXsFxMhpP0tLInQu5pfYw9B269oim1', '2026-02-08 00:00:00', 'BTQ_001', 'CMP_001'),
+(3, 'ODIO CUMQUE NON SIT', 'EST IMPEDIT ADIPISC', 'a2@g.com', 'QkkGHS69JByaYwUWlCJTVYFGOVFJPi', 1, '(+225) 01 29 62 54 9', 'PROVIDENT UT SUNT', 'Mr', '$2y$10$pCnWLG5axIrjeLbQm9wxL.gd3Iisw/rf/UHs647.5IWr0tGiiZhsC', 'y6Lfk6bC9dBDKI', '2026-02-08 00:00:00', 'nJRIPXz2Npx1Z8AqtYkRzl958O9GHzQRC3RmIQ2COAYs9xJUuI1Om6soBgYNx', '2026-02-08 00:00:00', 'BTQ_001', 'CMP_001'),
+(4, 'ULLAMCO VOLUPTATEM B', 'EXCEPTEUR AUT AUTEM', 'a3@g.com', 'sSIpufrVz', 1, '(+225) 01 79 75 14 6', 'APERIAM EXCEPTEUR SU', 'Mme', '$2y$10$pCnWLG5axIrjeLbQm9wxL.gd3Iisw/rf/UHs647.5IWr0tGiiZhsC', 'qkmDBGDnL63BhvauhZTNPI', '2026-02-08 00:00:00', 'saPhBgm5PI5XPemK4oz1T6g73VCUxi8owk6vhoQXcjp8zjzsghqcr1zJ1QvmPkGeGwjT6C', '2026-02-08 00:00:00', 'BTQ_001', 'CMP_001'),
+(5, 'AUTE DOLORES QUOD PR', 'DICTA REGISTER NIHIL ET ASSUM', 'jycohapiry@mailinator.com', 'M0nb38co8A2fkbjz', 1, '(+225) 01 32 86 17 3', 'FUGIT CUM NESCIUNT', 'Mr', '$2y$10$CPfOB1zqraUEiM3nHxUHgu0bw6PWG3KJJseoElyGcPpb2CZ/5Odri', 'qkmDBGDnL63BhvauhZTNPI', '2026-02-08 00:00:00', 'gi0bf0O6SdP7G6GAB01wOXRsbd3XnKEaX1AOeFHcTBWv90tr8ZwHeNwvL', '2026-02-08 00:00:00', 'BTQ_001', 'CMP_001'),
+(6, 'POSSIMUS EUM REGISTER NULLA', 'CONSECTETUR SED TEMP', 'qajikawe@mailinator.com', 'Cy6YUuVWf4qP4ay', 1, '(+225) 01 26 24 84 4', 'EOS NISI OPTIO ELIT', 'Mr', '$2y$10$1ZVhDxIG6f8SCGNKC7SUnO.C3sSqISmT50Ko9jQkPmwYKK0CER8Am', 'NmUukWPBi6uFc5SGNzv855sE', '2026-02-08 00:00:00', 'JhFNiNC0ly5VKvZKEPxJKbc2pXNCqqPgw5mb35Fs80QhMZDFtapH8Seks9eLoZxjsfzQY', '2026-02-08 00:00:00', 'BTQ_001', 'CMP_001');
 
 -- --------------------------------------------------------
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Core\Auth;
@@ -12,7 +13,7 @@ use TABLES;
 class UniteController extends MainController
 {
 
-     /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES VUES
@@ -21,19 +22,19 @@ class UniteController extends MainController
      * --------------------------------------------------------------------------
      */
 
-     private $model;
-     public function __construct()
-     {
+    private $model;
+    public function __construct()
+    {
         $this->model = new Catalogue();
-     }
+    }
 
-       public function unite()
-     {
-          return $this->view('catalogues/unite', ['title' => 'Unité']);
-     }
+    public function unite()
+    {
+        return $this->view('catalogues/unite', ['title' => 'Unité']);
+    }
 
 
-      /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES REQUESTS AJAX
@@ -42,7 +43,7 @@ class UniteController extends MainController
      * --------------------------------------------------------------------------
      */
 
-         public function aGetListeUnite()
+    public function aGetListeUnite()
     {
 
         extract($_POST);
@@ -50,7 +51,7 @@ class UniteController extends MainController
         $unite = new Catalogue();
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_unite' => ETAT_ACTIF];
+        $whereParams = ['compte_code' => Auth::user("compte_code"), 'boutique_code' => Auth::user("boutique_code"), 'etat_unite' => ETAT_ACTIF];
         $orderBy = ["libelle_unite" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -85,15 +86,15 @@ class UniteController extends MainController
         // echo json_encode(['data' => $total, 'code' => 200]);
         return;
     }
-    
+
     public function aDeleteUnite()
     {
 
         $_POST = sanitizePostData($_POST);
-        $code_unite = $_POST['code_unite']?? null;
+        $code_unite = $_POST['code_unite'] ?? null;
         $msg['code'] = 400;
         $msg['type'] = "warning";
-        if ( $code_unite != null) {
+        if ($code_unite != null) {
 
             $data_unite = [
                 'etat_unite' => ETAT_INACTIF
@@ -113,7 +114,7 @@ class UniteController extends MainController
         return;
     }
 
-public function aModalUpdateUnite()
+    public function aModalUpdateUnite()
     {
 
         $_POST = sanitizePostData($_POST);
@@ -123,24 +124,23 @@ public function aModalUpdateUnite()
         $output = "";
         if ($code) {
             $fc = new Factory();
-            $unite = $this->model->aGetUniteByField("code_unite",$code);
+            $unite = $this->model->aGetUniteByField("code_unite", $code);
             if (!empty($unite)) {
                 $output = CatalogueService::modalUpdateUnite($unite);
                 $result['data'] = $output;
                 $result['code'] = 200;
-             }else{
-            $result['data'] = "Erreur lors de la recuperation!";
-            $result['code'] = 400;
-        }
-
-            
-        }else{
+            } else {
+                $result['data'] = "Erreur lors de la recuperation!";
+                $result['code'] = 400;
+            }
+        } else {
             $result['data'] = "unite introuvable!";
             $result['code'] = 400;
         }
-        echo json_encode($result);return;
+        echo json_encode($result);
+        return;
     }
- 
+
     public function aUpdateUnite()
     {
 
@@ -156,7 +156,7 @@ public function aModalUpdateUnite()
                 extract($_POST);
                 $fc = new Factory();
 
-                $unite = $this->model->aGetUniteByField("libelle_unite",$libelle_unite);
+                $unite = $this->model->aGetUniteByField("libelle_unite", $libelle_unite);
 
                 if (empty($unite) || ($code == $unite['code_unite'])) {
 
@@ -166,7 +166,7 @@ public function aModalUpdateUnite()
 
                     $rest = $fc->update(TABLES::UNITES, 'code_unite', $code, $data_unite);
 
-                    if ($rest) {
+                    if ($rest || $rest == 0) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
                         $msg['message'] = "unite unite modifiée avec succes";
@@ -187,7 +187,7 @@ public function aModalUpdateUnite()
         return;
     }
 
-        public function aModalAddUnite()
+    public function aModalAddUnite()
     {
         $output = "";
 
@@ -197,7 +197,7 @@ public function aModalUpdateUnite()
     }
 
 
-        public function aAjouterUnite()
+    public function aAjouterUnite()
     {
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
@@ -208,15 +208,16 @@ public function aModalUpdateUnite()
             $fc = new Factory();
 
 
-            if (!$fc->verif(TABLES::UNITES,"libelle_unite",$libelle_unite)) {
-                $code = $fc->generateCode(TABLES::UNITES, "code_unite","CAT-",8);
+            if (!$fc->verif(TABLES::UNITES, "libelle_unite", $libelle_unite)) {
+                $code = $fc->generateCode(TABLES::UNITES, "code_unite", "CAT-", 8);
                 $data_unite = [
                     'libelle_unite' => strtoupper($libelle_unite),
                     'code_unite' => $code,
-                    'compte_code' => COMPTE_CODE,
-                    'boutique_code' => BOUTIQUE_CODE
+                    'compte_code' => Auth::user("compte_code"),
+                    'boutique_code' => Auth::user("boutique_code")
                 ];
-                if ($fc->create(TABLES::UNITES, $data_unite)) {
+                $rest = $fc->create(TABLES::UNITES, $data_unite);
+                if ($rest || $rest == 0) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
                     $msg['message'] = "unite enregistré avec succes";

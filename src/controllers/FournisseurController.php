@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use TABLES;
+use App\Core\Auth;
 use App\Models\Personne;
 use App\Services\Service;
 use App\Core\MainController;
@@ -118,8 +119,8 @@ class FournisseurController extends MainController
                         'nom_fournisseur' => strtoupper($nom_fournisseur),
                         'telephone_fournisseur' => $telephone,
                         'code_fournisseur' => $codeFournisseur,
-                        'boutique_code' => BOUTIQUE_CODE,
-                        'compte_code' => COMPTE_CODE,
+                        'boutique_code' => Auth::user("boutique_code"),
+                        'compte_code' => Auth::user("compte_code"),
                         'sexe_fournisseur' => $sexe,
                         'fournisseur_created_at' => $date
                     ];

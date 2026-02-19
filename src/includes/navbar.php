@@ -5,7 +5,7 @@
         <a href="<?= route('home') ?>" class="logo">
 
 
-            <span style="color: #fff; font-size:18px" class="navbar-brand"> G-STOCK</span>
+            <span style="color: #fff; font-size:18px" class="navbar-brand"><?= getDataEnv('APP_NAME') ?></span>
 
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
@@ -140,16 +140,16 @@
                     <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"
                         aria-expanded="false">
                         <div class="name-user">
-                            <span style="font-size: 16px; font-weight: bold;" class=""><?php //echo shortName(auth()->user('nom')) 
+                            <span style="font-size: 16px; font-weight: bold;" class=""><?= shortName(auth()->user('nom')) 
                                                                                         ?></span>
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-user animated fadeIn">
                         <div class="dropdown-user-scroll scrollbar-outer">
                             <li>
-                                <a class="dropdown-item" href="<?php //echo route('user.profile',['code'=> auth()->user('id')]) 
-                                                                ?>"> <?php //echo auth()->user('nom') 
-                                                                        ?></a>
+                                <a class="dropdown-item" href="<?= url('user',['code'=> auth()->user('id')]) 
+                                                                ?>"> <?= auth()->user('nom') ?>
+                                </a>
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>

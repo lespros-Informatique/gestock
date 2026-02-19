@@ -145,18 +145,7 @@ loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
 
 
 
-// searchUser();
-function searchUser() {
-    $("body").delegate($('#data-table-user').DataTable().search(), "keyup", function(e) {
-        e.preventDefault();
-        var search = $('input[type="search"]').val();
-       
-        testDatable('bcharger_data_users','#data-table-user',search)
-        // loadDataTable('data-table-user', '#data-table-user', 'bcharger_data_users');
-    });
-}
 
-searchUser();
 
 // EMPLOYE
 // Show modal add USER

@@ -283,22 +283,22 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= url('categorie') ?>">
+                                <a class="item-link" href="<?= url('hotel/rapports') ?>">
                                     <span class="sub-item">📈 Ventes (jour / mois / année)</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('mark') ?>">
+                                <a class="item-link" href="<?= url('profit') ?>">
                                     <span class="sub-item">📉 Profits & marges</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('unite') ?>">
+                                <a class="item-link" href="<?= url('mouvement_stock') ?>">
                                     <span class="sub-item">📦 Mouvement de stock</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('produit') ?>">
+                                <a class="item-link" href="<?= url('rapport') ?>">
                                     <span class="sub-item">🧾 Rapport caisse</span>
                                 </a>
                             </li>
@@ -382,17 +382,17 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= url('categorie') ?>">
+                                <a class="item-link" href="<?= url('user/liste') ?>">
                                     <span class="sub-item">👤 Utilisateurs</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('mark') ?>">
+                                <a class="item-link" href="<?= url('') ?>">
                                     <span class="sub-item">🔐 Rôles & permissions</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('unite') ?>">
+                                <a class="item-link" href="<?= url('') ?>">
                                     <span class="sub-item">🔄 Historique connexions</span>
                                 </a>
                             </li>
@@ -433,22 +433,22 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= url('categorie') ?>">
+                                <a class="item-link" href="<?= url('journal') ?>">
                                     <span class="sub-item">🕵️ Journal d’activité</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('mark') ?>">
+                                <a class="item-link" href="<?= url('actions') ?>">
                                     <span class="sub-item">🔔 Actions sensibles</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('unite') ?>">
+                                <a class="item-link" href="<?= url('auth/connexions') ?>">
                                     <span class="sub-item">🔐 Tentatives de connexion</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('produit') ?>">
+                                <a class="item-link" href="<?= url('auth/backup') ?>">
                                     <span class="sub-item">💾 Sauvegardes (backup)</span>
                                 </a>
                             </li>
@@ -460,7 +460,7 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
+                                <a class="item-link" href="<?= url('salaire') ?>">
                                     <span class="sub-item">Salaires</span>
                                 </a>
                             </li>
@@ -489,22 +489,22 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= url('categorie') ?>">
+                                <a class="item-link" href="<?= url('hotel/parametres') ?>">
                                     <span class="sub-item">🏢 Infos entreprise</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('mark') ?>">
+                                <a class="item-link" href="<?= url('boutique/parametres') ?>">
                                     <span class="sub-item">🏪 Paramètres boutique</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('unite') ?>">
+                                <a class="item-link" href="<?= url('parametres/devises') ?>">
                                     <span class="sub-item">💵 Devises & taxes</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('produit') ?>">
+                                <a class="item-link" href="<?= url('impression') ?>">
                                     <span class="sub-item">🖨️ Impression factures</span>
                                 </a>
                             </li>
@@ -516,12 +516,12 @@
                             ?>
 
                             <li>
-                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
+                                <a class="item-link" href="<?= url('parametres/notifications') ?>">
                                     <span class="sub-item">🔔 Notifications</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
+                                <a class="item-link" href="<?= url('parametres/sauvegarde') ?>">
                                     <span class="sub-item">🔄 Sauvegarde & restauration</span>
                                 </a>
                             </li>

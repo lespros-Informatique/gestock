@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Core\Auth;
@@ -12,7 +13,7 @@ use TABLES;
 class MarkController extends MainController
 {
 
-     /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES VUES
@@ -21,19 +22,19 @@ class MarkController extends MainController
      * --------------------------------------------------------------------------
      */
 
-     private $model;
-     public function __construct()
-     {
+    private $model;
+    public function __construct()
+    {
         $this->model = new Catalogue();
-     }
+    }
 
-       public function mark()
-     {
-          return $this->view('catalogues/mark', ['title' => 'Marque']);
-     }
+    public function mark()
+    {
+        return $this->view('catalogues/mark', ['title' => 'Marque']);
+    }
 
 
-      /**
+    /**
      * ------------------------------------------------------------------------
      * **********************************************************************
      * * SEXION POUR LES REQUESTS AJAX
@@ -42,7 +43,7 @@ class MarkController extends MainController
      * --------------------------------------------------------------------------
      */
 
-          public function aGetListeMark()
+    public function aGetListeMark()
     {
 
         extract($_POST);
@@ -50,7 +51,7 @@ class MarkController extends MainController
         $mark = new Catalogue();
 
         $likeParams = [];
-        $whereParams = ['compte_code' => COMPTE_CODE,'compte_code' => COMPTE_CODE, 'etat_mark' => ETAT_ACTIF];
+        $whereParams = ['compte_code' => Auth::user("compte_code"), 'boutique_code' => Auth::user("boutique_code"), 'etat_mark' => ETAT_ACTIF];
         $orderBy = ["libelle_mark" => "ASC"];
         $limit  = $_POST['length'];
         $start  = $_POST['start'];
@@ -85,21 +86,21 @@ class MarkController extends MainController
         // echo json_encode(['data' => $total, 'code' => 200]);
         return;
     }
-    
+
     public function aDeleteMark()
     {
 
         $_POST = sanitizePostData($_POST);
-        $code_mark = $_POST['code_mark']?? null;
+        $code_mark = $_POST['code_mark'] ?? null;
         $msg['code'] = 400;
         $msg['type'] = "warning";
-        if ( $code_mark != null) {
+        if ($code_mark != null) {
 
             $data_mark = [
                 'etat_mark' => ETAT_INACTIF
             ];
             $rest = (new Factory())->update(TABLES::MARKS, 'code_mark', $code_mark, $data_mark);
-            if ($rest) {
+            if ($rest || $rest == 0) {
                 $msg['code'] = 200;
                 $msg['type'] = "success";
                 $msg['message'] = "mark mark Supprimée avec succes";
@@ -113,7 +114,7 @@ class MarkController extends MainController
         return;
     }
 
-public function aModalUpdateMark()
+    public function aModalUpdateMark()
     {
 
         $_POST = sanitizePostData($_POST);
@@ -123,24 +124,23 @@ public function aModalUpdateMark()
         $output = "";
         if ($code) {
             $fc = new Factory();
-            $mark = $this->model->aGetMarkByField("code_mark",$code);
+            $mark = $this->model->aGetMarkByField("code_mark", $code);
             if (!empty($mark)) {
                 $output = CatalogueService::modalUpdateMark($mark);
                 $result['data'] = $output;
                 $result['code'] = 200;
-             }else{
-            $result['data'] = "Erreur lors de la recuperation!";
-            $result['code'] = 400;
-        }
-
-            
-        }else{
+            } else {
+                $result['data'] = "Erreur lors de la recuperation!";
+                $result['code'] = 400;
+            }
+        } else {
             $result['data'] = "mark introuvable!";
             $result['code'] = 400;
         }
-        echo json_encode($result);return;
+        echo json_encode($result);
+        return;
     }
- 
+
     public function aUpdateMark()
     {
 
@@ -155,7 +155,7 @@ public function aModalUpdateMark()
                 extract($_POST);
                 $fc = new Factory();
 
-                $mark = $this->model->aGetMarkByField("libelle_mark",$libelle_mark);
+                $mark = $this->model->aGetMarkByField("libelle_mark", $libelle_mark);
 
                 if (empty($mark) || ($code == $mark['code_mark'])) {
 
@@ -165,7 +165,7 @@ public function aModalUpdateMark()
 
                     $rest = $fc->update(TABLES::MARKS, 'code_mark', $code, $data_mark);
 
-                    if ($rest) {
+                    if ($rest || $rest == 0) {
                         $msg['code'] = 200;
                         $msg['type'] = "success";
                         $msg['message'] = "mark mark modifiée avec succes";
@@ -182,10 +182,11 @@ public function aModalUpdateMark()
             $msg['message'] = "Erreur de donnée, vueillez ressayer plus tard. ";
         }
 
-        echo json_encode($msg);return;
+        echo json_encode($msg);
+        return;
     }
 
-        public function aModalAddMark()
+    public function aModalAddMark()
     {
         $output = "";
 
@@ -195,7 +196,7 @@ public function aModalUpdateMark()
     }
 
 
-        public function aAjouterMark()
+    public function aAjouterMark()
     {
         $msg['code'] = 400;
         $_POST = sanitizePostData($_POST);
@@ -206,13 +207,13 @@ public function aModalUpdateMark()
             $fc = new Factory();
 
 
-            if (!$fc->verif(TABLES::MARKS,"libelle_mark",$libelle_mark)) {
-                $code = $fc->generateCode(TABLES::MARKS, "code_mark","CAT-",8);
+            if (!$fc->verif(TABLES::MARKS, "libelle_mark", $libelle_mark)) {
+                $code = $fc->generateCode(TABLES::MARKS, "code_mark", "CAT-", 8);
                 $data_mark = [
                     'libelle_mark' => strtoupper($libelle_mark),
                     'code_mark' => $code,
-                    'compte_code' => COMPTE_CODE,
-                    'boutique_code' => BOUTIQUE_CODE
+                    'compte_code' => Auth::user("compte_code"),
+                    'boutique_code' => Auth::user("boutique_code")
                 ];
                 if ($fc->create(TABLES::MARKS, $data_mark)) {
                     $msg['code'] = 200;

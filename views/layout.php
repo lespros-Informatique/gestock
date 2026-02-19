@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title><?= $data['title'] ?? "Mon espace" ?> || G-ECOLE APPLICATION</title>
+    <title><?= $data['title'] ?? "Mon espace" ?> || <?= getDataEnv('APP_NAME') ?> APPLICATION</title>
    <?php include "src/includes/style.php" ?>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -38,7 +38,7 @@
 
                     <!-- breakcrumb -->
                     <div class="page-header">
-                        <h4 class="page-title"><?= $_ENV['APP_NAME'] ?></h4>
+                        <h4 class="page-title"><?= getDataEnv('APP_NAME') ?></h4>
                         <ul class="breadcrumbs">
                             <li class="nav-home">
                                 <a href="<?= route('home')?>">
@@ -95,7 +95,7 @@
                     </nav>
                     <div class="copyright ml-auto">
                         2025, developpé <i class="fa fa-heart heart text-danger"></i> par <a
-                            href="#">SMART CODES</a>
+                            href="#"><?= getDataEnv('APP_ENTITY') ?></a>
                     </div>
                 </div>
             </footer>

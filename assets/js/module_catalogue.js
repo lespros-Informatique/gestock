@@ -606,6 +606,8 @@ function aAjouter_produit() {
     $("body").delegate("#frmAddProduit", "submit", function(e) {
         e.preventDefault();
         var data = $(this).serialize();
+        // console.log(data);
+        
         $.ajax({
             method: "POST",
             url: URL_AJAX,
@@ -654,6 +656,7 @@ function aOpenModalUpdateProduit() {
 
             },
             success: function(data) {
+                console.log(data);
                 
                 btnRes("#" + id, 'Modifier', 'fa-edit');
                 $(".loader_backdrop2").css('display', "none");
@@ -667,6 +670,42 @@ function aOpenModalUpdateProduit() {
             }
         })
     });
+
 }
+
+aModifier_produit();
+function aModifier_produit() {
+    $("body").delegate("#frmUpdateProduit", "submit", function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+        console.log(data);
+        
+        $.ajax({
+            method: "POST",
+            url: URL_AJAX,
+            data: data,
+            dataType: "json",
+            beforeSend: function() {
+                btnReq("#btn_ajouter_produit", "Enregistrement...");
+            },
+            success: function(data) {
+                console.log(data);
+                
+                btnRes("#btn_ajouter_produit");
+                $(".loader_backdrop2").css('display', "none");
+
+                if (data.code == 200) {
+                    tables['data-table-produit'].ajax.reload(null, false);
+                    $.notify(data.message, "success");
+                    $("#produit-modal").modal("hide");
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        })
+    });
+}
+
 // FIN produit
 
