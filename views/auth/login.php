@@ -35,13 +35,13 @@
                         <!-- Email Address -->
                         <div class="">
                             <input id="login" class="form-control" type="text" name="login"
-                                placeholder="E-mail ou Numéro de telephone " required />
+                                placeholder="E-mail ou Numéro de telephone " value="user@gmail.com" required />
                         </div>
 
                         <!-- Password -->
                         <div class="input-control md-5">
                             <input id="password" class="form-control password" type="password" name="password"
-                                placeholder="Mot de passe" required />
+                                placeholder="Mot de passe" value="ADMIN-01" required />
                         </div>
 
                         <div class="mb-3 mt-4">

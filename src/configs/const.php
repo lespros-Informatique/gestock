@@ -1,9 +1,9 @@
 <?php  
 
 define('root',$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST']);
-define('ASSETS',root.'/gestock/assets/');
-define('LINK',root.'/gestock/');
-define('HOME',root.'/gestock');
+define('ASSETS',root.'/admin-smartcode/assets/');
+define('LINK',root.'/admin-smartcode/');
+define('HOME',root.'/admin-smartcode');
 define('APP_NAME','G-STOCK');
 define('TWO_PIP','/../../');
 define('THREE_PIP','/../../'); 
@@ -18,44 +18,30 @@ define('COMPTE_CODE',"CMP_001");
 
 class TABLES
 {
-    // Comptes & abonnements
-    public const COMPTES               = 'comptes';
+    // Nouvelles tables - Abonnements
     public const ABONNEMENTS           = 'abonnements';
-    public const TYPE_ABONEMENTS       = 'type_abonements';
+    public const TYPE_ABONNEMENTS       = 'type_abonnements';
     public const AVANTAGES             = 'avantages';
     public const PAIEMENT_ABONNEMENTS  = 'paiement_abonnements';
 
-    // Boutiques & organisation
-    public const BOUTIQUES             = 'boutiques';
-    public const CAISSES               = 'caisses';
+    // Nouvelles tables - Applications
+    public const APPLICATIONS          = 'applications';
+    public const IMAGES_APPLICATIONS   = 'images_applications';
+
+    // Nouvelles tables - Partenaires
+    public const PARTNERS              = 'partners';
+    public const COMPTE_PARTNER        = 'compte_partner';
+    public const PAIEMENT_PARTNER      = 'paiement_partner';
 
     // Utilisateurs & rôles
     public const USERS                 = 'users';
     public const ROLES                 = 'roles';
-    public const ROLE_USERS            = 'role_users';
+    public const USER_ROLES            = 'user_roles';
+    public const FONCTIONS            = 'fonctions';
 
-    // Produits & catalogues
-    public const PRODUITS              = 'produits';
-    public const CATEGORIES            = 'categories';
-    public const MARKS                 = 'marks';
-    public const UNITES                = 'unites';
-
-    // Clients & fournisseurs
+    // Clients 
     public const CLIENTS               = 'clients';
-    public const FOURNISSEURS           = 'fournisseurs';
 
-    // Achats
-    public const ACHATS                = 'achats';
-    public const LIGNE_ACHATS           = 'ligne_achats';
-
-    // Ventes
-    public const VENTES                = 'ventes';
-    public const LIGNE_VENTES           = 'ligne_ventes';
-    public const VERSEMENTS_VENTES     = 'versements_ventes';
-
-    // Dépenses
-    public const DEPENSES              = 'depenses';
-    public const TYPE_DEPENSES         = 'type_depenses';
 }
 
 class Permissionsss {
@@ -109,4 +95,3 @@ CONST MONTHS = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
 ];
-

@@ -1,7 +1,3 @@
-<?php extract($user);?>
-
-
-
 
 <div class="card mt-3 mb-3">
 

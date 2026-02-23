@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\Model;
 use Exception;
 use Roles;
+use TABLES;
 
 class Factory extends Model
 {
@@ -51,9 +52,9 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT * FROM fonctions AS fn WHERE fn.hotel_id = :hotel AND etat_fonction = 1 ORDER BY libelle_fonction";
+            $sql = "SELECT * FROM fonctions AS fn ORDER BY libelle_fonction";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel' => Auth::user('hotel_id')]);
+            $stmt->execute();
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -65,7 +66,7 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT r.groupe FROM roles AS r JOIN user_roles ur ON r.code_role = ur.role_id WHERE ur.user_id = :userId GROUP BY r.groupe";
+            $sql = "SELECT r.groupe FROM roles AS r JOIN user_roles ur ON r.code_role = ur.role_code WHERE ur.user_code = :userId GROUP BY r.groupe";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['userId' => $userId]);
             $data = $stmt->fetchAll();
@@ -79,7 +80,7 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT r.code_role, r.name,r.description, ur.* FROM roles AS r JOIN user_roles ur ON r.code_role = ur.role_id WHERE ur.user_id = :userId GROUP BY r.code_role";
+            $sql = "SELECT r.code_role, r.libelle_role,r.description, ur.* FROM roles AS r JOIN user_roles ur ON r.code_role = ur.role_code WHERE ur.user_code = :userId GROUP BY r.code_role";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['userId' => $userId]);
             $data = $stmt->fetchAll();
@@ -93,12 +94,10 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT ht.etat_hotel, code_user,password_user,nom,prenom ,f.libelle_fonction, f.code_fonction, u.hotel_id FROM users AS u
-        INNER JOIN fonctions AS f ON f.code_fonction = u.fonction_id
-         JOIN hotels AS ht ON ht.code_hotel = u.hotel_id 
-        WHERE {$login} = :login AND etat_user = 1  LIMIT 1";
+            $sql = "SELECT * FROM users u JOIN fonctions f ON f.code_fonction = u.fonction_code
+        WHERE {$login} = :login AND etat_user = :etat  LIMIT 1";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['login' => $value]);
+            $stmt->execute(['login' => $value,"etat"=>1]);
             $data = $stmt->fetch();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -110,12 +109,11 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_id 
-            WHERE us.hotel_id = :hotel_id AND us.code_user = :code LIMIT 1";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_code 
+            WHERE us.code_user = :code LIMIT 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                'code' => $codeUser,
-                'hotel_id' => Auth::user('hotel_id')
+                'code' => $codeUser
             ]);
             if ($stmt->rowCount() > 0)
                 $data = $stmt->fetch();
@@ -129,13 +127,9 @@ class Factory extends Model
     {
         $data = [];
         try {
-            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_id AND etat_fonction = :etat 
-            WHERE us.hotel_id = :hotel_id  ORDER BY etat_user DESC, us.nom";
+            $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us JOIN fonctions fn ON fn.code_fonction = us.fonction_code ORDER BY etat_user DESC, us.nom_user";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                'etat' => $etat,
-                'hotel_id' => Auth::user('hotel_id')
-            ]);
+            $stmt->execute();
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -148,10 +142,9 @@ class Factory extends Model
         $data = [];
         try {
             $sql = "SELECT us.*, fn.libelle_fonction FROM users AS us 
-            JOIN fonctions fn ON fn.code_fonction = us.fonction_id
-            WHERE us.hotel_id = :hotel_id ORDER BY us.nom";
+            JOIN fonctions fn ON fn.code_fonction = us.fonction_code ORDER BY us.nom_user";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['hotel_id' => Auth::user('hotel_id')]);
+            $stmt->execute();
             $data = $stmt->fetchAll();
         } catch (Exception $e) {
             die($e->getMessage());
@@ -198,8 +191,8 @@ class Factory extends Model
 
         $data = "";
         try {
-            $sql = "INSERT INTO user_roles (user_id , role_id, create_permission, edit_permission, show_permission, delete_permission)
-                    VALUES (:user_id, :role_id, :create_permission, :edit_permission, :show_permission, :delete_permission)
+            $sql = "INSERT INTO user_roles (user_code , role_code, create_permission, edit_permission, show_permission, delete_permission)
+                    VALUES (:user_code, :role_code, :create_permission, :edit_permission, :show_permission, :delete_permission)
                     ON DUPLICATE KEY UPDATE 
                     create_permission = VALUES(create_permission), 
                     edit_permission = VALUES(edit_permission), 
@@ -232,9 +225,18 @@ class Factory extends Model
     public function getAllPermissionForUser(string $userId)
     {
         $data = [];
-        $sql = "SELECT * FROM  user_roles ur WHERE ur.user_id =:user_id ";
+        $sql = "SELECT * FROM  user_roles ur WHERE ur.user_code =:user_code ";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(['user_id' => $userId]);
+        $stmt->execute(['user_code' => $userId]);
+        $data =  $stmt->fetchAll();
+        return $data;
+    }
+    public function getAllRoleByCode(string $code)
+    {
+        $data = [];
+        $sql = "SELECT * FROM  roles r WHERE r.groupe =:code ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['code' => $code]);
         $data =  $stmt->fetchAll();
         return $data;
     }
@@ -1934,12 +1936,12 @@ class Factory extends Model
 
 
             // remplir la table hotels
-            $query->create("hotels", $hotel);
+            // $query->create("hotels", $hotel);
             // remplir la table fonctions
-            $query->create("fonctions", $fonction);
+            $query->create(TABLES::FONCTIONS, $fonction);
             // remplir la table services
             // remplir la table users
-            $query->create("users", $user);
+            $query->create(TABLES::USERS, $user);
             // remplir la table user_roles
             foreach ($data_user_role as $role) {
                 $query->create("user_roles", $role);

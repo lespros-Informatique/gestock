@@ -1,24 +1,8 @@
--- Entités
-comptes
-boutiques
-users
-tokens
-roles
-abonnements
-type_abonements
-fournisseurs
-clients
-achats
-ventes
-produits
-categories
-marks
-unites
-paiement_abonnements
-versements_ventes
-depenses
-type_depenses
--- les modification db
-libelle_mark
-libelle_unite
-description_produit
+type_abonements - Types d'abonnements (lié aux applications)
+abonnements - Abonnements des partners
+avantages - Avantages des abonnements
+partners - Partenaires
+clients - Clients
+
+Lequel veux-tu faire e
+ok t'inspirant de type_abonnement ou application faire le crud de avantages , tout en suivant bien le cheminement,index,module_...js,include/script,ajx,controller,service,model et autre soit virgilant et optimiste en utilisant les methode reutilisable deja faire et soit propre

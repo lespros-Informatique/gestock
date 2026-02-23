@@ -56,10 +56,8 @@ class Auth
 
         Session::set($authKey, [
             'id'    => $user['code_user'],
-            'nom'  => $user['nom'].''.$user['prenom'],
+            'nom'  => $user['nom_user'].''.$user['prenom_user'],
             'fonction' => $user['libelle_fonction'],
-            "hotel_id" => $user['hotel_id'],
-            "caisse" => $etatCaisse,
             "is_logged" => true,
             'groupes' => $groupes, 
             'roles' => $roles

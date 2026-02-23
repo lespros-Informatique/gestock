@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <div class="text-center mt-5 mb-3">
-                <img src="<?= ASSETS?>img/logo.svg" alt="Logo" class="img-fluid my-4"
+                <img src="<?= ASSETS?>img/icon.png" alt="Logo" class="img-fluid my-4"
                     style="max-width: 150px;">
             </div>
         </div>

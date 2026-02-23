@@ -6,8 +6,11 @@ use App\Core\Auth;
 use App\Core\Gqr;
 use App\Core\MainController;
 use App\Models\Factory;
+use App\Models\User;
 use App\Services\Service;
+use App\Services\UserService;
 use Roles;
+use TABLES;
 
 class UserController extends MainController
 {
@@ -49,21 +52,32 @@ class UserController extends MainController
         return $this->view('welcome', ["result" => $result, "title", 'title' => "Mon espace"]);
     }
 
-    public function userListe()
+    public function user()
     {
         $this->view('admins/user', ['title' => "Liste des utilisateurs"]);
     }
-    public function profileEmploye($code)
+
+    //    public function detail($code)
+    // {
+    //     $user = (new Factory())->find(TABLES::USERS, 'code_user', $code);
+        
+    //     return $this->view('users/detail', [
+    //         'title' => 'Détails user', 
+    //         'user' => $user,
+    //     ]);
+    // }
+
+    public function profileUser($code)
     {
-        $code = decrypter($code);
-        if (!$code) exit(http_response_code(500));
+        // $code = decrypter($code);
+        // if (!$code) exit(http_response_code(500));
 
         $fc = new Factory();
         $user = $fc->getUserByCodeWithFoction($code);
         $fonctions = $fc->getAllFonctions();
-        $activities = $fc->getAllDetailesVersementReservationsForUser($code);
+        // $activities = $fc->getAllDetailesVersementReservationsForUser($code);
 
-        $this->view('admins/profile', ["user" => $user, "activities" => $activities, "fonctions" => $fonctions, 'title' => "Profile employe"]);
+        $this->view('admins/profile', ["user" => $user, "fonctions" => $fonctions, 'title' => "Profile utilisateur"]);
     }
 
     public function myProfile($code)
@@ -110,9 +124,9 @@ class UserController extends MainController
     public function setting()
     {
         $fc = new Factory();
-        $hotel = $fc->find("hotels", "code_hotel", Auth::user("hotel_id"));
+        // $hotel = $fc->find("hotels", "code_hotel", Auth::user("hotel_id"));
 
-        return $this->view('parametres/setting', ["hotel" => $hotel, "title" => "Parametres"]);
+        return $this->view('parametres/setting', ["title" => "Parametres"]);
     }
 
     /**
@@ -123,6 +137,55 @@ class UserController extends MainController
      * **********************************************************************
      * --------------------------------------------------------------------------
      */
+
+    public function getListeUser()
+    {
+
+        extract($_POST);
+        $output = "";
+        $user = new User();
+
+        $likeParams = [];
+        $whereParams = ['etat_user' => ETAT_ACTIF];
+
+
+        $limit  = $_POST['length'];
+        $start  = $_POST['start'];
+        // $search = $_POST['search'] ?? '';
+        $search = $_POST['search']['value'] ?? '';
+        // var_dump($_POST);
+        // return;
+
+
+
+        // 🔎 Recherche
+        if (!empty($search)) {
+            $likeParams = ['nom_user' => $search, 'prenom_user' => $search, 'email_user' => $search, 'telephone_user' => $search, 'fonction_code' => $search, 'created_at_user' => $search];
+        }
+
+        // 🔢 Total
+        $total = $user->dataTbleCountTotalUsersRow($whereParams);
+        // 🔢 Total filtré
+
+        $totalFiltered = $user->dataTbleCountTotalUsersRow($whereParams, $likeParams);
+        // 📄 Données
+
+        $userList = $user->DataTableFetchUsersListe($likeParams, $start, $limit);
+
+        $data = [];
+
+
+        $data = UserService::userDataService($userList);
+        echo json_encode([
+            "draw"            => intval($_POST['draw']),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $totalFiltered,
+            "data"            => $data
+            // "data"            => $userList
+        ]);
+        // echo json_encode(['data' => $total, 'code' => 200]);
+        return;
+    }
 
     public function updateHotel()
     {
@@ -239,11 +302,9 @@ class UserController extends MainController
     {
 
 
-        // $users = getAllusers();
         $fonctions = (new Factory())->getAllFonctions();
-        // $services = getAllServices();
 
-        $output = Service::userAddModalService($fonctions);
+        $output = UserService::userAddModalService($fonctions);
         echo json_encode(['data' => $output, 'code' => 200]);
         return;
     }
@@ -251,64 +312,60 @@ class UserController extends MainController
 
     public function addUser()
     {
+        // var_dump($_POST);return;
         $msg['code'] = 400;
         $msg['type'] = "warning";
 
         $_POST = sanitizePostData($_POST);
         $user = new Factory();
 
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['telephone']) && !empty($_POST['email']) && !empty($_POST['sexe']) && !empty($_POST['fonction']) && !empty($_POST['matricule'])) {
+        if (!empty($_POST['nom_user']) && !empty($_POST['prenom_user']) && !empty($_POST['telephone_user']) && !empty($_POST['email_user']) && !empty($_POST['sexe_user']) && !empty($_POST['fonction_user'])) {
             extract($_POST);
-            $telephone = removeSpace($telephone);
+            $telephone = removeSpace($telephone_user);
             $telephone = str_replace('(+225)', '', $telephone);
 
             // if (isValidPhoneNumber($telephone)) {
             if (ctype_digit($telephone) && mb_strlen($telephone) == 10) {
-                $userTel = $user->find('users', 'telephone', $telephone);
+                $userTel = $user->find(TABLES::USERS, 'telephone_user', $telephone);
 
                 if (empty($userTel)) {
 
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $userEmail = $user->find('users', 'email', $email);
+                    if (filter_var($email_user, FILTER_VALIDATE_EMAIL)) {
+                        $userEmail = $user->find(TABLES::USERS, 'email_user', $email_user);
 
                         if (empty($userEmail)) {
 
                             $passwrod = generetor(5);
-                            $code = $user->generatorCode('users', 'code_user');
+                            $code = $user->generatorCode(TABLES::USERS, 'code_user');
                             $token = generetor(random_int(50, 70));
 
                             $data_user = [
-                                'nom' => strtoupper($nom),
-                                'prenom' => strtoupper($prenom),
-                                'telephone' => $telephone,
                                 'code_user' => $code,
-                                'email' => $email,
-                                'matricule' => strtoupper($matricule),
-                                'sexe' => $sexe,
-                                'fonction_id' => $fonction,
-                                'hotel_id' => Auth::user('hotel_id'),
-                                'etat_user' => 0,
+                                'nom_user' => strtoupper($nom_user),
+                                'prenom_user' => strtoupper($prenom_user),
+                                'telephone_user' => $telephone,
+                                'email_user' => $email_user,
+                                'sexe_user' => $sexe_user,
+                                'fonction_code' => $fonction_user,
                                 'password_user' => password_hash($passwrod, PASSWORD_BCRYPT),
-                                'token' => $token,
-                                'created_user' => date('Y-m-d'),
+                                'token_user' => $token,
+                                'created_at_user' => date('Y-m-d'),
                                 'lastime' => date('Y-m-d')
                             ];
 
-                            if ($user->create("users", $data_user)) {
+                            if ($user->create(TABLES::USERS, $data_user)) {
 
-                                $hotel =   $user->getInfoHotel(Auth::user('hotel_id'));
 
                                 $data_mail = [
                                     "appName" => $_ENV["APP_NAME"],
-                                    "hotel_name" => $hotel['libelle_hotel'],
-                                    "email" => $email,
+                                    "email" => $email_user,
                                     "password" => $passwrod,
-                                    "nom" => strtoupper($nom . " " . $prenom),
+                                    "nom" => strtoupper($nom_user . " " . $prenom_user),
                                     "lienActivation" => HOME . "/activation/{$token}"
                                 ];
 
 
-                                $this->SendMail($email, "Création de compte", "activation", $data_mail);
+                                $this->SendMail($email_user, "Création de compte", "activation", $data_mail);
 
 
                                 $msg['code'] = 200;
@@ -346,7 +403,7 @@ class UserController extends MainController
         $code = decrypter($id_user);
 
         $fn = new Factory();
-        $res = $fn->update('users', 'code_user', $code, ['etat_user' => 1]);
+        $res = $fn->update(TABLES::USERS, 'code_user', $code, ['etat_user' => 1]);
         if ($res || $res == 0) {
             $msg['code'] = 200;
             $msg['type'] = "success";
@@ -369,7 +426,7 @@ class UserController extends MainController
 
         $code = decrypter($id_user);
         $fn = new Factory();
-        $res = $fn->update('users', 'code_user', $code, ['etat_user' => 0]);
+        $res = $fn->update(TABLES::USERS, 'code_user', $code, ['etat_user' => 0]);
         if ($res || $res == 0) {
             $msg['code'] = 200;
             $msg['type'] = "success";
@@ -390,7 +447,7 @@ class UserController extends MainController
 
         $code = decrypter($id_user);
         $fc = new Factory();
-        $user = $fc->find('users', 'code_user', $code);
+        $user = $fc->find(TABLES::USERS, 'code_user', $code);
 
         $token = generetor(random_int(50, 70));
 
@@ -413,7 +470,7 @@ class UserController extends MainController
             "lienActivation" => HOME . "/activation/{$token}"
         ];
 
-        $resultat = $fc->update("users", "code_user", $code, $data_user);
+        $resultat = $fc->update(TABLES::USERS, "code_user", $code, $data_user);
 
         $res = $this->SendMail($user['email'], "Création de compte", "activation", $data_mail);
 
@@ -429,85 +486,6 @@ class UserController extends MainController
 
         echo json_encode($msg);
         return;
-    }
-
-
-    public function openCaisse()
-    {
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
-        $fc = new Factory();
-        $code = $fc->generatorCode('versements', 'code_versement');
-        $data_versement = [
-            'code_versement' => $code,
-            'ouverture' => date('Y-m-d H:i:s'),
-            'hotel_id' => Auth::user('hotel_id'),
-            'user_id' => Auth::user('id')
-        ];
-
-        if ($fc->create('versements', $data_versement)) {
-
-            Auth::update('caisse', $code);
-            $msg['code'] = 200;
-            $msg['type'] = "success";
-            $msg['message'] = "Caisse ouverte avec succes";
-        } else {
-            $msg['message'] = "Echec d'ouverture!";
-        }
-        echo json_encode($msg);
-        return;
-    }
-
-    public function closeCaisse()
-    {
-        $msg['code'] = 400;
-        $msg['type'] = "warning";
-
-        $fc = new Factory();
-
-        $recap = $this->recapCaisseClosing();
-        $data_versement = [
-            'cloture' => date('Y-m-d H:i:s'),
-            'montant_cloture' => $recap['facture'],
-            'montant_total' => $recap['montant_attendu']
-        ];
-
-        if ($fc->update2('versements', ['code_versement' => Auth::user('caisse')], $data_versement)) {
-            Auth::update('caisse', null);
-
-            $msg['code'] = 200;
-            $msg['type'] = "success";
-            $msg['message'] = "Caisse fermée avec succes";
-        } else {
-            $msg['message'] = "Echec de fermeture!";
-        }
-
-        echo json_encode($msg);
-        return;
-    }
-
-    private function recapCaisseClosing()
-    {
-        $fc = new Factory();
-        $montant_attendu = 0;
-
-        $caisseReservations = $fc->getRecapCaisseReservationForUserCompte(Auth::user('caisse'));
-        $CaisseServices = $fc->getRecapCaisseServiceForUserCompte(Auth::user('caisse'));
-        $facture = $fc->getRecapFactureForUserCompte(Auth::user('caisse'));
-
-
-        // reservation en cours
-        if (!empty($caisseReservations)) {
-            foreach ($caisseReservations as $r) {
-                $day = daysBetweenDates($r['date_entree'], $r['date_sortie']);
-                $montant_attendu += $day * $r['prix_reservation'];
-            }
-        }
-
-        if (!empty($CaisseServices)) {
-            $montant_attendu += $CaisseServices;
-        }
-        return ['montant_attendu' => $montant_attendu, 'facture' => $facture];
     }
 
     public  function loginUser()
@@ -531,20 +509,20 @@ class UserController extends MainController
             // $fc->setKey('code_user');
             $user = [];
 
-            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email', $login) : $fc->getUserDataForLogin('telephone', $login);
+            $user = (filter_var($login, FILTER_VALIDATE_EMAIL)) ? $fc->getUserDataForLogin('email_user', $login) : $fc->getUserDataForLogin('telephone', $login);
 
             if (!empty($user) && password_verify($password, $user['password_user'])) {
                 $groupes = [];
                 $roles = [];
 
                 // Vérifier si le compte est actif
-                if (($user['etat_hotel'] == 1) || ($user['code_user'] == $user['hotel_id'])) {
+                // if (($user['etat_hotel'] == 1) || ($user['code_user'] == $user['hotel_id'])) {
 
                     // Récupérer les rôles de l'utilisateur
                     $rolesuser = $fc->getUserRoles($user['code_user']);
                     $Groupesuser = $fc->getUserGroups($user['code_user']);
                     // Mettre a jour lastime connection
-                    $fc->update("users", "code_user", $user['code_user'], ['lastime' => date('Y-m-d H:i:s')]);
+                    $fc->update(TABLES::USERS, "code_user", $user['code_user'], ['lastime' => date('Y-m-d H:i:s')]);
 
 
 
@@ -567,18 +545,18 @@ class UserController extends MainController
                     }
 
 
-                    $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['hotel_id']);
-                    if (!empty($caisse) && $caisse['cloture'] == null) {
-                        $etatCaise = $caisse['code_versement'];
-                    }
+                    // $caisse = $fc->getEtatCaisseUser($user['code_user'], $user['hotel_id']);
+                    // if (!empty($caisse) && $caisse['cloture'] == null) {
+                    //     $etatCaise = $caisse['code_versement'];
+                    // }
 
                     Auth::login($user, $groupes, $roles, $etatCaise);
-                    $result['activityYear'] = $fc->getYearActivityStart($user['hotel_id']);
+                    // $result['activityYear'] = $fc->getYearActivityStart($user['hotel_id']);
                     $result['msg'] = "Connexion réussie !";
                     $result['code'] = 200;
-                } else {
-                    $result['msg'] = "Votre compte est désactivé. Veuillez contacter l'administrateur.";
-                }
+                // } else {
+                //     $result['msg'] = "Votre compte est désactivé. Veuillez contacter l'administrateur.";
+                // }
             } else {
                 $result['msg'] = "Email/telephone  ou mot de passe incorrect !";
             }
@@ -605,11 +583,11 @@ class UserController extends MainController
 
                 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $user = new Factory();
-                    $userphone = $user->find("users", "telephone", $telephone);
+                    $userphone = $user->find(TABLES::USERS, "telephone", $telephone);
 
                     if (empty($userphone)) {
 
-                        $userEmail = $user->find("users", "email", $email);
+                        $userEmail = $user->find(TABLES::USERS, "email", $email);
 
                         if (empty($userEmail)) {
                             $code = $user->generatorCode('hotels', 'code_hotel');
@@ -697,13 +675,13 @@ class UserController extends MainController
     public function activationAccount($token)
     {
         $user = new Factory();
-        $compte = $user->find("users", "token", $token);
+        $compte = $user->find(TABLES::USERS, "token_user", $token);
 
         if (!empty($compte)) {
             if ($compte['etat_user'] == 0) {
 
 
-                $rest = $user->update("users", "code_user", $compte['code_user'], ['etat_user' => 1, 'token' => ""]);
+                $rest = $user->update(TABLES::USERS, "code_user", $compte['code_user'], ['etat_user' => 1, 'token_user' => ""]);
 
                 if ($rest) {
                     $data = [
@@ -811,11 +789,11 @@ class UserController extends MainController
 
                     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $user = new Factory();
-                        $userphone = $user->find("users", "telephone", $telephone);
+                        $userphone = $user->find(TABLES::USERS, "telephone", $telephone);
 
                         if (empty($userphone) || $userphone['code_user'] == $code) {
 
-                            $userEmail = $user->find("users", "email", $email);
+                            $userEmail = $user->find(TABLES::USERS, "email", $email);
 
                             if (empty($userEmail) || $userEmail['code_user'] == $code) {
 
@@ -828,7 +806,7 @@ class UserController extends MainController
                                     'fonction_id' => $fonction,
                                 ];
 
-                                $res = $user->update('users', 'code_user', $code, $data_user);
+                                $res = $user->update(TABLES::USERS, 'code_user', $code, $data_user);
 
                                 if ($res || $res == 0) {
 
@@ -875,7 +853,7 @@ class UserController extends MainController
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
                 $user = new Factory();
-                $compte = $user->find("users", "email", $email);
+                $compte = $user->find(TABLES::USERS, "email", $email);
 
                 if (!empty($compte)) {
                     $newPassword = generetor(5);
@@ -883,7 +861,7 @@ class UserController extends MainController
                         'password_user' => password_hash($newPassword, PASSWORD_BCRYPT)
                     ];
 
-                    if ($user->update("users", "code_user", $compte['code_user'], $data_user)) {
+                    if ($user->update(TABLES::USERS, "code_user", $compte['code_user'], $data_user)) {
 
                         $data_mail = [
                             "password" => $newPassword,
@@ -922,7 +900,7 @@ class UserController extends MainController
         if (!empty($_POST['confirm_password']) && !empty($_POST['password'])) {
             if ($_POST['confirm_password'] == $_POST['password']) {
                 $fc = new Factory();
-                $res = $fc->update('users', 'code_user', Auth::user('id'), ['password_user' => password_hash($_POST['password'], PASSWORD_BCRYPT)]);
+                $res = $fc->update(TABLES::USERS, 'code_user', Auth::user('id'), ['password_user' => password_hash($_POST['password'], PASSWORD_BCRYPT)]);
                 if ($res) {
                     $msg['code'] = 200;
                     $msg['type'] = "success";
@@ -1088,4 +1066,6 @@ class UserController extends MainController
         echo json_encode($msg);
         return;
     }
+
+    
 }

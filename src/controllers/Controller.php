@@ -6,6 +6,7 @@ use App\Core\MainController;
 use App\Models\Factory;
 use App\Services\Service;
 use Groupes;
+use TABLES;
 
 class Controller extends MainController
 {
@@ -30,13 +31,13 @@ class Controller extends MainController
 
      public function role()
     {
-        if (Auth::hasGroupe(Groupes::SUPER)) {
-            $user = (new Factory())->getSupUserWithFoction();
+        // if (Auth::hasGroupe(Groupes::SUPER)) {
+        //     $user = (new Factory())->getSupUserWithFoction();
             
-            $this->view('admins/role', ["users" => $user, 'title' => 'Gestion des roles']);
+        //     $this->view('admins/role', ["users" => $user, 'title' => 'Gestion des roles']);
 
-            return;
-        }
+        //     return;
+        // }
         
         $user = (new Factory())->getUserWithFoction();
 
@@ -62,18 +63,17 @@ class Controller extends MainController
         $_POST = sanitizePostData($_POST);
         $code_role = $_POST['code_role'];
         $code_user = $_POST['code_user'];
-
         $factory = new Factory();
 
         
-        $roles = $factory->select('roles')->where('groupe', $code_role)->all();
+        $roles = $factory->getAllRoleByCode($code_role);
         $userPermissions = $factory->getAllPermissionForUser($code_user);
-
+        
         $userRolesPermissions = $this->resolveTablePermission($userPermissions);
         // $output = $userRolesPermissions;
-
+        
         if ($roles) {
-
+            
             foreach ($roles as $data) {
                 $equal = $this->checkIfExistRole($userRolesPermissions, $data);
 
@@ -84,7 +84,7 @@ class Controller extends MainController
 
                 $output .= '
                 <tr data-id="' . $data['code_role'] . '" >
-                    <td> &nbsp; &nbsp;' . $data['name'] . '</td>
+                    <td> &nbsp; &nbsp;' . $data['libelle_role'] . '</td>
                     <td><input id="create' . $data['code_role'] . '" ' . $c . ' class="perm" data-type="create" type="checkbox"></td>
                     <td><input id="show' . $data['code_role'] . '" ' . $s . ' class="perm" data-type="show" type="checkbox"></td>
                     <td><input id="edit' . $data['code_role'] . '" ' . $e . ' class="perm" data-type="edit" type="checkbox"></td>
@@ -116,8 +116,8 @@ class Controller extends MainController
 
                 if ($role["create"] || $role["show"] || $role["edit"] || $role["delete"]) {
                     $dataPermissions = [
-                    ':user_id' => $userCode,
-                    ':role_id' => $role["role"],
+                    ':user_code' => $userCode,
+                    ':role_code' => $role["role"],
                     ':create_permission' => $role["create"],
                     ':show_permission' => $role["show"],
                     ':edit_permission' => $role["edit"],
@@ -154,11 +154,11 @@ class Controller extends MainController
         $code = $_POST['code_user'];
         $html = "";
 
-        $user = (new Factory())->find('users','code_user',$code);
+        $user = (new Factory())->find(TABLES::USERS,'code_user',$code);
        
     
 
-        $fullName = $user['nom'] . ' ' . $user['prenom'];
+        $fullName = $user['nom_user'] . ' ' . $user['prenom_user'];
         $groupes = (new Factory())->groupes();
 
         if (!empty($groupes)) {
@@ -180,7 +180,7 @@ class Controller extends MainController
 
         foreach ($UserPermission as $key => $value) {
 
-            $permissions[$value['role_id']] = [
+            $permissions[$value['role_code']] = [
                 'create' => $value['create_permission'],
                 'edit'   => $value['edit_permission'],
                 'show'   => $value['show_permission'],

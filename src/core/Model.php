@@ -381,6 +381,30 @@ abstract class Model
         return $stmt->execute([$id]);
     }
 
+    /**
+     * Récupérer des enregistrements pour un select dropdown
+     * Simplification de ->select()->where()->all()
+     */
+    public function findForSelect(string $table, array $columns, string $whereColumn = null, $whereValue = null, string $orderColumn = null): array
+    {
+        $cols = implode(', ', $columns);
+        $sql = "SELECT {$cols} FROM {$table}";
+        $params = [];
+
+        if ($whereColumn && $whereValue) {
+            $sql .= " WHERE {$whereColumn} = ?";
+            $params[] = $whereValue;
+        }
+
+        if ($orderColumn) {
+            $sql .= " ORDER BY {$orderColumn} ASC";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
     public function transaction(callable $callback)
     {
         try {
@@ -412,4 +436,26 @@ abstract class Model
         }
         return $code;
     }
+
+    public static function dateActuelle($waveDate = null)
+    {
+        if ($waveDate) {
+            // Si une date est fournie, on la convertit
+            try {
+                $dateTimeWave = new \DateTime($waveDate, new \DateTimeZone('UTC')); // Convertir UTC en DateTime
+                $dateTimeWave->setTimezone(new \DateTimeZone('Africa/Abidjan'));   // Convertir en heure de Côte d'Ivoire
+
+                return $dateTimeWave->format('Y-m-d H:i:s');
+            } catch (\Exception $e) {
+                // En cas d'erreur de format de date
+                return 'Invalid date: '.$waveDate;
+            }
+        } else {
+            // Sinon, renvoyer la date actuelle en Côte d'Ivoire
+            $date = new \DateTime('now', new \DateTimeZone('Africa/Abidjan'));
+
+            return $date->format('Y-m-d H:i:s');
+        }
+    }
+
 }

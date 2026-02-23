@@ -40,7 +40,6 @@
             </div>
 
             <div class="card">
-                <p> <span class="text-bold"> Hotel : </span>  <?= $hotel_name ?> </p>
                 <p> <span class="text-bold"> Identifiant (email) : </span> <?= $email ?> </p>
                 <p> <span class="text-bold"> Mot de passe temporaire : </span> <?= $password ?> </p>
 

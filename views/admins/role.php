@@ -10,7 +10,6 @@
           <thead class="">
             <tr>
               <th>#</th>
-              <th>EMAIL</th>
               <th>NOM</th>
               <th>PRENOMS</th>
               <th>Contact</th>
@@ -29,10 +28,9 @@
                         <tr>
 
                           <td><?= $i ?></td>
-                          <td><?= $data['email'] ?></td>
-                          <td><?= $data['nom'] ?></td>
-                          <td><?= $data['prenom'] ?></td>
-                          <td><?= $data['telephone'] ?></td>
+                          <td><?= $data['nom_user'] ?></td>
+                          <td><?= $data['prenom_user'] ?></td>
+                          <td><?= $data['telephone_user'] ?></td>
                           <td><?= $data['libelle_fonction'] ?></td>
                           <td class="">
                             

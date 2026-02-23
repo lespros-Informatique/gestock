@@ -12,7 +12,8 @@ class RouteMiddleWare
     {
         if (!Auth::check()) {
              Auth::saveCurrentUrl();
-            self::redirect('login');
+             header("Location:".LINK.'login');
+            // self::redirect('login');
             // exit();
         }
     }
@@ -20,7 +21,9 @@ class RouteMiddleWare
     public static function isLogged(): void
     {
         if (Auth::check()) {
-            self::redirectBack();
+            header('Location:'.LINK);
+            // self::redirectBack();
+            exit();
         }
     }
 

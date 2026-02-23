@@ -43,314 +43,152 @@
                 </div>
             </div>
             <!-- menu lateral -->
-            <!-- START ADMIN MENU -->
-
+            
             <ul class="nav nav-primary">
                 <li class="nav-item">
-                    <a style="background: #8debfcf1;" class="" href="<?= route('home') ?>">
+                    <a style="background: #8debfcf1;" class="" href="<?= url('') ?>">
                         <i class="fas fa-home"></i>
                         <p>ACCUEIL</p>
                     </a>
                 </li>
 
-                <!-- Groupes::ADMIN => -->
-
-                <?php //if(auth()->hasGroupe(Groupes::ADMIN)): 
-                ?>
+                <!-- Administration: Users & Roles -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#admin">
-                        <i class="fas fa-pen-square"></i>
+                    <a data-toggle="collapse" href="#administration">
+                        <i class="fas fa-cogs"></i>
                         <p>ADMINISTRATION</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="admin">
+                    <div class="collapse" id="administration">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::ADMIN_H)): 
-                            ?>
                             <li>
-                                <a class="item-link" href="<?= url('client/liste') ?>">
-                                    <span class="sub-item">Clients</span>
+                                <a class="item-link" href="<?= url('user') ?>">
+                                    <span class="sub-item">Utilisateurs</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= url('boutique/liste') ?>">
-                                    <span class="sub-item">Boutiques</span>
+                                <a class="item-link" href="<?= url('role') ?>">
+                                    <span class="sub-item">Rôles & Permissions</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="item-link" href="<?= url('fournisseur/liste') ?>">
-                                    <span class="sub-item">Fournisseurs</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="item-link" href="<?= url('user/liste') ?>">
-                                    <span class="sub-item">Employés</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?= route('setting.fonctions') ?>">
-                                    <span class="sub-item">Fonction</span>
-                                </a>
-                            </li>
-                            <?php //endif; 
-                            ?>
-                            <?php //if(auth()->hasRole(Roles::DASHBOARD_H)): 
-                            ?>
-
-                            <li>
-                                <a class="item-link" href="<?= route('admin.role') ?>">
-                                    <span class="sub-item">Permissions</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?= route('hotel.abonnement') ?>">
-                                    <span class="sub-item">Abonnement</span>
-                                </a>
-                            </li>
-
-                            <?php //endif; 
-                            ?>
-
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
 
-                <!-- Groupes::COMPTABLE => -->
-                <?php //if(auth()->hasGroupe(Groupes::COMPTABLE)): 
-                ?>
+                <!-- Partners: Gestion des partenaires -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#comptable">
-                        <i class="fas fa-pen-square"></i>
-                        <p>COMPTABLE</p>
+                    <a data-toggle="collapse" href="#partners">
+                        <i class="fas fa-handshake"></i>
+                        <p>PARTENAIRES</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="comptable">
+                    <div class="collapse" id="partners">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): 
-                            ?>
-
                             <li>
-                                <a class="item-link" href="<?= route('comptable.caisse') ?>">
-                                    <span class="sub-item">Caisse</span>
+                                <a class="item-link" href="<?= url('partner') ?>">
+                                    <span class="sub-item">Liste Partenaires</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('comptable.depense') ?>">
-                                    <span class="sub-item">Depenses</span>
+                                <a class="item-link" href="<?= url('compte-partner') ?>">
+                                    <span class="sub-item">Comptes Partenaires</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('comptable.versement') ?>">
-                                    <span class="sub-item">Versements</span>
+                                <a class="item-link" href="<?= url('paiement-partner') ?>">
+                                    <span class="sub-item">Paiements Partenaires</span>
                                 </a>
                             </li>
-
-                            <?php //endif; 
-                            ?>
-
-                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): 
-                            ?>
-
-                            <li>
-                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
-                                    <span class="sub-item">Salaires</span>
-                                </a>
-                            </li>
-                            <?php //endif; 
-                            ?>
-
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
 
-                <!-- Groupes::HOTEL => -->
-                <?php //if(auth()->hasGroupe(Groupes::HOTEL)): 
-                ?>
+                <!-- Clients: Gestion des clients -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#hotel">
-                        <i class="fas fa-table"></i>
-                        <p>GESTIONNAIRE</p>
+                    <a data-toggle="collapse" href="#clients">
+                        <i class="fas fa-users"></i>
+                        <p>CLIENTS</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="hotel">
+                    <div class="collapse" id="clients">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::DEPENSE_H)) :
-                            ?>
-
                             <li>
-                                <a class="item-link" href="<?= route('hotel.depenses') ?>">
-                                    <span class="sub-item">Depenses</span>
+                                <a class="item-link" href="<?= url('client') ?>">
+                                    <span class="sub-item">Liste Clients</span>
                                 </a>
                             </li>
-                            <?php //endif; 
-                            ?>
-
-
-                            <?php //if(auth()->hasRole(Roles::MANAGER_H)): 
-                            ?>
-                            <li>
-                                <a class="item-link" href="<?= route('hotel.chambres') ?>">
-                                    <span class="sub-item">Chambres</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?= route('categorie.chambres') ?>">
-                                    <span class="sub-item">Type Chambre</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?= route('hotel.services') ?>">
-                                    <span class="sub-item">Services</span>
-                                </a>
-                            </li>
-                            <?php //endif; 
-                            ?>
-
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
 
-
-
-                <!-- Groupes::RECEPTION => -->
-                <?php //if(auth()->hasGroupe(Groupes::RECEPTION)): 
-                ?>
-
+                <!-- Applications: Gestion des applications -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#reception">
-                        <i class="fas fa-th-list"></i>
-                        <p>RECEPTION</p>
+                    <a data-toggle="collapse" href="#applications">
+                        <i class="fas fa-rocket"></i>
+                        <p>APPLICATIONS</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="reception">
+                    <div class="collapse" id="applications">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::RECEPTION_H)): 
-                            ?>
                             <li>
-                                <a class="item-link" href="<?= route('hotel.reservation') ?>">
-                                    <span class="sub-item">Reservation</span>
+                                <a class="item-link" href="<?= url('application') ?>">
+                                    <span class="sub-item">Liste Applications</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('hotel.add.reservation') ?>">
-                                    <span class="sub-item">Enregistrer</span>
+                                <a class="item-link" href="<?= url('type-abonnement') ?>">
+                                    <span class="sub-item">Types d'Abonnement</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="item-link" href="<?= route('client') ?>">
-                                    <span class="sub-item">Liste client</span>
+                                <a class="item-link" href="<?= url('avantage') ?>">
+                                    <span class="sub-item">Avantages</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="item-link" href="<?= route('versement') ?>">
-                                    <span class="sub-item">Ma caisse</span>
-                                </a>
-                            </li>
-                            <?php //endif; 
-                            ?>
-
-
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
 
-
-
-                <!-- Groupes::PARAMETRE => -->
-                <?php //if(auth()->hasGroupe(Groupes::PARAMETRE)): 
-                ?>
-
+                <!-- Abonnements: Gestion des abonnements -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#parametre">
-                        <i class="fas fa-pen-square"></i>
-                        <p>PARAMETRE</p>
+                    <a data-toggle="collapse" href="#abonnements">
+                        <i class="fas fa-credit-card"></i>
+                        <p>ABONNEMENTS</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="parametre">
+                    <div class="collapse" id="abonnements">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::PARAMETRE)): 
-                            ?>
-
                             <li>
-                                <a class="item-link" href="<?= route('setting.home') ?>">
-                                    <span class="sub-item">Hotel</span>
+                                <a class="item-link" href="<?= url('abonnement') ?>">
+                                    <span class="sub-item">Liste Abonnements</span>
                                 </a>
                             </li>
-
-                            <?php //endif; 
-                            ?>
-
-
+                            <li>
+                                <a class="item-link" href="<?= url('paiement-abonnement') ?>">
+                                    <span class="sub-item">Paiements Abonnements</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
 
-                <!-- Groupes::catalogue => -->
-                <?php //if(auth()->hasGroupe(Groupes::catalogue)): 
-                ?>
+                <!-- Paramètres -->
                 <li class="nav-item">
-                    <a data-toggle="collapse" href="#catalogue">
-                        <i class="fas fa-boxes"></i>
-                        <p>CATALOGUE</p>
+                    <a data-toggle="collapse" href="#parametres">
+                        <i class="fas fa-sliders-h"></i>
+                        <p>PARAMÈTRES</p>
                         <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="catalogue">
+                    <div class="collapse" id="parametres">
                         <ul class="nav nav-collapse">
-                            <?php //if(auth()->hasRole(Roles::COMPTATBLE_H)): 
-                            ?>
-
                             <li>
-                                <a class="item-link" href="<?= url('categorie') ?>">
-                                    <span class="sub-item">Catégories</span>
+                                <a class="item-link" href="<?= url('setting') ?>">
+                                    <span class="sub-item">Général</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="item-link" href="<?=  url('mark')?>">
-                                    <span class="sub-item">Marque</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?=  url('unite')?>">
-                                    <span class="sub-item">Unité</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="item-link" href="<?=  url('produit')?>">
-                                    <span class="sub-item">Produit</span>
-                                </a>
-                            </li>
-
-                            <?php //endif; 
-                            ?>
-
-                            <?php //if(auth()->hasRole(Roles::SALAIRE_H)): 
-                            ?>
-
-                            <li>
-                                <a class="item-link" href="<?= route('hotel.salaire') ?>">
-                                    <span class="sub-item">Salaires</span>
-                                </a>
-                            </li>
-                            <?php //endif; 
-                            ?>
-
                         </ul>
                     </div>
                 </li>
-                <?php //endif; 
-                ?>
-
 
             </ul>
 

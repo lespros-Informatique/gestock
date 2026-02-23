@@ -14,8 +14,8 @@
   <link rel="icon" href="<?=  ASSETS?>img/icon.ico" type="image/x-icon" />
 
   <!-- CSS only -->
-    <link rel="stylesheet" href="<?= ASSETS ?>guest/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= ASSETS ?>guest/style.css">
+    <!-- <link rel="stylesheet" href="<?= ASSETS ?>guest/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="<?= ASSETS ?>guest/style.css"> -->
 
 </head>
 
@@ -34,7 +34,8 @@
   <script src="<?=  ASSETS?>js/plugin/sweetalert/sweetalert.min.js"></script>
   <script src="<?=  ASSETS?>js/notify.js"></script>
 
-  <script src="<?= ASSETS ?>guest/apps.js"></script>
+  <script src="<?= ASSETS ?>js/module_share.js"></script>
+  <script src="<?= ASSETS ?>js/module_user.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 RewriteEngine On
-#RewriteBase /hotel/
+#RewriteBase /admin-smartcode/
 
 
 RewriteCond %{REQUEST_FILENAME} !-f
